@@ -41,7 +41,9 @@ def run_texmacs(calls):
         '("texmacs->html:images" "off")\n'
         '("texmacs->html:mathjax" "on")\n'
         '("texmacs->html:mathml" "off")\n')
-    cmd = (f"(begin (catch #t (lambda () {calls}) (lambda args (display \"SCHEME-ERROR \")"
+    # style-clear-cache: TeXmacs caches style environments in the profile,
+    # so changes to the style packages would otherwise be ignored.
+    cmd = (f"(begin (catch #t (lambda () (style-clear-cache) {calls}) (lambda args (display \"SCHEME-ERROR \")"
            f" (write args) (newline))) (quit-TeXmacs))")
     out = subprocess.run([TM, "-headless", "-x", cmd], env=env, capture_output=True,
                          text=True, errors="replace", timeout=1200)

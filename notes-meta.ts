@@ -31,6 +31,8 @@
 
   <assign|notes-header-name|OpenSheaf>
 
+  <assign|html-title|OpenSheaf>
+
   <assign|html-head-favicon|resources/favicon-32x32.png>
 
   <assign|html-head-javascript-src|<tuple|resources/theme.js>>

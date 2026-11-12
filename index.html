@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:x="https://www.texmacs.org/2002/extensions" xmlns:m="http://www.w3.org/1998/Math/MathML">
+  <head>
+    <title>Massimiliano Gubinelli</title>
+    <meta charset="utf-8" content="TeXmacs 2.1.5" name="generator"></meta>
+    <link href="resources/notes-base.css" type="text/css" rel="stylesheet"></link>
+    <script src="resources/theme.js" language="javascript"></script>
+    <link href="resources/favicon-32x32.png" rel="icon"></link>
+    <script src="resources/highlight.pack.js" language="javascript" defer></script>
+    <script src="resources/notes-base.js" language="javascript" defer></script>
+    <script language="javascript" defer>var bs = String.fromCharCode(92), sp =
+    String.fromCharCode(32); window.MathJax = {tex: {macros: {xequal: [bs +
+    'xlongequal[#1]{#2}', 2, ''], marked: [bs + 'class{tm-marked}{#1}', 1],
+    llbracket: bs + 'mathopen{' + bs + 'unicode{x27E6}}', rrbracket: bs +
+    'mathclose{' + bs + 'unicode{x27E7}}', hyperref: ['#2', 2, ''], rotatebox:
+    [bs + 'style{display:inline-block;transform:rotate(calc(-1deg' + sp + '*'
+    + sp + '#2))}{#3}', 3, '']}}};</script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" language="javascript"></script>
+  </head>
+  <body>
+    <div class="notes-header">
+      <p>
+        [<a href="index.html">OpenSheaf</a>] [<a href="https://mgubi.opensheaf.org">first archive</a>]<em class="notes-header-name">OpenSheaf</em>
+      </p>
+    </div>
+    <h1 id="auto-1">OpenSheaf: an open format for document archives and
+    collections<span style="margin-left: 1em"></span></h1>
+    <div class="notes-abstract">
+      Technical overview of OpenSheaf, a common, open format for archives of
+      scholarly documents and for collections of them: storage in OCFL,
+      description in DataCite, deposit on Zenodo, collections that compose
+      across archives. Version 0.1 (draft), 12 November 2026, checked against
+      the OCFL 1.1, DataCite 4.7 and Zenodo documentation; experimental, it
+      may change in incompatible ways before version 1.0.
+    </div>
+    <h2 id="auto-2">1. Goals<span style="margin-left: 1em"></span></h2>
+    <ul>
+      <li>
+        <p>
+          <strong>A common format.</strong> Any author, group or institution
+          can keep an archive of its documents in the same open format, as a
+          lean alternative to arXiv and to the usual publication
+          infrastructure: plain files in a git repository, served as a static
+          website, checkable by anyone, and composable with other archives.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Sources, not only PDFs.</strong> A deposit keeps the sources
+          of a document together with its PDF, and the archive is readable
+          both as a website and in the authoring tool. The reference tools
+          work with TeXmacs; other source formats fit the same layout.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Fixed versions.</strong> Every version of every document is
+          fixed by content hashes and never changes once deposited.
+          Corrections are new versions; the history stays verifiable from the
+          files alone, not only from git.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Standards, not inventions.</strong> Storage follows the
+          Oxford Common File Layout (OCFL 1.1); description follows the
+          DataCite Metadata Schema (4.7). Only what these leave open
+          (collections, the readable views, the TeXmacs details) is specified
+          here.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Matched with Zenodo.</strong> Each version of a document can
+          be deposited on Zenodo as a record version with its own DOI, with
+          files that can be checked against the repository; collections can be
+          released on Zenodo too.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Composable collections.</strong> A collection is itself a
+          versioned object. It can include documents and other collections,
+          also from other archives built the same way, so that selections of
+          collections (by a seminar, a journal-like editorial board, a reading
+          list) can be made without copying.
+        </p>
+      </li>
+    </ul>
+    <p>
+      The format is called <strong>OpenSheaf</strong>: a sheaf is a bundle of
+      papers and, in mathematics, the structure in which local pieces glue
+      into a whole, as archives kept and verified separately compose into
+      collections. Its home is <tt class="verbatim">https://opensheaf.org/</tt> (also
+      reachable as <tt class="verbatim">sheaf.pub</tt>). The first OpenSheaf archive is
+      the repository <tt class="verbatim">mgubi/papers</tt>, served at <tt class="verbatim">https://mgubi.opensheaf.org/</tt>;
+      its names and values appear below as examples. In what follows a
+      document is called a paper, the main case, but nothing depends on it.
+    </p>
+    <h2 id="auto-3">2. Layers<span style="margin-left: 1em"></span></h2>
+    <p>
+      The design separates four layers. Only the first two are authoritative;
+      the others are derived from them or witness them.
+    </p>
+    <ul>
+      <li>
+        <p>
+          <strong>Storage</strong> (<tt class="verbatim">ocfl/</tt>): an OCFL storage
+          root with one object per paper and one object per collection.
+          Objects are self-contained, versioned, and checked by their
+          inventories.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Description</strong>: in each object version, <tt class="verbatim">datacite.json</tt>
+          (DataCite metadata) and <tt class="verbatim">provenance.json</tt> (how the
+          version was made). A collection version also holds <tt class="verbatim">members.json</tt>.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Presentation</strong>: the index (<tt class="verbatim">index.tm</tt>,
+          <tt class="verbatim">index.html</tt>), the landing page and HTML version of
+          each paper, BibTeX and CSL-JSON entries. Generated from the storage
+          layer, never edited by hand, regenerable at any time.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Witnesses</strong> (<tt class="verbatim">witnesses/</tt> and outside
+          services): Zenodo records and DOIs, the Zenodo community, Software
+          Heritage snapshots of the git repository, signed git tags and
+          OpenTimestamps proofs. They are independent copies and proofs of
+          date; the repository does not depend on them to be verified.
+        </p>
+      </li>
+    </ul>
+    <h2 id="auto-4">3. Layout<span style="margin-left: 1em"></span></h2>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+papers/                              git repository, served by GitHub Pages
+  README.md  design.tm  metadata.tm  presentation and documentation
+  index-template.tm                  surrounding text of the index
+  index.tm  index.html               generated from the main collection
+  site/&lt;paper-id&gt;/                   generated: landing page, HTML, BibTeX
+  resources/                         stylesheets, scripts, fonts of the pages
+  notes-meta.ts  paper-html.ts       TeXmacs style packages of the pages
+  tools/                             papers.py (deposit, collect, render, verify)
+  witnesses/&lt;object-id&gt;/             timestamp proofs of inventories
+  .texmacs-noconvert                 TeXmacs website converter: leave alone
+  ocfl/                              OCFL storage root (authoritative)
+    0=ocfl_1.1
+    ocfl_1.1.md  README.md           optional files allowed at the root
+    ocfl_layout.json
+    extensions/0002-flat-direct-storage-layout/config.json
+    fractional-phi42-mass-gap/       paper object
+      0=ocfl_object_1.1
+      inventory.json  inventory.json.sha512
+      v1/inventory.json  v1/inventory.json.sha512
+      v1/content/fractional-phi42-mass-gap.tm
+      v1/content/paper.pdf
+      v1/content/datacite.json
+      v1/content/provenance.json
+    collection-papers/               collection object (the main index)
+      0=ocfl_object_1.1
+      inventory.json  inventory.json.sha512
+      v1/inventory.json  v1/inventory.json.sha512
+      v1/content/datacite.json
+      v1/content/members.json</pre>
+    </div>
+    <p>
+      The storage root must live in its own folder: OCFL allows loose files at
+      the storage root (a copy of the specification, a README) but no
+      directories other than objects and extensions, so the website files
+      cannot share it. An object folder may only hold what OCFL specifies (its
+      declaration file, inventory, checksum file, version folders, <tt class="verbatim">extensions/</tt>
+      and <tt class="verbatim">logs/</tt>); timestamp proofs are therefore kept outside
+      the storage root, in <tt class="verbatim">witnesses/</tt>.
+    </p>
+    <p>
+      The flat-direct storage layout (OCFL extension 0002) puts each object in
+      a folder named by its identifier, which keeps paths readable. It
+      requires identifiers that are valid folder names, in particular without
+      <tt class="verbatim">/</tt>; see section 4.
+    </p>
+    <h2 id="auto-5">4. Paper objects<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-6">Identifier<span style="margin-left: 1em"></span></h3>
+    <p>
+      The OCFL identifier of a paper is a short name of lower-case letters,
+      digits and hyphens (<tt class="verbatim">fractional-phi42-mass-gap</tt>), unique
+      in the repository and never reused. OCFL recommends, but does not
+      require, URIs as identifiers; short names are chosen because the
+      flat-direct layout cannot hold a <tt class="verbatim">/</tt>. The repository
+      itself is named by the URL of its storage root, <tt class="verbatim">https://mgubi.opensheaf.org/ocfl/</tt>,
+      and a paper is referred to from outside by the pair (repository,
+      identifier). An archive may live at any stable address it controls; <tt
+      class="verbatim">opensheaf.org</tt> offers a subdomain to each archive (<tt class="verbatim">&lt;name&gt;.opensheaf.org</tt>),
+      so that archive addresses do not depend on the hosting service: moving
+      an archive to another host only changes a DNS record. Once the paper is
+      on Zenodo, its concept DOI is the persistent identifier.
+    </p>
+    <h3 id="auto-7">Content of a version<span style="margin-left: 1em"></span></h3>
+    <ul>
+      <li>
+        <p>
+          <strong>Sources</strong>, stored at the top of the content folder,
+          as deposited: the main source <tt class="verbatim">&lt;id&gt;.tm</tt>, and
+          every file needed to typeset it that is not part of TeXmacs (images,
+          bibliography databases, local style packages). Sources stay flat
+          whenever possible, because Zenodo records have no folders (section
+          7).
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">paper.pdf</tt>: the PDF made from the sources at deposit
+          time. It is part of the deposit because it is what readers cite and
+          what Zenodo shows.
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">datacite.json</tt>: the description of this version
+          (section 5).
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">provenance.json</tt>: TeXmacs version, style packages and
+          plugins used, tool version, the commands run, the date and agent of
+          the deposit, the co-authors' agreement to the deposit and the
+          licence, and, when the sources have sub-folders, the recipe and
+          digests of the archive <tt class="verbatim">sources.zip</tt> sent to Zenodo.
+          These fields have no place in DataCite but are needed to reproduce
+          and check the deposit.
+        </p>
+      </li>
+    </ul>
+    <p>
+      The HTML version is <strong>not</strong> in the object: it depends on
+      the presentation (stylesheets, exporter fixes) and is regenerated
+      whenever these improve, without touching the deposit.
+    </p>
+    <h3 id="auto-8">Inventory, digests and versions<span style="margin-left: 1em"></span></h3>
+    <p>
+      The OCFL inventory lists every file of every version by its digest. The
+      digest algorithm is SHA-512, the one OCFL recommends. The optional
+      fixity block also records MD5 and SHA-256: MD5 because Zenodo reports
+      MD5 checksums for its files, so a Zenodo record can be checked against
+      the inventory directly; SHA-256 for tools that expect it. Every
+      inventory has its checksum file, and every version folder keeps a copy
+      of the inventory as it was at that version (recommended by OCFL,
+      required here).
+    </p>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+{
+  &quot;id&quot;: &quot;fractional-phi42-mass-gap&quot;,
+  &quot;type&quot;: &quot;https://ocfl.io/1.1/spec/#inventory&quot;,
+  &quot;digestAlgorithm&quot;: &quot;sha512&quot;,
+  &quot;head&quot;: &quot;v1&quot;,
+  &quot;contentDirectory&quot;: &quot;content&quot;,
+  &quot;manifest&quot;: { &quot;4f1c&hellip;&quot;: [&quot;v1/content/fractional-phi42-mass-gap.tm&quot;], &hellip; },
+  &quot;versions&quot;: {
+    &quot;v1&quot;: {
+      &quot;created&quot;: &quot;2026-11-12T18:00:00Z&quot;,
+      &quot;message&quot;: &quot;Deposit: paper version 1 (Zenodo record 1234567)&quot;,
+      &quot;user&quot;: { &quot;name&quot;: &quot;Massimiliano Gubinelli&quot;, &quot;address&quot;: &quot;https://orcid.org/&hellip;&quot; },
+      &quot;state&quot;: { &quot;4f1c&hellip;&quot;: [&quot;fractional-phi42-mass-gap.tm&quot;], &hellip; }
+    }
+  },
+  &quot;fixity&quot;: { &quot;md5&quot;: { &hellip; }, &quot;sha256&quot;: { &hellip; } }
+}</pre>
+    </div>
+    <p>
+      The state of a version maps each digest to the logical paths that have
+      it. Logical paths stay the same from version to version, and OCFL stores
+      a file only once if it does not change, so a version that changes only
+      the description costs one small file. In each version the user's name is
+      required and the address is an ORCID iD.
+    </p>
+    <h3 id="auto-9">Paper versions and object versions<span style="margin-left: 1em"></span></h3>
+    <p>
+      Two numbers are kept apart:
+    </p>
+    <ul>
+      <li>
+        <p>
+          the <strong>paper version</strong> (field <tt class="verbatim">version</tt> of
+          <tt class="verbatim">datacite.json</tt>): it increases only when the sources
+          or the PDF change. It is what readers see (&quot;version 2&quot;),
+          and it corresponds to a Zenodo record version with its own DOI;
+        </p>
+      </li>
+      <li>
+        <p>
+          the <strong>OCFL version</strong> (<tt class="verbatim">v1</tt>, <tt class="verbatim">v2</tt>,
+          &hellip;): it increases at every change of the object, including
+          changes of the description only, for instance adding the DOI of the
+          journal version later.
+        </p>
+      </li>
+    </ul>
+    <p>
+      A description-only change makes a new OCFL version with the same content
+      files and a new <tt class="verbatim">datacite.json</tt>; on Zenodo it is an edit
+      of the metadata of the existing record version, not a new DOI. The files
+      on Zenodo are therefore the snapshot made at deposit, including the <tt
+      class="verbatim">datacite.json</tt> of that moment; the current description is the
+      head OCFL version, mirrored by the live metadata of the DOI.
+    </p>
+    <h2 id="auto-10">5. DataCite metadata<span style="margin-left: 1em"></span></h2>
+    <p>
+      Each version has a <tt class="verbatim">datacite.json</tt> following the DataCite
+      Metadata Schema 4.7, in the JSON form of the DataCite REST API (the <tt
+      class="verbatim">attributes</tt> of a DOI). It is written by the tool from a short
+      deposit form and never edited in place. <tt class="verbatim">publisher</tt> and
+      <tt class="verbatim">affiliation</tt> are written as objects (name and
+      identifier); the REST API returns them as plain strings by default until
+      September 2027, so the tools read both forms.
+    </p>
+    <ul>
+      <li>
+        <p>
+          <strong>Identification:</strong> <tt class="verbatim">doi</tt> (the DOI of
+          this paper version, reserved on Zenodo before the version is built),
+          <tt class="verbatim">version</tt>, <tt class="verbatim">url</tt> (the landing page).
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Creators:</strong> names split into family and given names
+          as printed in the paper, ORCID iDs as name identifiers, affiliations
+          with ROR identifiers.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Titles and descriptions:</strong> title, and the abstract as
+          plain text (description type <tt class="verbatim">Abstract</tt>), with
+          mathematics written in LaTeX between dollar signs, converted from
+          the TeXmacs abstract.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Type:</strong> <tt class="verbatim">resourceTypeGeneral</tt> <tt
+          class="verbatim">Preprint</tt>.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Subjects:</strong> MSC2020 codes (<tt class="verbatim">subjectScheme</tt>
+          <tt class="verbatim">MSC2020</tt>) and free keywords.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Dates:</strong> <tt class="verbatim">Submitted</tt> (deposit date),
+          <tt class="verbatim">Available</tt>; <tt class="verbatim">Updated</tt> for
+          description-only versions.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Rights:</strong> <tt class="verbatim">rightsList</tt> with the
+          licence's SPDX identifier in lower case (<tt class="verbatim">cc-by-4.0</tt>,
+          scheme <tt class="verbatim">SPDX</tt>) and its URL, or a custom statement such
+          as &quot;All rights reserved&quot;. Metadata itself is CC0, as on
+          Zenodo and DataCite.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Related identifiers</strong> (the relation types DataCite
+          recommends):
+        </p>
+        <ul>
+          <li>
+            <p>
+              <tt class="verbatim">IsVersionOf</tt> the concept DOI of the paper;
+            </p>
+          </li>
+          <li>
+            <p>
+              <tt class="verbatim">IsNewVersionOf</tt> the DOI of the previous paper
+              version;
+            </p>
+          </li>
+          <li>
+            <p>
+              <tt class="verbatim">IsIdenticalTo</tt> an arXiv identifier carrying the
+              same content, or <tt class="verbatim">IsVariantFormOf</tt> when the
+              content differs;
+            </p>
+          </li>
+          <li>
+            <p>
+              <tt class="verbatim">IsVersionOf</tt> the DOI of the published journal
+              article, added by a description-only version when it appears
+              (DataCite's recommendation for a preprint and its version of
+              record, which in turn has <tt class="verbatim">HasVersion</tt>);
+            </p>
+          </li>
+          <li>
+            <p>
+              optionally the SWHID of the sources in Software Heritage
+              (identifier type <tt class="verbatim">SWHID</tt>, new in 4.7).
+            </p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>
+          <strong>No membership.</strong> A paper does not list the
+          collections that include it: membership is stated only by the
+          collections (<tt class="verbatim">HasPart</tt>), so that adding a paper to a
+          collection, including someone else's, never changes the paper.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Formats and sizes:</strong> media types of the files (<tt
+          class="verbatim">application/x-texmacs</tt>, <tt class="verbatim">application/pdf</tt>).
+        </p>
+      </li>
+    </ul>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+{
+  &quot;doi&quot;: &quot;10.5281/zenodo.1234567&quot;,
+  &quot;version&quot;: &quot;1&quot;,
+  &quot;types&quot;: { &quot;resourceTypeGeneral&quot;: &quot;Preprint&quot; },
+  &quot;titles&quot;: [ { &quot;title&quot;: &quot;Mass gap for the fractional Phi^4_2 model&quot; } ],
+  &quot;creators&quot;: [
+    { &quot;name&quot;: &quot;Duch, P.&quot;, &quot;nameType&quot;: &quot;Personal&quot;,
+      &quot;affiliation&quot;: [ { &quot;name&quot;: &quot;Institute of Mathematics, Polish Academy of Sciences&quot; } ] },
+    { &quot;name&quot;: &quot;Gubinelli, M.&quot;, &quot;nameType&quot;: &quot;Personal&quot;,
+      &quot;nameIdentifiers&quot;: [ { &quot;nameIdentifier&quot;: &quot;https://orcid.org/&hellip;&quot;, &quot;nameIdentifierScheme&quot;: &quot;ORCID&quot; } ],
+      &quot;affiliation&quot;: [ { &quot;name&quot;: &quot;Mathematical Institute, University of Oxford&quot; } ] } ],
+  &quot;publisher&quot;: { &quot;name&quot;: &quot;Zenodo&quot; },
+  &quot;publicationYear&quot;: 2026,
+  &quot;subjects&quot;: [ { &quot;subject&quot;: &quot;81T08&quot;, &quot;subjectScheme&quot;: &quot;MSC2020&quot; } ],
+  &quot;dates&quot;: [ { &quot;date&quot;: &quot;2026-11-12&quot;, &quot;dateType&quot;: &quot;Submitted&quot; } ],
+  &quot;rightsList&quot;: [ { &quot;rights&quot;: &quot;Creative Commons Attribution 4.0 International&quot;,
+                    &quot;rightsIdentifier&quot;: &quot;cc-by-4.0&quot;, &quot;rightsIdentifierScheme&quot;: &quot;SPDX&quot; } ],
+  &quot;descriptions&quot;: [ { &quot;description&quot;: &quot;We present a new, simple &hellip;&quot;, &quot;descriptionType&quot;: &quot;Abstract&quot; } ],
+  &quot;relatedIdentifiers&quot;: [
+    { &quot;relatedIdentifier&quot;: &quot;10.5281/zenodo.1234566&quot;, &quot;relatedIdentifierType&quot;: &quot;DOI&quot;, &quot;relationType&quot;: &quot;IsVersionOf&quot; } ]
+}</pre>
+    </div>
+    <p>
+      (The values above are illustrations: the DOIs are not real, and the
+      licence, MSC codes, ORCID iDs and affiliations of each paper are to be
+      confirmed.)
+    </p>
+    <h2 id="auto-11">6. Collections<span style="margin-left: 1em"></span></h2>
+    <p>
+      OCFL deliberately says nothing about collections; this is the part of
+      the design that is specific to the repository.
+    </p>
+    <h3 id="auto-12">Collection objects<span style="margin-left: 1em"></span></h3>
+    <p>
+      A collection is an OCFL object like a paper. Each version holds <tt
+      class="verbatim">datacite.json</tt> (with <tt class="verbatim">resourceTypeGeneral</tt> <tt
+      class="verbatim">Collection</tt>, its title, curators as creators, description,
+      licence CC0 for the list itself, and <tt class="verbatim">HasPart</tt> relations
+      to the DOIs of the members) and <tt class="verbatim">members.json</tt>, the
+      authoritative list of members. Every change of the list (a paper added,
+      removed, or moved to a new version) is a new version of the collection,
+      so the history of the index is kept by the same mechanism as the history
+      of the papers.
+    </p>
+    <h3 id="auto-13">Member references<span style="margin-left: 1em"></span></h3>
+    <p>
+      Every member is pinned: a collection version states exactly which
+      version of each member it contains.
+    </p>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+{
+  &quot;format&quot;: &quot;opensheaf-collection/0.1&quot;,
+  &quot;members&quot;: [
+    { &quot;kind&quot;: &quot;paper&quot;,
+      &quot;repository&quot;: &quot;https://mgubi.opensheaf.org/ocfl/&quot;,
+      &quot;id&quot;: &quot;fractional-phi42-mass-gap&quot;,
+      &quot;version&quot;: &quot;v1&quot;,
+      &quot;inventorySha512&quot;: &quot;9a0c&hellip;&quot;,
+      &quot;doi&quot;: &quot;10.5281/zenodo.1234567&quot;,
+      &quot;conceptDoi&quot;: &quot;10.5281/zenodo.1234566&quot;,
+      &quot;follow&quot;: &quot;latest&quot; },
+    { &quot;kind&quot;: &quot;collection&quot;,
+      &quot;repository&quot;: &quot;https://example.org/papers/ocfl/&quot;,
+      &quot;id&quot;: &quot;collection-seminar-2026&quot;,
+      &quot;version&quot;: &quot;v3&quot;,
+      &quot;inventorySha512&quot;: &quot;51be&hellip;&quot;,
+      &quot;conceptDoi&quot;: &quot;10.5281/zenodo.2222222&quot; }
+  ]
+}</pre>
+    </div>
+    <ul>
+      <li>
+        <p>
+          A member is located by its repository and identifier: its inventory
+          for the pinned version is <tt class="verbatim">&lt;repository&gt;&lt;id&gt;/&lt;version&gt;/inventory.json</tt>.
+          The SHA-512 of that inventory fixes the member completely, since the
+          inventory lists the digests of all its files. A collection version
+          is then a hash tree over everything it contains, also across
+          repositories.
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">&quot;follow&quot;: &quot;latest&quot;</tt> is a curation
+          setting, not a floating reference: when a followed member gets a new
+          version, the tool writes a new version of the collection with the
+          new pin. Each collection version therefore stays exact.
+        </p>
+      </li>
+      <li>
+        <p>
+          A member may live in another repository; nothing is copied. A
+          repository can also mirror another's object by copying it into its
+          own storage root; OCFL objects are self-contained and keep their
+          identifiers.
+        </p>
+      </li>
+    </ul>
+    <h3 id="auto-14">Selections<span style="margin-left: 1em"></span></h3>
+    <p>
+      A selection is a collection whose members are collections (or a mix of
+      collections and papers): for instance the papers of a seminar, a
+      thematic selection across several authors' repositories, or a reading
+      list. Because members are pinned by digest, selections compose to any
+      depth without copying, and the verification of a selection follows the
+      references down to the files.
+    </p>
+    <h2 id="auto-15">7. Zenodo<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-16">Papers<span style="margin-left: 1em"></span></h3>
+    <p>
+      Each paper is one Zenodo record with versions: the concept DOI stands
+      for the paper, each paper version is a record version with its own DOI
+      (prefix <tt class="verbatim">10.5281</tt>), resource type &quot;Publication:
+      Preprint&quot;.
+    </p>
+    <ul>
+      <li>
+        <p>
+          <strong>Files.</strong> Zenodo records have no folders. Flat sources
+          are uploaded as they are, with <tt class="verbatim">paper.pdf</tt>, <tt class="verbatim">datacite.json</tt>
+          and <tt class="verbatim">provenance.json</tt>, and Zenodo's MD5 checksums must
+          agree with the fixity block of the inventory. When the sources have
+          sub-folders, they are uploaded as <tt class="verbatim">sources.zip</tt>, built
+          reproducibly (files in sorted order, fixed timestamps, no extra
+          attributes); its digests are recorded in <tt class="verbatim">provenance.json</tt>,
+          and the check rebuilds it from the OCFL content.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Order of operations,</strong> with Zenodo's current REST API
+          (the InvenioRDM records API; the older deposit API is being
+          retired):
+        </p>
+        <ul>
+          <li>
+            <p>
+              (1) create a draft, or a new version of the record (a new
+              version starts without files);
+            </p>
+          </li>
+          <li>
+            <p>
+              (2) reserve its DOI;
+            </p>
+          </li>
+          <li>
+            <p>
+              (3) write <tt class="verbatim">datacite.json</tt> with that DOI and
+              assemble the version in a staging folder;
+            </p>
+          </li>
+          <li>
+            <p>
+              (4) upload the files and check the MD5 checksums Zenodo reports;
+            </p>
+          </li>
+          <li>
+            <p>
+              (5) publish, which cannot be undone;
+            </p>
+          </li>
+          <li>
+            <p>
+              (6) commit the OCFL version, with the Zenodo record in its
+              message, and push.
+            </p>
+          </li>
+        </ul>
+        <p>
+          If a step fails before publication, the draft is discarded and
+          nothing changes. Zenodo allows only one unpublished new version of a
+          record at a time: the tool takes a lock for the paper during a
+          deposit.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Reconciliation.</strong> If publication succeeds but the
+          commit or the push fails, the tool finds the published record that
+          has no OCFL version and completes the version from the staging
+          folder; it refuses any other deposit for that paper until this is
+          done.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Corrections.</strong> Zenodo lets authors change the files
+          of a published version during 30 days. This is never used here: a
+          correction is a new paper version.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Description-only changes</strong> are metadata edits of the
+          existing Zenodo record version, matched by a new OCFL version of the
+          object (section 4).
+        </p>
+      </li>
+    </ul>
+    <h3 id="auto-17">Collections<span style="margin-left: 1em"></span></h3>
+    <ul>
+      <li>
+        <p>
+          <strong>Communities.</strong> A Zenodo community (for instance
+          &quot;Massimiliano Gubinelli: papers&quot;) groups the paper records
+          for browsing on Zenodo; a record can belong to several communities.
+          It is a convenience, not the authoritative list.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Releases.</strong> A collection is deposited on Zenodo only
+          when it is explicitly released, not at every change: the record
+          version holds <tt class="verbatim">datacite.json</tt> and <tt class="verbatim">members.json</tt>,
+          so that a released selection has a DOI and a fixed membership.
+          Zenodo has no general collection type; such records use the type
+          &quot;Other&quot;, while their DataCite metadata says <tt class="verbatim">Collection</tt>.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>The whole repository.</strong> A git tag of the repository
+          can be archived as a snapshot of all the files (Zenodo's GitHub
+          integration archives the source archive of a release; Software
+          Heritage archives the history), which also preserves the
+          presentation layer as it was at that time.
+        </p>
+      </li>
+    </ul>
+    <h3 id="auto-18">Practicalities<span style="margin-left: 1em"></span></h3>
+    <ul>
+      <li>
+        <p>
+          <strong>Limits:</strong> up to 100 files and 50 GB per record;
+          uploads go through the files API.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Tokens:</strong> personal access tokens with the scopes for
+          depositing and for publishing.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Testing:</strong> the Zenodo sandbox (<tt class="verbatim">sandbox.zenodo.org</tt>)
+          has separate accounts and tokens and issues test DOIs (prefix <tt
+          class="verbatim">10.5072</tt>); every step is tried there first.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Licences:</strong> Zenodo's licence chooser uses the SPDX
+          list; any Creative Commons licence can be chosen directly, and
+          &quot;All rights reserved&quot; can be entered as a custom licence.
+          Zenodo publishes all record metadata under CC0.
+        </p>
+      </li>
+    </ul>
+    <h2 id="auto-19">8. Presentation<span style="margin-left: 1em"></span></h2>
+    <ul>
+      <li>
+        <p>
+          <strong>Index.</strong> <tt class="verbatim">index.tm</tt> is generated from
+          the head version of the main collection object (<tt class="verbatim">collection-papers</tt>)
+          and the template <tt class="verbatim">index-template.tm</tt>; <tt class="verbatim">index.html</tt>
+          is exported from it by TeXmacs. Each entry shows the title, authors,
+          links, the abstract (in a fold) and the pinned digest, in the style
+          of the website. A flattened <tt class="verbatim">index.json</tt> may be
+          generated alongside for programs that do not read OCFL.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Paper pages.</strong> For each paper, <tt class="verbatim">site/&lt;id&gt;/</tt>
+          holds a landing page with the Google Scholar <tt class="verbatim">citation_*</tt>
+          meta tags (title, authors, date, PDF URL), schema.org <tt class="verbatim">ScholarlyArticle</tt>
+          JSON-LD, the DOI and the links; the HTML version, exported from a
+          copy of the sources with <tt class="verbatim">paper-html.ts</tt> added to its
+          style; and BibTeX and CSL-JSON entries generated from <tt class="verbatim">datacite.json</tt>.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Browsing in TeXmacs.</strong> The index links to the main
+          source of each paper inside the storage root. Because OCFL stores an
+          unchanged file under the version where it first appeared, the
+          generator resolves the logical path of the head version to its
+          content path through the inventory.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Not authoritative.</strong> All of these files are
+          regenerated from the storage layer; a difference between them and
+          the storage layer is a bug in the generator, never a change of the
+          deposit.
+        </p>
+      </li>
+    </ul>
+    <h2 id="auto-20">9. Integrity and trust<span style="margin-left: 1em"></span></h2>
+    <ul>
+      <li>
+        <p>
+          <strong>Hash tree.</strong> git commit, then collection inventory
+          (with its <tt class="verbatim">.sha512</tt> checksum file), then member
+          inventories (pinned by digest), then content files (by digest).
+          Verifying the head of the main collection verifies everything it
+          contains.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Verification.</strong> Standard OCFL validators check the
+          storage root and each object (<tt class="verbatim">ocfl-py</tt> checks both;
+          <tt class="verbatim">ocfl-java</tt> checks objects); <tt class="verbatim">papers.py
+          verify</tt> adds the checks specific to this design: DataCite fields
+          consistent with the inventory, member pins, the Zenodo checksums
+          (rebuilding <tt class="verbatim">sources.zip</tt> where needed), and the
+          presentation layer consistent with the storage layer.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Authenticity and dates.</strong> Digests show that files
+          were not changed; they do not show who made them or when. For that:
+          signed git tags for each deposit; OpenTimestamps proofs of each
+          inventory checksum file, kept in <tt class="verbatim">witnesses/&lt;object-id&gt;/</tt>
+          outside the storage root (OCFL does not allow them in the object
+          folder, and its <tt class="verbatim">logs/</tt> folder is not covered by any
+          digest); and the Zenodo and DataCite records and Software Heritage
+          snapshots as independent witnesses.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Working copy.</strong> The working copy of the repository
+          should not be synchronised by a file-syncing service such as
+          Dropbox, which can corrupt a git repository; the remote on GitHub
+          and its archives are the copies that count.
+        </p>
+      </li>
+    </ul>
+    <h2 id="auto-21">10. Rights<span style="margin-left: 1em"></span></h2>
+    <ul>
+      <li>
+        <p>
+          Papers and their sources: the licence chosen for each paper by its
+          authors, recorded in <tt class="verbatim">datacite.json</tt>; the co-authors'
+          agreement to the deposit and to the licence is recorded in <tt
+          class="verbatim">provenance.json</tt>.
+        </p>
+      </li>
+      <li>
+        <p>
+          Metadata, collections and the index: CC0.
+        </p>
+      </li>
+      <li>
+        <p>
+          Tools, style packages and page scripts: the licence of each
+          archive's tools (GPL-3.0 in the first archive, as its website and
+          TeXmacs plugins).
+        </p>
+      </li>
+      <li>
+        <p>
+          Fonts in <tt class="verbatim">resources/</tt>: their own licence (SIL Open
+          Font License for the Source fonts).
+        </p>
+      </li>
+    </ul>
+    <h2 id="auto-22">11. Open points<span style="margin-left: 1em"></span></h2>
+    <ul>
+      <li>
+        <p>
+          <strong>Zenodo:</strong> whether its API accepts file names
+          containing <tt class="verbatim">/</tt> (the documentation only says that
+          folders are not supported, so the design assumes flat names); how
+          Zenodo displays LaTeX in descriptions; whether released collections
+          should rather use the type &quot;Dataset&quot;.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Papers:</strong> licence, MSC codes, ORCID iDs and
+          affiliations of every author; the missing bibliography database of
+          the sine-Gordon paper, so that its sources typeset without the
+          stored bibliography.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Namespace:</strong> the rules for giving <tt class="verbatim">opensheaf.org</tt>
+          subdomains to archives (who may have one, and what happens when an
+          archive moves or is abandoned), so that addresses cited inside
+          collections stay valid.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Validator:</strong> which OCFL validator to run in the tests
+          (<tt class="verbatim">ocfl-py</tt> covers storage roots and objects).
+        </p>
+      </li>
+    </ul>
+    <h2 id="auto-23">12. From the prototype<span style="margin-left: 1em"></span></h2>
+    <p>
+      In the first archive, the earlier prototype layout (format <tt class="verbatim">mgubi-papers-metadata/0.1</tt>,
+      which predates OpenSheaf) becomes this design as follows: each <tt
+      class="verbatim">SLUG/sources/</tt> with its <tt class="verbatim">metadata-v1.json</tt>
+      becomes version <tt class="verbatim">v1</tt> of a paper object, with the source
+      moved to the top of the content folder and <tt class="verbatim">metadata-v1.json</tt>
+      split into <tt class="verbatim">datacite.json</tt> and <tt class="verbatim">provenance.json</tt>;
+      <tt class="verbatim">index.json</tt> becomes <tt class="verbatim">members.json</tt> of the
+      collection object <tt class="verbatim">collection-papers</tt>; <tt class="verbatim">SLUG/html/</tt>
+      moves to <tt class="verbatim">site/&lt;id&gt;/</tt>; and <tt class="verbatim">tools/papers.py</tt>
+      is rewritten around the OCFL and DataCite files. Nothing of the
+      prototype has been published, so the two deposits can be rebuilt as
+      first versions without keeping the old format.
+    </p>
+    <h2 id="auto-24">13. Sources<span style="margin-left: 1em"></span></h2>
+    <ul>
+      <li>
+        <p>
+          <a href="https://ocfl.io/1.1/spec/">OCFL 1.1 specification</a> and <a href="https://ocfl.github.io/extensions/">OCFL extensions</a>
+        </p>
+      </li>
+      <li>
+        <p>
+          <a href="https://schema.datacite.org/">DataCite Metadata Schema 4.7</a>, <a href="https://support.datacite.org/docs/preprints-post-prints-and-author-manuscripts">DataCite
+          guidance on preprints</a> and <a href="https://support.datacite.org/docs/datacite-rest-api-affiliation-and-publisher-default-change">the REST API change for
+          publisher and affiliation</a>
+        </p>
+      </li>
+      <li>
+        <p>
+          <a href="https://developers.zenodo.org/">Zenodo developer documentation</a>, <a href="https://inveniordm.docs.cern.ch/reference/rest_api_drafts_records/">InvenioRDM
+          records API</a>, <a href="https://support.zenodo.org/help/en-gb/1-upload-deposit/74-can-i-upload-folders-directories">Zenodo on folders</a>, <a href="https://help.zenodo.org/docs/deposit/manage-files/">managing
+          files</a>, <a href="https://zenodo.org/api/vocabularies/resourcetypes">resource types</a> and <a href="https://zenodo.org/help/versioning">versioning</a>
+        </p>
+      </li>
+      <li>
+        <p>
+          <a href="https://help.zenodo.org/docs/deposit/describe-records/licenses">Zenodo licences</a> and <a href="https://about.zenodo.org/policies">general policies</a>
+        </p>
+      </li>
+    </ul>
+  </body>
+</html>

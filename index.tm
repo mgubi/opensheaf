@@ -13,7 +13,7 @@
 
   <strong|Author:> <hlink|Massimiliano Gubinelli|https://mgubi.org/docs/main.html> (Mathematical Institute, University of Oxford).
 
-  <strong|Source:> the specification and this site are kept in the GitHub repository <hlink|mgubi/opensheaf|https://github.com/mgubi/opensheaf>, which is also the place to discuss them (see below).
+  <strong|Source:> the specification and this site are kept in the GitHub repository <hlink|opensheaf/opensheaf|https://github.com/opensheaf/opensheaf>, which is also the place to discuss them (see below).
 
   <section*|Why>
 
@@ -44,9 +44,9 @@
   This repository is the place to discuss OpenSheaf and to propose changes:
 
   <\itemize>
-    <item><strong|Questions and problems:> open an <hlink|issue|https://github.com/mgubi/opensheaf/issues>, for instance when something in the specification is unclear, contradictory or hard to implement.
+    <item><strong|Questions and problems:> open an <hlink|issue|https://github.com/opensheaf/opensheaf/issues>, for instance when something in the specification is unclear, contradictory or hard to implement.
 
-    <item><strong|Ideas and open-ended discussion:> use the <hlink|Discussions|https://github.com/mgubi/opensheaf/discussions>.
+    <item><strong|Ideas and open-ended discussion:> use the <hlink|Discussions|https://github.com/opensheaf/opensheaf/discussions>.
 
     <item><strong|Amendments:> propose changes to the text as pull requests on <hlink|opensheaf-specification-0.1.md|opensheaf-specification-0.1.tm>, with an explanation of the motivation; larger changes are best discussed in an issue first.
 

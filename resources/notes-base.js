@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded',
 (function () {
   'use strict';
   var config = {
-    repo: 'mgubi/mgubi.github.io',
-    repoId: 'R_kgDOJZpZrQ',
-    category: 'Blog posts',
-    categoryId: 'DIC_kwDOJZpZrc4DKeRn'
+    repo: 'opensheaf/opensheaf',
+    repoId: 'R_kgDOVsclpA',
+    category: 'Announcements',
+    categoryId: 'DIC_kwDOVsclpM4DLAO-'
   };
 
   function theme() {

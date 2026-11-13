@@ -12,7 +12,7 @@ OpenSheaf is meant as a lean alternative to arXiv and to the usual publication i
 - **Composable collections.** A collection is itself a versioned object. It can include documents and collections of other archives, pinned by digest, so that selections (by a seminar, an editorial board, a reading list) compose without copying.
 - **External services are optional.** Archives may deposit their documents with a DOI service such as Zenodo, publish them as a website, and keep their files in git; none of this is required by the core of the format.
 
-Answers to common questions about the design are collected in the [FAQ](https://github.com/mgubi/opensheaf/blob/main/FAQ.md).
+Answers to common questions about the design are collected in the [FAQ](https://github.com/opensheaf/opensheaf/blob/main/FAQ.md).
 
 The name: a sheaf is a bundle of papers and, in mathematics, the structure in which local pieces glue into a whole, as archives kept and verified separately compose into collections. The home of the format is `https://opensheaf.org/`. The first OpenSheaf archive is `https://mgubi.opensheaf.org/`; its values appear in the examples.
 

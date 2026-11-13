@@ -16,7 +16,7 @@ incompatible ways before version 1.0.
 (Mathematical Institute, University of Oxford).
 
 **Source:** the specification and this site are kept in the GitHub repository
-[mgubi/opensheaf](https://github.com/mgubi/opensheaf), which is also the place
+[opensheaf/opensheaf](https://github.com/opensheaf/opensheaf), which is also the place
 to discuss them (see below).
 
 ## Why
@@ -64,11 +64,11 @@ copying, while every piece stays checkable on its own.
 This repository is the place to discuss OpenSheaf and to propose changes:
 
 - **Questions and problems:** open an
-  [issue](https://github.com/mgubi/opensheaf/issues), for instance when
+  [issue](https://github.com/opensheaf/opensheaf/issues), for instance when
   something in the specification is unclear, contradictory or hard to
   implement.
 - **Ideas and open-ended discussion:** use the
-  [Discussions](https://github.com/mgubi/opensheaf/discussions).
+  [Discussions](https://github.com/opensheaf/opensheaf/discussions).
 - **Amendments:** propose changes to the text as pull requests on
   [opensheaf-specification-0.1.md](opensheaf-specification-0.1.md), with an
   explanation of the motivation; larger changes are best discussed in an

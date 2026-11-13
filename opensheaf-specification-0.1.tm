@@ -56,7 +56,15 @@
 
     <item><strong|Object version:> an OCFL version of an object (<verbatim|v1>, <verbatim|v2>, ...). It changes at every change of the object.
 
-    <item><strong|Document version:> the version of the work, a positive integer in <verbatim|provenance.json> and <verbatim|datacite.json>. It changes only when the sources or the renditions change.
+    <item><strong|Document version:> the version of the work, a positive integer numbered by the archive, in <verbatim|object.json> and <verbatim|datacite.json>. It changes exactly when the document's own files change (section 7.3).
+
+    <item><strong|Description-only version:> an object version that keeps the document version: it changes only the description, the state or the notices of the object.
+
+    <item><strong|History:> the order of a document's versions in the history of the work (section 7.3).
+
+    <item><strong|Current version:> the document version to which readers are directed: the last in the history.
+
+    <item><strong|Note:> a short text, a file of the content, or both, as used for change notes, notices and withdrawals (section 9).
 
     <item><strong|Member:> an entry of a collection, pinning an object version of some archive.
 
@@ -85,7 +93,7 @@
     <item><strong|Profiles>, optional: an archive MAY additionally conform to the Zenodo binding (appendix A), the TeXmacs profile (appendix B) and the website profile (appendix C). A conforming archive MUST state in its discovery document which profiles it follows.
   </itemize>
 
-  The JSON files defined here (<verbatim|opensheaf.json>, <verbatim|provenance.json>, <verbatim|members.json>) MUST validate against the JSON Schemas of appendix D for their declared format version.
+  The JSON files defined here (<verbatim|opensheaf.json>, <verbatim|object.json>, <verbatim|members.json>) MUST validate against the JSON Schemas of appendix D for their declared format version.
 
   <section*|5. Layout>
 
@@ -139,7 +147,7 @@
 
   <subsection*|6.3 Object identifiers>
 
-  An object identifier MUST match <verbatim|^[a-z0-9]+(-[a-z0-9]+)*$> and MUST be at most 64 characters long. It is the OCFL <verbatim|id> of the object and the name of its folder in the storage root. It MUST be unique in the archive and MUST NOT be reused, also after a takedown. The kind of an object is given by its <verbatim|provenance.json>, never by its identifier. Outside the archive, an object is named by the pair (archive identifier, object identifier).
+  An object identifier MUST match <verbatim|^[a-z0-9]+(-[a-z0-9]+)*$> and MUST be at most 64 characters long. It is the OCFL <verbatim|id> of the object and the name of its folder in the storage root. It MUST be unique in the archive and MUST NOT be reused, also after a takedown. The kind of an object is given by its <verbatim|object.json>, never by its identifier. Outside the archive, an object is named by the pair (archive identifier, object identifier).
 
   <subsection*|6.4 Resolution>
 
@@ -150,7 +158,7 @@
 
     <item>if this fails, tries the mirrors listed in the member, then those listed in the archive's discovery document;
 
-    <item>if this fails, MAY use external copies: the files of the external deposit named in the version's provenance (a DOI record), or a software archive snapshot (a SWHID).
+    <item>if this fails, MAY use external copies: the files of an external record named in the version's <verbatim|object.json> (a DOI record), or a software archive snapshot (a SWHID).
   </itemize>
 
   Any copy whose bytes match the pinned digest is acceptable: integrity comes from the pin, not from the place.
@@ -159,9 +167,9 @@
 
   <subsection*|7.1 Common rules>
 
-  Every object MUST be a valid OCFL 1.1 object. Its inventories MUST use <verbatim|sha512> as digest algorithm. Every object version MUST contain, in its content, the files <verbatim|provenance.json> and <verbatim|datacite.json> at the top level. Every version directory MUST contain a copy of the inventory as of that version, with its checksum file (OCFL makes this a recommendation; OpenSheaf requires it, so that each version can be pinned and fetched on its own).
+  Every object MUST be a valid OCFL 1.1 object. Its inventories MUST use <verbatim|sha512> as digest algorithm. Every object version MUST contain, in its content, the files <verbatim|object.json> and <verbatim|datacite.json> at the top level. Every version directory MUST contain a copy of the inventory as of that version, with its checksum file (OCFL makes this a recommendation; OpenSheaf requires it, so that each version can be pinned and fetched on its own).
 
-  Each version in the inventory MUST have a <verbatim|user> with a <verbatim|name>, and SHOULD have an <verbatim|address> (an ORCID iD, a <verbatim|mailto:> URI or another URI identifying the depositor), and MUST have a <verbatim|message> describing the change.
+  Each version in the inventory MUST have a <verbatim|user> with a <verbatim|name>, and SHOULD have an <verbatim|address> (an ORCID iD, a <verbatim|mailto:> URI or another URI identifying the depositor), and MUST have a <verbatim|message> describing the change. The inventory is the record of deposits: the <verbatim|created> date and the <verbatim|user> of an object version are when and by whom it was deposited, and the deposit of a document version is that of the first object version holding it. They are not repeated in <verbatim|object.json>.
 
   Logical paths MUST be encoded in UTF-8 in Unicode normalisation form C, MUST NOT begin with <verbatim|/>, and MUST NOT contain <verbatim|.> or <verbatim|..> segments.
 
@@ -170,20 +178,34 @@
   A document version contains, at the top level of its content unless a profile says otherwise:
 
   <\itemize>
-    <item>the <strong|sources>: the main source and every file needed to produce the renditions that is not part of the toolchain (images, bibliography databases, local style files). The main source is named in <verbatim|provenance.json>. Sources SHOULD be flat (no sub-folders) when possible;
+    <item>the <strong|sources>: the main source and every file needed to produce the renditions that is not part of the toolchain (images, bibliography databases, local style files). The main source is named in <verbatim|object.json>. Sources SHOULD be flat (no sub-folders) when possible;
 
-    <item>the <strong|renditions>, OPTIONAL but RECOMMENDED: at least a PDF for documents meant to be read and cited, named in <verbatim|provenance.json>;
+    <item>the <strong|renditions>, OPTIONAL but RECOMMENDED: at least a PDF for documents meant to be read and cited, named in <verbatim|object.json>;
 
-    <item><verbatim|datacite.json> (section 8) and <verbatim|provenance.json> (section 9).
+    <item>the files of notes, if any (the change note, notices, a withdrawal; section 9), named in <verbatim|object.json>;
+
+    <item><verbatim|datacite.json> (section 8) and <verbatim|object.json> (section 9).
   </itemize>
 
   HTML versions and other presentation files SHOULD NOT be deposited, since they depend on the presentation and are regenerated when it improves.
 
-  The document version MUST increase by one exactly when the sources or the renditions change. A version that changes only <verbatim|datacite.json> or <verbatim|provenance.json> (a description-only version) keeps the document version.
+  <subsection*|7.3 Document versions>
 
-  <subsection*|7.3 Collections>
+  <strong|Numbering.> Document versions are numbered by the archive, from 1, without gaps, independently of any external numbering: a work whose versions 1, 3 and 4 are available on arXiv has document versions 1, 2 and 3. External labels (arXiv's <verbatim|v3>) are recorded in <verbatim|external> (section 9), and presentations SHOULD show them with the document version.
 
-  A collection version contains <verbatim|datacite.json>, <verbatim|provenance.json> and <verbatim|members.json> (section 10). Its <verbatim|provenance.json> declares <verbatim|kind> <verbatim|collection>; its document version counts the changes of the member list.
+  <strong|New versions.> A new document version number is assigned exactly when files of the document's own (sources, renditions, change note) that were not deposited before are added. An object version holding the same sources, renditions and change note as an earlier document version keeps its number. A description-only version keeps the document version. A version that was not public at the time, such as the manuscript submitted to a journal, deposited later, is a document version like any other. A version published by someone else, such as the journal's version of record, is not a document version of the author's object: it is linked by a relation (section 8.1).
+
+  <strong|History.> The order of the document versions in the history of the work is the order of their numbers, unless <verbatim|object.json> has <verbatim|history> (section 9): the list, in the order of the work, of the last object version holding each document version. The last object version is used because it carries the most complete description of that document version (a DOI added later, a corrected stage). An object version that deposits a document version out of order (an earlier version found later) MUST write <verbatim|history>, and once an object version has <verbatim|history>, every later object version MUST have it. A version whose place in the history is unknown goes just before the current version, and its <verbatim|object.json> SHOULD say so in its change note. The history is read from the head version; earlier object versions keep the history as it was known when they were made.
+
+  <strong|Current version.> The current version of a document is the last entry of the history of its head version (without <verbatim|history>: the highest document version, which is then held by the head). After an earlier version is deposited out of order, the head holds that earlier version while the current version stays where it was. Landing pages, indexes, citations and the following of members (section 10.3) use the current version, not the head.
+
+  <strong|Notices.> A notice about a document version (for instance that a theorem of version 2 is wrong as stated, and is corrected in version 3) is written after that version, which cannot change. Notices are added to <verbatim|notices> in <verbatim|object.json> (section 9) by description-only versions. A notice present in an object version is present, unchanged, in every later object version; a notice is corrected or withdrawn by a later notice that says so. Presentations showing a document version SHOULD show the current notices about it.
+
+  Dates never order document versions and never decide the current version (section 8).
+
+  <subsection*|7.4 Collections>
+
+  A collection version contains <verbatim|datacite.json>, <verbatim|object.json> and <verbatim|members.json> (section 10). Its <verbatim|object.json> declares <verbatim|kind> <verbatim|collection>; its document version counts the changes of the member list, and it has no <verbatim|history>, <verbatim|stage> or <verbatim|notices>.
 
   <section*|8. Description: datacite.json>
 
@@ -200,7 +222,7 @@
 
     <item><verbatim|subjects> with a <verbatim|subjectScheme> (any scheme; MSC2020 is common in mathematics);
 
-    <item><verbatim|dates>, with <verbatim|Available> for the date the version was deposited, <verbatim|Updated> for description-only versions, and <verbatim|Issued> or <verbatim|Submitted> only in their DataCite meaning;
+    <item><verbatim|dates>, as below;
 
     <item><verbatim|rightsList>, with an SPDX identifier in lower case and the licence URL, or a statement such as "All rights reserved";
 
@@ -213,12 +235,28 @@
 
   <verbatim|publisher> is the archive's name, or the external service registering a DOI for the version (appendix A). <verbatim|publisher> and <verbatim|affiliation> SHOULD be written as objects (with <verbatim|name> and, where available, an identifier); readers MUST also accept plain strings.
 
-  <verbatim|doi> and <verbatim|url> are OPTIONAL: they are present when the version has a DOI. <verbatim|types.resourceTypeGeneral> SHOULD be <verbatim|Preprint> for a work not yet published elsewhere, <verbatim|JournalArticle>, <verbatim|Book>, <verbatim|Dissertation>, <verbatim|Text> and so on otherwise, and <verbatim|Collection> for collections.
+  <verbatim|doi> and <verbatim|url> are OPTIONAL: they are present when the version has a DOI. <verbatim|types> gives the kind of content: <verbatim|resourceTypeGeneral> from DataCite's list (<verbatim|Preprint>, <verbatim|JournalArticle>, <verbatim|Book>, <verbatim|Dissertation>, <verbatim|Report>, <verbatim|Text>, <verbatim|Dataset>, <verbatim|Software>, <verbatim|Audiovisual> and so on, and <verbatim|Collection> for collections), with <verbatim|resourceType> for detail (for instance "Lecture notes"). An author's versions of a work not published elsewhere are <verbatim|Preprint>, also the accepted manuscript; the stage of a version is given by <verbatim|stage> in <verbatim|object.json> (section 9).
+
+  <strong|Dates.> Dates are information for readers and services: they never order document versions (section 7.3). Each date type has one meaning:
+
+  <\itemize>
+    <item><verbatim|Issued>: the first public appearance of the work, anywhere; the same in every version. RECOMMENDED for documents; tools importing works published elsewhere SHOULD set it.
+
+    <item><verbatim|Available>: when this document version first became public, anywhere: for a version imported from another service, its date there; for a version first made public by this archive, the date of its deposit (section 7.1). SHOULD be present.
+
+    <item><verbatim|Updated>: the date of a description-only version.
+
+    <item><verbatim|Created> (when a version was written, for a version not public at the time), <verbatim|Submitted> and <verbatim|Accepted> (journal milestones), OPTIONAL.
+
+    <item><verbatim|Withdrawn>: the date of a withdrawal, equal to <verbatim|withdrawal.date> in <verbatim|object.json> (section 11.1).
+  </itemize>
+
+  Dates MAY be approximate, as DataCite allows (<verbatim|2019>, <verbatim|2019-03>, a range <verbatim|2018/2019>), with <verbatim|dateInformation> explaining them (for instance "from file timestamps"); unknown dates are omitted.
 
   <subsection*|8.1 Relations>
 
   <\itemize>
-    <item>A document version with a DOI SHOULD have <verbatim|IsVersionOf> the concept DOI of the document, and <verbatim|IsNewVersionOf> the DOI of the previous document version.
+    <item>A document version with a DOI SHOULD have <verbatim|IsVersionOf> the concept DOI of the document, and <verbatim|IsNewVersionOf> the DOI of the document version before it in the history (section 7.3), if that version has a DOI.
 
     <item>The same work published elsewhere SHOULD be linked with <verbatim|IsIdenticalTo> (same content, for instance an arXiv version) or <verbatim|IsVariantFormOf> (different content or form).
 
@@ -231,12 +269,12 @@
     <item>A document MUST NOT state the collections that include it: membership is stated only by collections, so that including a document in any collection never changes the document.
   </itemize>
 
-  <section*|9. Provenance: provenance.json>
+  <section*|9. The object: object.json>
 
-  Every object version MUST contain <verbatim|provenance.json> with:
+  Every object version MUST contain <verbatim|object.json>, OpenSheaf's record of the object as of that version: its identity, the structure of its content, its versions and its state. It MUST contain:
 
   <\itemize>
-    <item><verbatim|format>: <verbatim|"opensheaf-provenance/0.1">;
+    <item><verbatim|format>: <verbatim|"opensheaf-object/0.1">;
 
     <item><verbatim|specification>: <verbatim|"0.1">;
 
@@ -246,24 +284,36 @@
 
     <item><verbatim|documentVersion>: a positive integer, equal to the <verbatim|version> of <verbatim|datacite.json>;
 
-    <item><verbatim|deposit>: the <verbatim|date> (RFC 3339) and the <verbatim|agent> (name and URI) of the deposit;
-
     <item><verbatim|status>: <verbatim|active> or <verbatim|withdrawn> (section 11).
   </itemize>
 
   A document MUST also have <verbatim|mainSource> (a logical path) and <verbatim|sourceFormat> (the media type of the main source), and SHOULD have <verbatim|renditions> (a list of logical paths with media types) and <verbatim|toolchain> (a list of tools with <verbatim|name>, <verbatim|version> and, optionally, <verbatim|packages>), enough to reproduce the renditions.
 
-  It MAY contain:
+  A <strong|note> is an object with <verbatim|text> (a short plain text), or <verbatim|path> and <verbatim|mediaType> (a file of the content of the same object version), or both: the text serves feeds, indexes and external services, the file holds the full statement (with mathematics, or as a PDF). Files of notes are covered by the inventory like every file of the content.
+
+  A document MAY contain:
+
+  <\itemize>
+    <item><verbatim|changes>: a note saying what changed in this document version, written and deposited with it (like arXiv's comments). It is part of the document version (section 7.3);
+
+    <item><verbatim|stage>: the stage of this document version, an object with <verbatim|scheme> and <verbatim|value>. For articles the RECOMMENDED scheme is <verbatim|NISO-JAV>, the NISO Journal Article Versions: <verbatim|AO> (author's original), <verbatim|SMUR> (submitted manuscript under review), <verbatim|AM> (accepted manuscript), <verbatim|P> (proof), <verbatim|VoR> (version of record), <verbatim|CVoR> (corrected version of record), <verbatim|EVoR> (enhanced version of record). Other kinds of content use other schemes (editions, software releases), named by the archive. A description-only version MAY add or correct it;
+
+    <item><verbatim|history>: the list of object versions giving the order of the document versions (section 7.3);
+
+    <item><verbatim|notices>: a list of notices (section 7.3), each a note with the <verbatim|documentVersion> it is about and a <verbatim|date>.
+  </itemize>
+
+  Any object MAY contain:
 
   <\itemize>
     <item><verbatim|agreement>: a minimal record that the authors agreed to the deposit and to the licence: who agreed (names only), when, and how (for instance "by e-mail"). It MUST NOT contain e-mail addresses, correspondence or signatures of persons;
 
-    <item><verbatim|external>: the external deposits of this version (appendix A), each with the service, the record identifier, the DOI and the digests of any file deposited there that is not in the content (such as a source archive);
+    <item><verbatim|external>: the external records of this version: deposits of it (appendix A) and the record it was imported from, each with the <verbatim|service>, the <verbatim|record> (a URL), the <verbatim|doi>, the <verbatim|label> the service gives the version (for instance <verbatim|v3> on arXiv), and the digests of any file kept there that is not in the content (such as a source archive);
 
     <item><verbatim|withdrawal> (section 11).
   </itemize>
 
-  <verbatim|provenance.json> is metadata and is placed under CC0 (section 16).
+  <verbatim|object.json> is metadata and is placed under CC0 (section 16).
 
   <section*|10. Collections: members.json>
 
@@ -274,8 +324,10 @@
   <\itemize>
     <item><verbatim|format>: <verbatim|"opensheaf-collection/0.1">;
 
-    <item><verbatim|members>: a list, in the order in which the members are presented.
+    <item><verbatim|members>: a list, in the order in which the members are presented. This order is authoritative.
   </itemize>
+
+  It MAY contain <verbatim|order>, the rule by which tools maintaining the collection place members: <verbatim|manual> (the default: tools append new members and never reorder), <verbatim|issued-desc> or <verbatim|issued-asc> (by the members' <verbatim|Issued> date, then their <verbatim|Available> date, members with neither last, ties broken by object identifier, so that the result is reproducible).
 
   Each member MUST have:
 
@@ -293,7 +345,7 @@
     <item><verbatim|inventorySha512>: the SHA-512 digest of that version's inventory file.
   </itemize>
 
-  Each member MAY have <verbatim|mirrors> (base URLs), <verbatim|doi> (the version DOI), <verbatim|conceptDoi>, <verbatim|follow> (<verbatim|"latest">, section 10.3) and <verbatim|cite>, a cached citation (<verbatim|title>, <verbatim|creators> as a list of names, <verbatim|year>) so that the collection stays readable if the member becomes unavailable. <verbatim|cite> is not authoritative.
+  Each member MAY have <verbatim|mirrors> (base URLs), <verbatim|doi> (the version DOI), <verbatim|conceptDoi>, <verbatim|follow> (<verbatim|"latest">, section 10.3) and <verbatim|cite>, a cached citation (<verbatim|title>, <verbatim|creators> as a list of names, <verbatim|year>, and <verbatim|issued>, the member's <verbatim|Issued> date) so that the collection stays readable, and can be ordered, without resolving its members, also if they become unavailable. <verbatim|cite> is not authoritative.
 
   Every member is pinned: a collection version states exactly which object version of each member it contains. A collection version therefore fixes everything it contains, also across archives; since a pin fixes an inventory, which fixes all its files, collections are hash trees. Pins cannot form cycles.
 
@@ -303,7 +355,7 @@
 
   <subsection*|10.3 Following members>
 
-  <verbatim|"follow": "latest"> is a curation setting, not a floating reference. A tool maintaining the collection reads the member archive's discovery document (or its feed); when the followed object has a new head version, the tool writes a new collection version with the new pin. If the followed object is withdrawn, the pin is kept and the tool reports it to the curator.
+  <verbatim|"follow": "latest"> is a curation setting, not a floating reference. A tool maintaining the collection reads the member archive's discovery document (or its feed); when the followed object has a new current version (section 7.3), or a new description of it, the tool writes a new collection version pinning the last object version holding the current version. If the followed object is withdrawn, the pin is kept and the tool reports it to the curator.
 
   <subsection*|10.4 Rights>
 
@@ -313,7 +365,7 @@
 
   <subsection*|11.1 Withdrawal>
 
-  A document or collection is withdrawn (for instance retracted by its authors) by a description-only version whose <verbatim|provenance.json> has <verbatim|status> <verbatim|withdrawn> and a <verbatim|withdrawal> object with <verbatim|date> and <verbatim|reason>. Its content is kept, its history remains verifiable, and the discovery document lists it with <verbatim|status> <verbatim|withdrawn>. Presentations MUST show the withdrawal notice with the document.
+  A document or collection is withdrawn (for instance retracted by its authors) by a description-only version whose <verbatim|object.json> has <verbatim|status> <verbatim|withdrawn> and a <verbatim|withdrawal> object with a <verbatim|date> and a <verbatim|reason> (a note, section 9), and whose <verbatim|datacite.json> has the same date as <verbatim|Withdrawn>. The status belongs to the object, whatever document version its head holds. Its content is kept, its history remains verifiable, and the discovery document lists it with <verbatim|status> <verbatim|withdrawn>. Presentations MUST show the withdrawal notice with the document.
 
   <subsection*|11.2 Takedown>
 
@@ -327,7 +379,7 @@
 
   <section*|12. Versioning of this specification>
 
-  Every JSON file defined here declares its format version, and the discovery document and every <verbatim|provenance.json> declare the version of this specification. Before version 1.0, any change of the minor version (0.1, 0.2, ...) may be incompatible; a reader that finds a version it does not know SHOULD report it and MUST NOT silently treat the files as valid. From version 1.0, minor versions will be backward compatible.
+  Every JSON file defined here declares its format version, and the discovery document and every <verbatim|object.json> declare the version of this specification. Before version 1.0, any change of the minor version (0.1, 0.2, ...) may be incompatible; a reader that finds a version it does not know SHOULD report it and MUST NOT silently treat the files as valid. From version 1.0, minor versions will be backward compatible.
 
   The text of each version is published at <verbatim|https://opensheaf.org/opensheaf-specification-\<less\>version\<gtr\>.md> and is not changed after the version is final.
 
@@ -356,13 +408,15 @@
   A verifier checking an archive MUST:
 
   <\itemize>
-    <item>validate the discovery document, and every <verbatim|provenance.json> and <verbatim|members.json>, against the schemas of their declared versions;
+    <item>validate the discovery document, and every <verbatim|object.json> and <verbatim|members.json>, against the schemas of their declared versions;
 
     <item>validate the storage root and every object against OCFL 1.1 (with a standard OCFL validator or equivalent checks);
 
     <item>check that the discovery document lists exactly the objects of the storage root, with their head versions and inventory digests, and lists every tombstone;
 
-    <item>check the requirements of sections 7 to 11 on every object version, including that <verbatim|datacite.json> and <verbatim|provenance.json> agree on the document version;
+    <item>check the requirements of sections 7 to 11 on every object version, including that <verbatim|datacite.json> and <verbatim|object.json> agree on the document version and on the date of a withdrawal;
+
+    <item>check the document versions of each document (section 7.3): object versions with the same document version have the same sources, renditions and change note; new numbers follow the rule of new versions, without gaps; <verbatim|history>, when present, lists distinct document versions, covers all of them, each entry being the last object version holding its document version; no object version after the first one with <verbatim|history> lacks it; every notice is kept unchanged in every later object version;
 
     <item>for each collection version, resolve each member as in section 6.4 and check its pin, reporting each member as verified, mismatch (a copy was found and does not match), unavailable (no copy found) or removed (tombstoned).
   </itemize>
@@ -390,9 +444,9 @@
   <\itemize>
     <item><strong|Documents.> Each document carries the licence chosen by its authors in <verbatim|rightsList>. "All rights reserved" is allowed: deposit grants readers access, not reuse.
 
-    <item><strong|Metadata.> <verbatim|datacite.json>, <verbatim|provenance.json>, <verbatim|members.json>, inventories and the discovery document are placed under CC0, so that they can be harvested and mirrored freely.
+    <item><strong|Metadata.> <verbatim|datacite.json>, <verbatim|object.json>, <verbatim|members.json>, inventories and the discovery document are placed under CC0, so that they can be harvested and mirrored freely.
 
-    <item><strong|Personal data.> Archives record only the personal data needed to describe and cite the work (names, identifiers, affiliations) and the depositor of each version. Agreement records are minimal (section 9). A request to erase personal data from an immutable history is handled by a takedown (section 11.2).
+    <item><strong|Personal data.> Archives record only the personal data needed to describe and cite the work (names, identifiers, affiliations) and the depositor of each version. The depositor is recorded in the inventory (section 7.1). Agreement records are minimal (section 9). A request to erase personal data from an immutable history is handled by a takedown (section 11.2).
   </itemize>
 
   <section*|17. Changelog>
@@ -406,11 +460,13 @@
   Zenodo issues DataCite DOIs (prefix <verbatim|10.5281>) and keeps files permanently. Under this binding:
 
   <\itemize>
-    <item><strong|Records.> Each document is one Zenodo record with versions: the concept DOI stands for the document, and each document version is one record version with its own DOI, of Zenodo resource type <verbatim|publication-preprint> (or the type matching <verbatim|resourceTypeGeneral>). Description-only versions are metadata edits of the existing record version, not new record versions.
+    <item><strong|Records.> Each document is one Zenodo record with versions: the concept DOI stands for the document, and each document version is one record version with its own DOI, of Zenodo resource type <verbatim|publication-preprint> (or the type matching <verbatim|resourceTypeGeneral>). Description-only versions are metadata edits of the existing record version, not new record versions; files they add (such as notices) are not uploaded, since the files of a published record version are fixed.
 
-    <item><strong|Files.> The record version holds the content files of the object version as deposited. Zenodo records have no folders: if the sources have sub-folders, or the record would exceed Zenodo's file count, the sources are uploaded as one archive <verbatim|sources.zip>, built reproducibly (entries in byte order of their names, fixed timestamps, no extra attributes), whose digests are recorded in <verbatim|provenance.json> under <verbatim|external>. Inventories MUST record MD5 digests in <verbatim|fixity>, so that the checksums reported by Zenodo can be compared directly.
+    <item><strong|Versions out of order.> Zenodo orders the versions of a record by publication, and its concept DOI resolves to the latest. A document version deposited out of order (section 7.3) is therefore not deposited as a new version of the record; it MAY be deposited as a separate record, with <verbatim|IsVersionOf> the concept DOI of the document.
 
-    <item><strong|Order of operations.> (1) Create a draft, or a new version of the record (a new version starts without files). (2) Reserve its DOI. (3) Write <verbatim|datacite.json> with that DOI and build the object version in a staging area. (4) Upload the files and compare the MD5 checksums reported by Zenodo with the fixity block. (5) Publish. (6) Commit the object version and update the discovery document. If a step fails before publication, the draft is discarded. If publication succeeds and the commit fails, the tool MUST complete the object version from the staging area before any other deposit of that document; it SHOULD hold a lock per document during a deposit, since Zenodo allows one unpublished version per record.
+    <item><strong|Files.> The record version holds the content files of the object version as deposited. Zenodo records have no folders: if the sources have sub-folders, or the record would exceed Zenodo's file count, the sources are uploaded as one archive <verbatim|sources.zip>, built reproducibly (entries in byte order of their names, fixed timestamps, no extra attributes), whose digests are recorded in <verbatim|object.json> under <verbatim|external>. Inventories MUST record MD5 digests in <verbatim|fixity>, so that the checksums reported by Zenodo can be compared directly.
+
+    <item><strong|Order of operations.> (1) Create a draft, or a new version of the record (a new version inherits the files of the previous one, which are deleted). (2) Reserve its DOI (Zenodo reserves one with each draft; its sandbox reserves DOIs with the prefix <verbatim|10.5281> but publishes them with the test prefix <verbatim|10.5072>). (3) Write <verbatim|datacite.json> with that DOI and build the object version in a staging area. (4) Upload the files and compare the MD5 checksums reported by Zenodo with the fixity block. (5) Publish. (6) Commit the object version and update the discovery document. If a step fails before publication, the draft is discarded. If publication succeeds and the commit fails, the tool MUST complete the object version from the staging area before any other deposit of that document; it SHOULD hold a lock per document during a deposit, since Zenodo allows one unpublished version per record.
 
     <item><strong|Corrections.> Zenodo allows the files of a published version to be changed within 30 days. Archives following this binding MUST NOT use this: a correction is a new document version.
 
@@ -440,9 +496,11 @@
   <\itemize>
     <item><strong|Index.> The website has an index page generated from the head version of the main collection. It MAY be split into several pages. A flattened, non-authoritative list for programs that do not read OCFL MAY be published as <verbatim|catalog.json>.
 
-    <item><strong|Landing pages.> Each document has one landing page, for its newest version, with links to every version, its renditions and sources, its DOI, and its withdrawal notice if any.
+    <item><strong|Landing pages.> Each document has one landing page, for its current version (section 7.3), with links to every version in the order of the history, each with its external labels, stage, change note and the notices about it, its renditions and sources, its DOI, and the withdrawal notice if any.
 
-    <item><strong|Search engines.> Landing pages MUST carry the meta tags read by Google Scholar: <verbatim|citation_title>, <verbatim|citation_author> (one per author), <verbatim|citation_publication_date>, and <verbatim|citation_pdf_url> on the same host as the PDF; and SHOULD carry schema.org <verbatim|ScholarlyArticle> JSON-LD and FAIR Signposting links (<verbatim|cite-as>, <verbatim|describedby>, <verbatim|item>, <verbatim|license>).
+    <item><strong|Search engines.> Landing pages MUST carry the meta tags read by Google Scholar: <verbatim|citation_title>, <verbatim|citation_author> (one per author), <verbatim|citation_publication_date> (the <verbatim|Issued> date, or else the <verbatim|Available> date of the current version), and <verbatim|citation_pdf_url> on the same host as the PDF; and SHOULD carry schema.org <verbatim|ScholarlyArticle> JSON-LD and FAIR Signposting links (<verbatim|cite-as>, <verbatim|describedby>, <verbatim|item>, <verbatim|license>).
+
+    <item><strong|Feeds.> A feed (section 6.1) lists object versions by their <verbatim|created> date in the inventory: what is new in the archive.
 
     <item><strong|Harvesters.> The website SHOULD publish a <verbatim|sitemap.xml>, and MAY publish an OAI-PMH static repository file or a ResourceSync description.
 
@@ -458,7 +516,7 @@
   <\itemize>
     <item><hlink|opensheaf-archive-0.1.schema.json|https://opensheaf.org/schemas/opensheaf-archive-0.1.schema.json> for <verbatim|opensheaf.json>;
 
-    <item><hlink|opensheaf-provenance-0.1.schema.json|https://opensheaf.org/schemas/opensheaf-provenance-0.1.schema.json> for <verbatim|provenance.json>;
+    <item><hlink|opensheaf-object-0.1.schema.json|https://opensheaf.org/schemas/opensheaf-object-0.1.schema.json> for <verbatim|object.json>;
 
     <item><hlink|opensheaf-collection-0.1.schema.json|https://opensheaf.org/schemas/opensheaf-collection-0.1.schema.json> for <verbatim|members.json>.
   </itemize>
@@ -507,12 +565,12 @@
     }
   </verbatim-code>
 
-  A <verbatim|provenance.json> of a document version:
+  An <verbatim|object.json> of a document version:
 
   <\verbatim-code>
     {
 
-    \ \ "format": "opensheaf-provenance/0.1",
+    \ \ "format": "opensheaf-object/0.1",
 
     \ \ "specification": "0.1",
 
@@ -532,16 +590,52 @@
 
     \ \ "toolchain": [ { "name": "TeXmacs", "version": "2.1.5" } ],
 
-    \ \ "deposit": { "date": "2026-11-12T18:00:00Z",
-
-    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "agent": { "name": "Massimiliano Gubinelli", "uri": "https://orcid.org/0000-0000-0000-0000" } },
+    \ \ "stage": { "scheme": "NISO-JAV", "value": "AO" },
 
     \ \ "agreement": { "by": ["P. Duch", "M. Gubinelli"], "date": "2026-11-12", "method": "by e-mail" },
+
+    \ \ "external": [ { "service": "Zenodo", "record": "https://zenodo.org/records/1234567",
+
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "doi": "10.5281/zenodo.1234567" } ],
 
     \ \ "status": "active"
 
     }
   </verbatim-code>
+
+  The <verbatim|object.json> of a later version of a document whose arXiv version 2 was found and deposited after version 4 (document versions 1, 2, 3 for arXiv's v1, v3, v4, then 4 for arXiv's v2, placed between 1 and 2 in the history), with a notice about version 2 (arXiv's v3):
+
+  <\verbatim-code>
+    {
+
+    \ \ "format": "opensheaf-object/0.1",
+
+    \ \ ...
+
+    \ \ "documentVersion": 3,
+
+    \ \ "changes": { "text": "Corrected the proof of Lemma 2; 32 pages." },
+
+    \ \ "stage": { "scheme": "NISO-JAV", "value": "AM" },
+
+    \ \ "history": [ "v1", "v4", "v2", "v5" ],
+
+    \ \ "notices": [ { "documentVersion": 2, "date": "2026-12-01",
+
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "text": "Theorem 3 is wrong as stated; corrected in version 3.",
+
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "path": "notices/erratum-v2.pdf", "mediaType": "application/pdf" } ],
+
+    \ \ "external": [ { "service": "arXiv", "record": "https://arxiv.org/abs/2303.18112v4",
+
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "doi": "10.48550/arXiv.2303.18112", "label": "v4" } ],
+
+    \ \ "status": "active"
+
+    }
+  </verbatim-code>
+
+  Object versions <verbatim|v1> to <verbatim|v3> deposited document versions 1 to 3; <verbatim|v4> deposited document version 4 (arXiv's v2) and wrote the history <verbatim|["v1", "v4", "v2", "v3"]>, so that the current version stayed document version 3 although the head held version 4; <verbatim|v5>, shown here, is a description-only version adding the notice, which holds the current version again. The current version is document version 3, the last in the history.
 
   A <verbatim|datacite.json> of the same version:
 
@@ -572,7 +666,9 @@
 
     \ \ "publicationYear": 2026,
 
-    \ \ "dates": [ { "date": "2026-11-12", "dateType": "Available" } ],
+    \ \ "dates": [ { "date": "2026-11-12", "dateType": "Issued" },
+
+    \ \ \ \ \ \ \ \ \ \ \ \ \ { "date": "2026-11-12", "dateType": "Available" } ],
 
     \ \ "rightsList": [ { "rights": "Creative Commons Attribution 4.0 International",
 
@@ -649,6 +745,14 @@
     <item><strong|Why pins by inventory digest.> One digest fixes a whole object version, so collections become hash trees across archives, and any matching copy will do.
 
     <item><strong|Why separate document and object versions.> Readers and DOI services see versions of the work; the storage keeps every change, including corrections of the description.
+
+    <item><strong|Why the archive numbers document versions itself.> External numberings have gaps (versions an external service no longer serves) and do not cover versions that were never public there. The archive's own numbers have no gaps; external labels are recorded beside them.
+
+    <item><strong|Why an explicit history, and why it lists object versions.> Dates may be approximate or unknown, so they cannot order versions, and pointers from each version to the previous one cannot be corrected when a version is inserted later, since earlier versions are fixed. A list kept in each object version, with the head's list authoritative, can be corrected by a new version and keeps a record of what was known before. Its entries name object versions, which are exact and resolved directly through the inventory, and name the last object version of each document version, which carries its most complete description. Digests could not be used: an object version cannot contain the digest of its own inventory.
+
+    <item><strong|Why the deposit is read from the inventory.> OCFL already records when and by whom each object version was made; repeating it in <verbatim|object.json> would allow the two to disagree.
+
+    <item><strong|Why notices are not new document versions.> A notice about a version is a later statement about it, not a change of the work. The exact state a reader saw, with or without a notice, is identified by the object version and its pin.
 
     <item><strong|Where witnesses live.> A witness of an object version can only be made after the version is committed, so it cannot be part of it (a signature of an inventory cannot be listed in that inventory). Putting each signature or timestamp in a new version would mix evidence with changes of the work, and every upgrade of a timestamp proof would be a version. OCFL closes the object folder to anything it does not define, and its <verbatim|logs/> folder is meant for unstructured records of actions and is not covered by digests. Object extension folders are the place OCFL provides for data that is not part of any version (the registered mutable-head extension keeps its data there), so witnesses go in <verbatim|extensions/opensheaf-witnesses/> and travel with the object; <verbatim|witnesses/> outside the storage root remains for archives that never touch object folders after commit.
 

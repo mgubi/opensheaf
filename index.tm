@@ -62,7 +62,7 @@
       <item><hlink|Papers of Massimiliano Gubinelli|https://mgubi.org/papers/> (repository <hlink|mgubi/papers|https://github.com/mgubi/papers>): the first OpenSheaf archive, following version 0.1, with TeXmacs sources, HTML versions and PDFs (profile <verbatim|texmacs>).
     </itemize>
 
-    <item><strong|Tools:> <verbatim|tools/papers.py> in <hlink|mgubi/papers|https://github.com/mgubi/papers>, which deposits documents as OCFL objects with DataCite and provenance metadata, maintains a collection, writes the discovery document and the index, and verifies an archive (also with the JSON Schemas and the <verbatim|ocfl-py> validator).
+    <item><strong|Tools:> <verbatim|tools/papers.py> in <hlink|mgubi/papers|https://github.com/mgubi/papers>, which deposits documents as OCFL objects with DataCite and OpenSheaf metadata, maintains a collection, writes the discovery document and the index, and verifies an archive (also with the JSON Schemas and the <verbatim|ocfl-py> validator).
   </itemize>
 
   <section*|Files>
@@ -74,7 +74,7 @@
 
     <item><verbatim|README.md>: this text, also the home page of the site.
 
-    <item><verbatim|schemas/>: the JSON Schemas of the files defined by the specification (<verbatim|opensheaf.json>, <verbatim|provenance.json>, <verbatim|members.json>), also published at <verbatim|https://opensheaf.org/schemas/>.
+    <item><verbatim|schemas/>: the JSON Schemas of the files defined by the specification (<verbatim|opensheaf.json>, <verbatim|object.json>, <verbatim|members.json>), also published at <verbatim|https://opensheaf.org/schemas/>.
 
     <item><verbatim|index.tm>/<verbatim|index.html>, <verbatim|opensheaf-specification-0.1.tm>/<verbatim|.html>, <verbatim|faq.tm>/<verbatim|faq.html>: the pages of the site, generated from the Markdown files (for TeXmacs and for the web); do not edit them.
 

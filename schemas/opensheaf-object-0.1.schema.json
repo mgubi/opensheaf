@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://opensheaf.org/schemas/opensheaf-provenance-0.1.schema.json",
-  "title": "OpenSheaf provenance (provenance.json), format opensheaf-provenance/0.1",
+  "$id": "https://opensheaf.org/schemas/opensheaf-object-0.1.schema.json",
+  "title": "OpenSheaf object record (object.json), format opensheaf-object/0.1",
   "$comment": "Part of OpenSheaf 0.1 (https://opensheaf.org). Dedicated to the public domain under CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/",
   "type": "object",
   "required": [
@@ -11,12 +11,11 @@
     "archiveId",
     "objectId",
     "documentVersion",
-    "deposit",
     "status"
   ],
   "properties": {
     "format": {
-      "const": "opensheaf-provenance/0.1"
+      "const": "opensheaf-object/0.1"
     },
     "specification": {
       "const": "0.1"
@@ -90,32 +89,60 @@
         }
       }
     },
-    "deposit": {
+    "changes": {
+      "$ref": "#/$defs/note"
+    },
+    "stage": {
       "type": "object",
       "required": [
-        "date",
-        "agent"
+        "scheme",
+        "value"
       ],
       "properties": {
-        "date": {
+        "scheme": {
           "type": "string",
-          "format": "date-time"
+          "minLength": 1
         },
-        "agent": {
-          "type": "object",
-          "required": [
-            "name"
-          ],
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "uri": {
-              "type": "string",
-              "format": "uri"
+        "value": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "history": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/objectVersion"
+      }
+    },
+    "notices": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/note"
+          },
+          {
+            "type": "object",
+            "required": [
+              "documentVersion",
+              "date"
+            ],
+            "properties": {
+              "documentVersion": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              }
             }
           }
-        }
+        ]
       }
     },
     "agreement": {
@@ -185,6 +212,9 @@
                 }
               }
             }
+          },
+          "label": {
+            "type": "string"
           }
         }
       }
@@ -207,9 +237,49 @@
           "format": "date"
         },
         "reason": {
-          "type": "string"
+          "$ref": "#/$defs/note"
         }
       }
+    }
+  },
+  "$defs": {
+    "note": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "text"
+          ]
+        },
+        {
+          "required": [
+            "path"
+          ]
+        }
+      ],
+      "dependentRequired": {
+        "path": [
+          "mediaType"
+        ]
+      }
+    },
+    "objectVersion": {
+      "type": "string",
+      "pattern": "^v[1-9][0-9]*$"
     }
   },
   "allOf": [
@@ -240,6 +310,41 @@
         "required": [
           "withdrawal"
         ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "collection"
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "history"
+              ]
+            },
+            {
+              "required": [
+                "stage"
+              ]
+            },
+            {
+              "required": [
+                "notices"
+              ]
+            },
+            {
+              "required": [
+                "changes"
+              ]
+            }
+          ]
+        }
       }
     }
   ]

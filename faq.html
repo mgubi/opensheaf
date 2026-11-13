@@ -108,13 +108,35 @@
     version?<span style="margin-left: 1em"></span></h2>
     <p>
       The document version is the version of the work, what readers see and
-      what gets a DOI: it changes only when the sources or the PDF change. The
-      object version (<tt class="verbatim">v1</tt>, <tt class="verbatim">v2</tt>, &hellip;) is
-      OCFL's: it changes at every change of the object, including corrections
-      of the description (adding the DOI of the journal version, fixing an
-      affiliation).
+      what gets a DOI: it changes only when the document's own files change
+      (sources, renditions, change note). The object version (<tt class="verbatim">v1</tt>,
+      <tt class="verbatim">v2</tt>, &hellip;) is OCFL's: it changes at every change of
+      the object, including corrections of the description (adding the DOI of
+      the journal version, fixing an affiliation) and notices about earlier
+      versions.
     </p>
-    <h2 id="auto-11">How do collections work across archives? What if another archive
+    <h2 id="auto-11">How are versions numbered and ordered?<span style="margin-left: 1em"></span></h2>
+    <p>
+      The archive numbers document versions itself, from 1 and without gaps,
+      even when an external service numbers them differently: if arXiv still
+      serves only v1, v3 and v4 of a paper, they are document versions 1, 2
+      and 3, and the arXiv labels are recorded beside them. Versions are
+      normally in the order of their numbers. When an earlier version turns up
+      later, it gets the next number and an explicit <tt class="verbatim">history</tt>
+      in <tt class="verbatim">object.json</tt> puts it in its place; the current
+      version, the one readers are directed to, is the last in the history.
+      Dates are only information: they may be approximate or unknown, so they
+      never decide the order.
+    </p>
+    <h2 id="auto-12">What if a version turns out to be wrong?<span style="margin-left: 1em"></span></h2>
+    <p>
+      Deposit a corrected version, with a change note saying what changed. To
+      warn readers of the earlier version, add a notice about it (for instance
+      an erratum, as text or as a file): notices are later statements about a
+      version, kept with the object and shown with that version, and they
+      never change the version itself.
+    </p>
+    <h2 id="auto-13">How do collections work across archives? What if another archive
     disappears?<span style="margin-left: 1em"></span></h2>
     <p>
       A collection lists its members by archive identifier, address, object
@@ -127,14 +149,14 @@
       one. A collection also keeps a cached citation of each member, so that
       it stays readable even if no copy is found.
     </p>
-    <h2 id="auto-12">Can I put someone else's paper in my collection?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-14">Can I put someone else's paper in my collection?<span style="margin-left: 1em"></span></h2>
     <p>
       Yes. A reference (a pin) copies nothing and needs no permission. Copying
       (mirroring) another archive's object into your own storage root is
       allowed only if the document's licence permits redistribution. The
       licence of a collection (CC0 for the list) never extends to its members.
     </p>
-    <h2 id="auto-13">Where do signatures and timestamps go, and why not in the version
+    <h2 id="auto-15">Where do signatures and timestamps go, and why not in the version
     itself?<span style="margin-left: 1em"></span></h2>
     <p>
       A signature or timestamp of an object version can only be made after the
@@ -157,13 +179,13 @@
       their own: each one is checked directly against the checksum file it
       names, which the pins fix.
     </p>
-    <h2 id="auto-14">Why is the HTML version not part of the deposit?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-16">Why is the HTML version not part of the deposit?<span style="margin-left: 1em"></span></h2>
     <p>
       Because presentations improve (stylesheets, exporters, fixes) and
       deposits must not change. The deposit keeps the sources and the PDF; the
       HTML is regenerated from the sources whenever the presentation changes.
     </p>
-    <h2 id="auto-15">How do I withdraw or take down a document?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-17">How do I withdraw or take down a document?<span style="margin-left: 1em"></span></h2>
     <p>
       To withdraw a document (for instance a retraction), make a new version
       with a withdrawal notice: the content and its history stay, and
@@ -174,22 +196,22 @@
       mechanism for deleting single files; OpenSheaf will adopt it when it is
       published.
     </p>
-    <h2 id="auto-16">Can I use &quot;All rights reserved&quot;?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-18">Can I use &quot;All rights reserved&quot;?<span style="margin-left: 1em"></span></h2>
     <p>
       Yes. Each document carries the licence its authors choose; &quot;All
       rights reserved&quot; means readers may access the document but not
-      reuse it. The metadata (descriptions, provenance, member lists,
+      reuse it. The metadata (descriptions, object records, member lists,
       inventories) is CC0, so that it can be harvested and mirrored freely. On
       Zenodo, &quot;All rights reserved&quot; is entered as a custom licence.
     </p>
-    <h2 id="auto-17">Will Google Scholar find the papers?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-19">Will Google Scholar find the papers?<span style="margin-left: 1em"></span></h2>
     <p>
       If the archive follows the website profile: each document then has a
       landing page with the <tt class="verbatim">citation_*</tt> meta tags Google
       Scholar reads, and a PDF on the same host. Appendix C also recommends a
       sitemap and FAIR Signposting links.
     </p>
-    <h2 id="auto-18">How do I check an archive?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-20">How do I check an archive?<span style="margin-left: 1em"></span></h2>
     <p>
       A verifier validates the JSON files against the schemas in <a href="schemas/">schemas/</a>,
       validates the storage root with a standard OCFL validator (such as <tt
@@ -197,14 +219,14 @@
       storage root, and resolves and checks every member of every collection.
       The specification (section 14) lists the checks.
     </p>
-    <h2 id="auto-19">Is the format stable?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-21">Is the format stable?<span style="margin-left: 1em"></span></h2>
     <p>
       Not yet: version 0.1 is a draft, and versions before 1.0 may change in
       incompatible ways. Every file declares the version of the format it
       follows, so that tools can tell. From version 1.0, minor versions will
       be backward compatible.
     </p>
-    <h2 id="auto-20">Why the name?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-22">Why the name?<span style="margin-left: 1em"></span></h2>
     <p>
       A sheaf is a bundle of papers. In mathematics, a sheaf is the structure
       in which local pieces glue into a whole: archives kept and verified

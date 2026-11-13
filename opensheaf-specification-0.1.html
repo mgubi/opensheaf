@@ -173,8 +173,34 @@
       <li>
         <p>
           <strong>Document version:</strong> the version of the work, a
-          positive integer in <tt class="verbatim">provenance.json</tt> and <tt class="verbatim">datacite.json</tt>.
-          It changes only when the sources or the renditions change.
+          positive integer numbered by the archive, in <tt class="verbatim">object.json</tt>
+          and <tt class="verbatim">datacite.json</tt>. It changes exactly when the
+          document's own files change (section 7.3).
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Description-only version:</strong> an object version that
+          keeps the document version: it changes only the description, the
+          state or the notices of the object.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>History:</strong> the order of a document's versions in the
+          history of the work (section 7.3).
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Current version:</strong> the document version to which
+          readers are directed: the last in the history.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Note:</strong> a short text, a file of the content, or both,
+          as used for change notes, notices and withdrawals (section 9).
         </p>
       </li>
       <li>
@@ -250,7 +276,7 @@
       </li>
     </ul>
     <p>
-      The JSON files defined here (<tt class="verbatim">opensheaf.json</tt>, <tt class="verbatim">provenance.json</tt>,
+      The JSON files defined here (<tt class="verbatim">opensheaf.json</tt>, <tt class="verbatim">object.json</tt>,
       <tt class="verbatim">members.json</tt>) MUST validate against the JSON Schemas of
       appendix D for their declared format version.
     </p>
@@ -393,8 +419,8 @@
       and MUST be at most 64 characters long. It is the OCFL <tt class="verbatim">id</tt>
       of the object and the name of its folder in the storage root. It MUST be
       unique in the archive and MUST NOT be reused, also after a takedown. The
-      kind of an object is given by its <tt class="verbatim">provenance.json</tt>, never
-      by its identifier. Outside the archive, an object is named by the pair
+      kind of an object is given by its <tt class="verbatim">object.json</tt>, never by
+      its identifier. Outside the archive, an object is named by the pair
       (archive identifier, object identifier).
     </p>
     <h3 id="auto-11">6.4 Resolution<span style="margin-left: 1em"></span></h3>
@@ -416,9 +442,9 @@
       </li>
       <li>
         <p>
-          if this fails, MAY use external copies: the files of the external
-          deposit named in the version's provenance (a DOI record), or a
-          software archive snapshot (a SWHID).
+          if this fails, MAY use external copies: the files of an external
+          record named in the version's <tt class="verbatim">object.json</tt> (a DOI
+          record), or a software archive snapshot (a SWHID).
         </p>
       </li>
     </ul>
@@ -431,18 +457,21 @@
     <p>
       Every object MUST be a valid OCFL 1.1 object. Its inventories MUST use
       <tt class="verbatim">sha512</tt> as digest algorithm. Every object version MUST
-      contain, in its content, the files <tt class="verbatim">provenance.json</tt> and
-      <tt class="verbatim">datacite.json</tt> at the top level. Every version directory
-      MUST contain a copy of the inventory as of that version, with its
-      checksum file (OCFL makes this a recommendation; OpenSheaf requires it,
-      so that each version can be pinned and fetched on its own).
+      contain, in its content, the files <tt class="verbatim">object.json</tt> and <tt
+      class="verbatim">datacite.json</tt> at the top level. Every version directory MUST
+      contain a copy of the inventory as of that version, with its checksum
+      file (OCFL makes this a recommendation; OpenSheaf requires it, so that
+      each version can be pinned and fetched on its own).
     </p>
     <p>
       Each version in the inventory MUST have a <tt class="verbatim">user</tt> with a
       <tt class="verbatim">name</tt>, and SHOULD have an <tt class="verbatim">address</tt> (an
       ORCID iD, a <tt class="verbatim">mailto:</tt> URI or another URI identifying the
       depositor), and MUST have a <tt class="verbatim">message</tt> describing the
-      change.
+      change. The inventory is the record of deposits: the <tt class="verbatim">created</tt>
+      date and the <tt class="verbatim">user</tt> of an object version are when and by
+      whom it was deposited, and the deposit of a document version is that of
+      the first object version holding it. They are not repeated in <tt class="verbatim">object.json</tt>.
     </p>
     <p>
       Logical paths MUST be encoded in UTF-8 in Unicode normalisation form C,
@@ -460,19 +489,25 @@
           the <strong>sources</strong>: the main source and every file needed
           to produce the renditions that is not part of the toolchain (images,
           bibliography databases, local style files). The main source is named
-          in <tt class="verbatim">provenance.json</tt>. Sources SHOULD be flat (no
+          in <tt class="verbatim">object.json</tt>. Sources SHOULD be flat (no
           sub-folders) when possible;
         </p>
       </li>
       <li>
         <p>
           the <strong>renditions</strong>, OPTIONAL but RECOMMENDED: at least
-          a PDF for documents meant to be read and cited, named in <tt class="verbatim">provenance.json</tt>;
+          a PDF for documents meant to be read and cited, named in <tt class="verbatim">object.json</tt>;
         </p>
       </li>
       <li>
         <p>
-          <tt class="verbatim">datacite.json</tt> (section 8) and <tt class="verbatim">provenance.json</tt>
+          the files of notes, if any (the change note, notices, a withdrawal;
+          section 9), named in <tt class="verbatim">object.json</tt>;
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">datacite.json</tt> (section 8) and <tt class="verbatim">object.json</tt>
           (section 9).
         </p>
       </li>
@@ -482,20 +517,75 @@
       since they depend on the presentation and are regenerated when it
       improves.
     </p>
+    <h3 id="auto-15">7.3 Document versions<span style="margin-left: 1em"></span></h3>
     <p>
-      The document version MUST increase by one exactly when the sources or
-      the renditions change. A version that changes only <tt class="verbatim">datacite.json</tt>
-      or <tt class="verbatim">provenance.json</tt> (a description-only version) keeps
-      the document version.
+      <strong>Numbering.</strong> Document versions are numbered by the
+      archive, from 1, without gaps, independently of any external numbering:
+      a work whose versions 1, 3 and 4 are available on arXiv has document
+      versions 1, 2 and 3. External labels (arXiv's <tt class="verbatim">v3</tt>) are
+      recorded in <tt class="verbatim">external</tt> (section 9), and presentations
+      SHOULD show them with the document version.
     </p>
-    <h3 id="auto-15">7.3 Collections<span style="margin-left: 1em"></span></h3>
     <p>
-      A collection version contains <tt class="verbatim">datacite.json</tt>, <tt class="verbatim">provenance.json</tt>
-      and <tt class="verbatim">members.json</tt> (section 10). Its <tt class="verbatim">provenance.json</tt>
+      <strong>New versions.</strong> A new document version number is assigned
+      exactly when files of the document's own (sources, renditions, change
+      note) that were not deposited before are added. An object version
+      holding the same sources, renditions and change note as an earlier
+      document version keeps its number. A description-only version keeps the
+      document version. A version that was not public at the time, such as the
+      manuscript submitted to a journal, deposited later, is a document
+      version like any other. A version published by someone else, such as the
+      journal's version of record, is not a document version of the author's
+      object: it is linked by a relation (section 8.1).
+    </p>
+    <p>
+      <strong>History.</strong> The order of the document versions in the
+      history of the work is the order of their numbers, unless <tt class="verbatim">object.json</tt>
+      has <tt class="verbatim">history</tt> (section 9): the list, in the order of the
+      work, of the last object version holding each document version. The last
+      object version is used because it carries the most complete description
+      of that document version (a DOI added later, a corrected stage). An
+      object version that deposits a document version out of order (an earlier
+      version found later) MUST write <tt class="verbatim">history</tt>, and once an
+      object version has <tt class="verbatim">history</tt>, every later object version
+      MUST have it. A version whose place in the history is unknown goes just
+      before the current version, and its <tt class="verbatim">object.json</tt> SHOULD
+      say so in its change note. The history is read from the head version;
+      earlier object versions keep the history as it was known when they were
+      made.
+    </p>
+    <p>
+      <strong>Current version.</strong> The current version of a document is
+      the last entry of the history of its head version (without <tt class="verbatim">history</tt>:
+      the highest document version, which is then held by the head). After an
+      earlier version is deposited out of order, the head holds that earlier
+      version while the current version stays where it was. Landing pages,
+      indexes, citations and the following of members (section 10.3) use the
+      current version, not the head.
+    </p>
+    <p>
+      <strong>Notices.</strong> A notice about a document version (for
+      instance that a theorem of version 2 is wrong as stated, and is
+      corrected in version 3) is written after that version, which cannot
+      change. Notices are added to <tt class="verbatim">notices</tt> in <tt class="verbatim">object.json</tt>
+      (section 9) by description-only versions. A notice present in an object
+      version is present, unchanged, in every later object version; a notice
+      is corrected or withdrawn by a later notice that says so. Presentations
+      showing a document version SHOULD show the current notices about it.
+    </p>
+    <p>
+      Dates never order document versions and never decide the current version
+      (section 8).
+    </p>
+    <h3 id="auto-16">7.4 Collections<span style="margin-left: 1em"></span></h3>
+    <p>
+      A collection version contains <tt class="verbatim">datacite.json</tt>, <tt class="verbatim">object.json</tt>
+      and <tt class="verbatim">members.json</tt> (section 10). Its <tt class="verbatim">object.json</tt>
       declares <tt class="verbatim">kind</tt> <tt class="verbatim">collection</tt>; its document
-      version counts the changes of the member list.
+      version counts the changes of the member list, and it has no <tt class="verbatim">history</tt>,
+      <tt class="verbatim">stage</tt> or <tt class="verbatim">notices</tt>.
     </p>
-    <h2 id="auto-16">8. Description: datacite.json<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-17">8. Description: datacite.json<span style="margin-left: 1em"></span></h2>
     <p>
       Every object version MUST contain <tt class="verbatim">datacite.json</tt>, a JSON
       object with the DataCite 4.7 properties in the form of the <tt class="verbatim">attributes</tt>
@@ -532,10 +622,7 @@
       </li>
       <li>
         <p>
-          <tt class="verbatim">dates</tt>, with <tt class="verbatim">Available</tt> for the date
-          the version was deposited, <tt class="verbatim">Updated</tt> for
-          description-only versions, and <tt class="verbatim">Issued</tt> or <tt class="verbatim">Submitted</tt>
-          only in their DataCite meaning;
+          <tt class="verbatim">dates</tt>, as below;
         </p>
       </li>
       <li>
@@ -572,19 +659,73 @@
     </p>
     <p>
       <tt class="verbatim">doi</tt> and <tt class="verbatim">url</tt> are OPTIONAL: they are
-      present when the version has a DOI. <tt class="verbatim">types.resourceTypeGeneral</tt>
-      SHOULD be <tt class="verbatim">Preprint</tt> for a work not yet published
-      elsewhere, <tt class="verbatim">JournalArticle</tt>, <tt class="verbatim">Book</tt>, <tt
-      class="verbatim">Dissertation</tt>, <tt class="verbatim">Text</tt> and so on otherwise, and
-      <tt class="verbatim">Collection</tt> for collections.
+      present when the version has a DOI. <tt class="verbatim">types</tt> gives the kind
+      of content: <tt class="verbatim">resourceTypeGeneral</tt> from DataCite's list
+      (<tt class="verbatim">Preprint</tt>, <tt class="verbatim">JournalArticle</tt>, <tt class="verbatim">Book</tt>,
+      <tt class="verbatim">Dissertation</tt>, <tt class="verbatim">Report</tt>, <tt class="verbatim">Text</tt>,
+      <tt class="verbatim">Dataset</tt>, <tt class="verbatim">Software</tt>, <tt class="verbatim">Audiovisual</tt>
+      and so on, and <tt class="verbatim">Collection</tt> for collections), with <tt
+      class="verbatim">resourceType</tt> for detail (for instance &quot;Lecture
+      notes&quot;). An author's versions of a work not published elsewhere are
+      <tt class="verbatim">Preprint</tt>, also the accepted manuscript; the stage of a
+      version is given by <tt class="verbatim">stage</tt> in <tt class="verbatim">object.json</tt>
+      (section 9).
     </p>
-    <h3 id="auto-17">8.1 Relations<span style="margin-left: 1em"></span></h3>
+    <p>
+      <strong>Dates.</strong> Dates are information for readers and services:
+      they never order document versions (section 7.3). Each date type has one
+      meaning:
+    </p>
+    <ul>
+      <li>
+        <p>
+          <tt class="verbatim">Issued</tt>: the first public appearance of the work,
+          anywhere; the same in every version. RECOMMENDED for documents;
+          tools importing works published elsewhere SHOULD set it.
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">Available</tt>: when this document version first became
+          public, anywhere: for a version imported from another service, its
+          date there; for a version first made public by this archive, the
+          date of its deposit (section 7.1). SHOULD be present.
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">Updated</tt>: the date of a description-only version.
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">Created</tt> (when a version was written, for a version
+          not public at the time), <tt class="verbatim">Submitted</tt> and <tt class="verbatim">Accepted</tt>
+          (journal milestones), OPTIONAL.
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">Withdrawn</tt>: the date of a withdrawal, equal to <tt
+          class="verbatim">withdrawal.date</tt> in <tt class="verbatim">object.json</tt> (section
+          11.1).
+        </p>
+      </li>
+    </ul>
+    <p>
+      Dates MAY be approximate, as DataCite allows (<tt class="verbatim">2019</tt>, <tt
+      class="verbatim">2019-03</tt>, a range <tt class="verbatim">2018/2019</tt>), with <tt class="verbatim">dateInformation</tt>
+      explaining them (for instance &quot;from file timestamps&quot;); unknown
+      dates are omitted.
+    </p>
+    <h3 id="auto-18">8.1 Relations<span style="margin-left: 1em"></span></h3>
     <ul>
       <li>
         <p>
           A document version with a DOI SHOULD have <tt class="verbatim">IsVersionOf</tt>
           the concept DOI of the document, and <tt class="verbatim">IsNewVersionOf</tt>
-          the DOI of the previous document version.
+          the DOI of the document version before it in the history (section
+          7.3), if that version has a DOI.
         </p>
       </li>
       <li>
@@ -623,14 +764,16 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-18">9. Provenance: provenance.json<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-19">9. The object: object.json<span style="margin-left: 1em"></span></h2>
     <p>
-      Every object version MUST contain <tt class="verbatim">provenance.json</tt> with:
+      Every object version MUST contain <tt class="verbatim">object.json</tt>,
+      OpenSheaf's record of the object as of that version: its identity, the
+      structure of its content, its versions and its state. It MUST contain:
     </p>
     <ul>
       <li>
         <p>
-          <tt class="verbatim">format</tt>: <tt class="verbatim">&quot;opensheaf-provenance/0.1&quot;</tt>;
+          <tt class="verbatim">format</tt>: <tt class="verbatim">&quot;opensheaf-object/0.1&quot;</tt>;
         </p>
       </li>
       <li>
@@ -656,12 +799,6 @@
       </li>
       <li>
         <p>
-          <tt class="verbatim">deposit</tt>: the <tt class="verbatim">date</tt> (RFC 3339) and the
-          <tt class="verbatim">agent</tt> (name and URI) of the deposit;
-        </p>
-      </li>
-      <li>
-        <p>
           <tt class="verbatim">status</tt>: <tt class="verbatim">active</tt> or <tt class="verbatim">withdrawn</tt>
           (section 11).
         </p>
@@ -676,7 +813,54 @@
       enough to reproduce the renditions.
     </p>
     <p>
-      It MAY contain:
+      A <strong>note</strong> is an object with <tt class="verbatim">text</tt> (a short
+      plain text), or <tt class="verbatim">path</tt> and <tt class="verbatim">mediaType</tt> (a
+      file of the content of the same object version), or both: the text
+      serves feeds, indexes and external services, the file holds the full
+      statement (with mathematics, or as a PDF). Files of notes are covered by
+      the inventory like every file of the content.
+    </p>
+    <p>
+      A document MAY contain:
+    </p>
+    <ul>
+      <li>
+        <p>
+          <tt class="verbatim">changes</tt>: a note saying what changed in this document
+          version, written and deposited with it (like arXiv's comments). It
+          is part of the document version (section 7.3);
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">stage</tt>: the stage of this document version, an object
+          with <tt class="verbatim">scheme</tt> and <tt class="verbatim">value</tt>. For articles
+          the RECOMMENDED scheme is <tt class="verbatim">NISO-JAV</tt>, the NISO Journal
+          Article Versions: <tt class="verbatim">AO</tt> (author's original), <tt class="verbatim">SMUR</tt>
+          (submitted manuscript under review), <tt class="verbatim">AM</tt> (accepted
+          manuscript), <tt class="verbatim">P</tt> (proof), <tt class="verbatim">VoR</tt> (version
+          of record), <tt class="verbatim">CVoR</tt> (corrected version of record), <tt
+          class="verbatim">EVoR</tt> (enhanced version of record). Other kinds of
+          content use other schemes (editions, software releases), named by
+          the archive. A description-only version MAY add or correct it;
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">history</tt>: the list of object versions giving the
+          order of the document versions (section 7.3);
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">notices</tt>: a list of notices (section 7.3), each a
+          note with the <tt class="verbatim">documentVersion</tt> it is about and a <tt
+          class="verbatim">date</tt>.
+        </p>
+      </li>
+    </ul>
+    <p>
+      Any object MAY contain:
     </p>
     <ul>
       <li>
@@ -689,10 +873,13 @@
       </li>
       <li>
         <p>
-          <tt class="verbatim">external</tt>: the external deposits of this version
-          (appendix A), each with the service, the record identifier, the DOI
-          and the digests of any file deposited there that is not in the
-          content (such as a source archive);
+          <tt class="verbatim">external</tt>: the external records of this version:
+          deposits of it (appendix A) and the record it was imported from,
+          each with the <tt class="verbatim">service</tt>, the <tt class="verbatim">record</tt> (a
+          URL), the <tt class="verbatim">doi</tt>, the <tt class="verbatim">label</tt> the service
+          gives the version (for instance <tt class="verbatim">v3</tt> on arXiv), and
+          the digests of any file kept there that is not in the content (such
+          as a source archive);
         </p>
       </li>
       <li>
@@ -702,11 +889,11 @@
       </li>
     </ul>
     <p>
-      <tt class="verbatim">provenance.json</tt> is metadata and is placed under CC0
-      (section 16).
+      <tt class="verbatim">object.json</tt> is metadata and is placed under CC0 (section
+      16).
     </p>
-    <h2 id="auto-19">10. Collections: members.json<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-20">10.1 The member list<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-20">10. Collections: members.json<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-21">10.1 The member list<span style="margin-left: 1em"></span></h3>
     <p>
       A collection version MUST contain <tt class="verbatim">members.json</tt> with:
     </p>
@@ -719,10 +906,19 @@
       <li>
         <p>
           <tt class="verbatim">members</tt>: a list, in the order in which the members
-          are presented.
+          are presented. This order is authoritative.
         </p>
       </li>
     </ul>
+    <p>
+      It MAY contain <tt class="verbatim">order</tt>, the rule by which tools
+      maintaining the collection place members: <tt class="verbatim">manual</tt> (the
+      default: tools append new members and never reorder), <tt class="verbatim">issued-desc</tt>
+      or <tt class="verbatim">issued-asc</tt> (by the members' <tt class="verbatim">Issued</tt>
+      date, then their <tt class="verbatim">Available</tt> date, members with neither
+      last, ties broken by object identifier, so that the result is
+      reproducible).
+    </p>
     <p>
       Each member MUST have:
     </p>
@@ -766,9 +962,10 @@
       (the version DOI), <tt class="verbatim">conceptDoi</tt>, <tt class="verbatim">follow</tt>
       (<tt class="verbatim">&quot;latest&quot;</tt>, section 10.3) and <tt class="verbatim">cite</tt>,
       a cached citation (<tt class="verbatim">title</tt>, <tt class="verbatim">creators</tt> as a
-      list of names, <tt class="verbatim">year</tt>) so that the collection stays
-      readable if the member becomes unavailable. <tt class="verbatim">cite</tt> is not
-      authoritative.
+      list of names, <tt class="verbatim">year</tt>, and <tt class="verbatim">issued</tt>, the
+      member's <tt class="verbatim">Issued</tt> date) so that the collection stays
+      readable, and can be ordered, without resolving its members, also if
+      they become unavailable. <tt class="verbatim">cite</tt> is not authoritative.
     </p>
     <p>
       Every member is pinned: a collection version states exactly which object
@@ -777,7 +974,7 @@
       inventory, which fixes all its files, collections are hash trees. Pins
       cannot form cycles.
     </p>
-    <h3 id="auto-21">10.2 Members of other archives<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-22">10.2 Members of other archives<span style="margin-left: 1em"></span></h3>
     <p>
       A member may belong to another archive. Nothing is copied: the member is
       resolved as in section 6.4. An archive MAY also mirror another archive's
@@ -786,38 +983,42 @@
       member allows redistribution. A reference (a pin without a copy) needs
       no permission.
     </p>
-    <h3 id="auto-22">10.3 Following members<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-23">10.3 Following members<span style="margin-left: 1em"></span></h3>
     <p>
       <tt class="verbatim">&quot;follow&quot;: &quot;latest&quot;</tt> is a curation
       setting, not a floating reference. A tool maintaining the collection
       reads the member archive's discovery document (or its feed); when the
-      followed object has a new head version, the tool writes a new collection
-      version with the new pin. If the followed object is withdrawn, the pin
-      is kept and the tool reports it to the curator.
+      followed object has a new current version (section 7.3), or a new
+      description of it, the tool writes a new collection version pinning the
+      last object version holding the current version. If the followed object
+      is withdrawn, the pin is kept and the tool reports it to the curator.
     </p>
-    <h3 id="auto-23">10.4 Rights<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-24">10.4 Rights<span style="margin-left: 1em"></span></h3>
     <p>
       The member list of a collection is placed under CC0. The licence of a
       collection never extends to its members.
     </p>
-    <h2 id="auto-24">11. Withdrawal and takedown<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-25">11.1 Withdrawal<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-25">11. Withdrawal and takedown<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-26">11.1 Withdrawal<span style="margin-left: 1em"></span></h3>
     <p>
       A document or collection is withdrawn (for instance retracted by its
-      authors) by a description-only version whose <tt class="verbatim">provenance.json</tt>
+      authors) by a description-only version whose <tt class="verbatim">object.json</tt>
       has <tt class="verbatim">status</tt> <tt class="verbatim">withdrawn</tt> and a <tt class="verbatim">withdrawal</tt>
-      object with <tt class="verbatim">date</tt> and <tt class="verbatim">reason</tt>. Its content
-      is kept, its history remains verifiable, and the discovery document
-      lists it with <tt class="verbatim">status</tt> <tt class="verbatim">withdrawn</tt>.
-      Presentations MUST show the withdrawal notice with the document.
+      object with a <tt class="verbatim">date</tt> and a <tt class="verbatim">reason</tt> (a note,
+      section 9), and whose <tt class="verbatim">datacite.json</tt> has the same date as
+      <tt class="verbatim">Withdrawn</tt>. The status belongs to the object, whatever
+      document version its head holds. Its content is kept, its history
+      remains verifiable, and the discovery document lists it with <tt class="verbatim">status</tt>
+      <tt class="verbatim">withdrawn</tt>. Presentations MUST show the withdrawal notice
+      with the document.
     </p>
-    <h3 id="auto-26">11.2 Takedown<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-27">11.2 Takedown<span style="margin-left: 1em"></span></h3>
     <p>
       When content must be removed (by law, or for a breach of rights), the
       object is deleted from the storage root and a tombstone is added to the
       discovery document.
     </p>
-    <h3 id="auto-27">11.3 Tombstones<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-28">11.3 Tombstones<span style="margin-left: 1em"></span></h3>
     <p>
       A tombstone records <tt class="verbatim">id</tt>, <tt class="verbatim">kind</tt>, <tt class="verbatim">lastVersion</tt>,
       <tt class="verbatim">inventorySha512</tt> of that version, <tt class="verbatim">date</tt>
@@ -834,10 +1035,10 @@
       mechanism is published, a later version of this specification will adopt
       it for takedowns of single files.
     </p>
-    <h2 id="auto-28">12. Versioning of this specification<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-29">12. Versioning of this specification<span style="margin-left: 1em"></span></h2>
     <p>
       Every JSON file defined here declares its format version, and the
-      discovery document and every <tt class="verbatim">provenance.json</tt> declare the
+      discovery document and every <tt class="verbatim">object.json</tt> declare the
       version of this specification. Before version 1.0, any change of the
       minor version (0.1, 0.2, &hellip;) may be incompatible; a reader that
       finds a version it does not know SHOULD report it and MUST NOT silently
@@ -848,8 +1049,8 @@
       The text of each version is published at <tt class="verbatim">https://opensheaf.org/opensheaf-specification-&lt;version&gt;.md</tt>
       and is not changed after the version is final.
     </p>
-    <h2 id="auto-29">13. Integrity and authenticity<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-30">13.1 Integrity<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-30">13. Integrity and authenticity<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-31">13.1 Integrity<span style="margin-left: 1em"></span></h3>
     <p>
       Integrity rests on OCFL digests: every file is fixed by its SHA-512
       digest in the inventory, every inventory by its checksum file, and every
@@ -858,7 +1059,7 @@
       block; archives following the Zenodo binding MUST record MD5 (appendix
       A).
     </p>
-    <h3 id="auto-31">13.2 Authenticity and dates<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-32">13.2 Authenticity and dates<span style="margin-left: 1em"></span></h3>
     <p>
       Digests show that files were not changed; they do not show who made them
       or when. An archive MAY provide, for each object version:
@@ -902,14 +1103,14 @@
       tags, but git hashes are not part of the integrity chain of this
       specification.
     </p>
-    <h2 id="auto-32">14. Verification<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-33">14. Verification<span style="margin-left: 1em"></span></h2>
     <p>
       A verifier checking an archive MUST:
     </p>
     <ul>
       <li>
         <p>
-          validate the discovery document, and every <tt class="verbatim">provenance.json</tt>
+          validate the discovery document, and every <tt class="verbatim">object.json</tt>
           and <tt class="verbatim">members.json</tt>, against the schemas of their
           declared versions;
         </p>
@@ -930,8 +1131,20 @@
       <li>
         <p>
           check the requirements of sections 7 to 11 on every object version,
-          including that <tt class="verbatim">datacite.json</tt> and <tt class="verbatim">provenance.json</tt>
-          agree on the document version;
+          including that <tt class="verbatim">datacite.json</tt> and <tt class="verbatim">object.json</tt>
+          agree on the document version and on the date of a withdrawal;
+        </p>
+      </li>
+      <li>
+        <p>
+          check the document versions of each document (section 7.3): object
+          versions with the same document version have the same sources,
+          renditions and change note; new numbers follow the rule of new
+          versions, without gaps; <tt class="verbatim">history</tt>, when present, lists
+          distinct document versions, covers all of them, each entry being the
+          last object version holding its document version; no object version
+          after the first one with <tt class="verbatim">history</tt> lacks it; every
+          notice is kept unchanged in every later object version;
         </p>
       </li>
       <li>
@@ -949,7 +1162,7 @@
       authoritative. It SHOULD limit the depth and size of the collections it
       follows, and report when it stops.
     </p>
-    <h2 id="auto-33">15. Security considerations<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-34">15. Security considerations<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -996,7 +1209,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-34">16. Privacy and rights<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-35">16. Privacy and rights<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1007,7 +1220,7 @@
       </li>
       <li>
         <p>
-          <strong>Metadata.</strong> <tt class="verbatim">datacite.json</tt>, <tt class="verbatim">provenance.json</tt>,
+          <strong>Metadata.</strong> <tt class="verbatim">datacite.json</tt>, <tt class="verbatim">object.json</tt>,
           <tt class="verbatim">members.json</tt>, inventories and the discovery document
           are placed under CC0, so that they can be harvested and mirrored
           freely.
@@ -1017,13 +1230,14 @@
         <p>
           <strong>Personal data.</strong> Archives record only the personal
           data needed to describe and cite the work (names, identifiers,
-          affiliations) and the depositor of each version. Agreement records
-          are minimal (section 9). A request to erase personal data from an
+          affiliations) and the depositor of each version. The depositor is
+          recorded in the inventory (section 7.1). Agreement records are
+          minimal (section 9). A request to erase personal data from an
           immutable history is handled by a takedown (section 11.2).
         </p>
       </li>
     </ul>
-    <h2 id="auto-35">17. Changelog<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-36">17. Changelog<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1031,7 +1245,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-36">Appendix A. Zenodo binding (normative for archives declaring the
+    <h2 id="auto-37">Appendix A. Zenodo binding (normative for archives declaring the
     profile <tt class="verbatim">zenodo</tt>)<span style="margin-left: 1em"></span></h2>
     <p>
       Zenodo issues DataCite DOIs (prefix <tt class="verbatim">10.5281</tt>) and keeps
@@ -1046,7 +1260,18 @@
           type <tt class="verbatim">publication-preprint</tt> (or the type matching <tt
           class="verbatim">resourceTypeGeneral</tt>). Description-only versions are
           metadata edits of the existing record version, not new record
-          versions.
+          versions; files they add (such as notices) are not uploaded, since
+          the files of a published record version are fixed.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Versions out of order.</strong> Zenodo orders the versions
+          of a record by publication, and its concept DOI resolves to the
+          latest. A document version deposited out of order (section 7.3) is
+          therefore not deposited as a new version of the record; it MAY be
+          deposited as a separate record, with <tt class="verbatim">IsVersionOf</tt> the
+          concept DOI of the document.
         </p>
       </li>
       <li>
@@ -1057,25 +1282,28 @@
           file count, the sources are uploaded as one archive <tt class="verbatim">sources.zip</tt>,
           built reproducibly (entries in byte order of their names, fixed
           timestamps, no extra attributes), whose digests are recorded in <tt
-          class="verbatim">provenance.json</tt> under <tt class="verbatim">external</tt>.
-          Inventories MUST record MD5 digests in <tt class="verbatim">fixity</tt>, so
-          that the checksums reported by Zenodo can be compared directly.
+          class="verbatim">object.json</tt> under <tt class="verbatim">external</tt>. Inventories
+          MUST record MD5 digests in <tt class="verbatim">fixity</tt>, so that the
+          checksums reported by Zenodo can be compared directly.
         </p>
       </li>
       <li>
         <p>
           <strong>Order of operations.</strong> (1) Create a draft, or a new
-          version of the record (a new version starts without files). (2)
-          Reserve its DOI. (3) Write <tt class="verbatim">datacite.json</tt> with that
-          DOI and build the object version in a staging area. (4) Upload the
-          files and compare the MD5 checksums reported by Zenodo with the
-          fixity block. (5) Publish. (6) Commit the object version and update
-          the discovery document. If a step fails before publication, the
-          draft is discarded. If publication succeeds and the commit fails,
-          the tool MUST complete the object version from the staging area
-          before any other deposit of that document; it SHOULD hold a lock per
-          document during a deposit, since Zenodo allows one unpublished
-          version per record.
+          version of the record (a new version inherits the files of the
+          previous one, which are deleted). (2) Reserve its DOI (Zenodo
+          reserves one with each draft; its sandbox reserves DOIs with the
+          prefix <tt class="verbatim">10.5281</tt> but publishes them with the test
+          prefix <tt class="verbatim">10.5072</tt>). (3) Write <tt class="verbatim">datacite.json</tt>
+          with that DOI and build the object version in a staging area. (4)
+          Upload the files and compare the MD5 checksums reported by Zenodo
+          with the fixity block. (5) Publish. (6) Commit the object version
+          and update the discovery document. If a step fails before
+          publication, the draft is discarded. If publication succeeds and the
+          commit fails, the tool MUST complete the object version from the
+          staging area before any other deposit of that document; it SHOULD
+          hold a lock per document during a deposit, since Zenodo allows one
+          unpublished version per record.
         </p>
       </li>
       <li>
@@ -1105,7 +1333,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-37">Appendix B. TeXmacs profile (normative for archives declaring the
+    <h2 id="auto-38">Appendix B. TeXmacs profile (normative for archives declaring the
     profile <tt class="verbatim">texmacs</tt>)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
@@ -1154,7 +1382,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-38">Appendix C. Website profile (normative for archives declaring the
+    <h2 id="auto-39">Appendix C. Website profile (normative for archives declaring the
     profile <tt class="verbatim">website</tt>)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
@@ -1168,19 +1396,29 @@
       <li>
         <p>
           <strong>Landing pages.</strong> Each document has one landing page,
-          for its newest version, with links to every version, its renditions
-          and sources, its DOI, and its withdrawal notice if any.
+          for its current version (section 7.3), with links to every version
+          in the order of the history, each with its external labels, stage,
+          change note and the notices about it, its renditions and sources,
+          its DOI, and the withdrawal notice if any.
         </p>
       </li>
       <li>
         <p>
           <strong>Search engines.</strong> Landing pages MUST carry the meta
           tags read by Google Scholar: <tt class="verbatim">citation_title</tt>, <tt
-          class="verbatim">citation_author</tt> (one per author), <tt class="verbatim">citation_publication_date</tt>,
-          and <tt class="verbatim">citation_pdf_url</tt> on the same host as the PDF;
-          and SHOULD carry schema.org <tt class="verbatim">ScholarlyArticle</tt> JSON-LD
-          and FAIR Signposting links (<tt class="verbatim">cite-as</tt>, <tt class="verbatim">describedby</tt>,
-          <tt class="verbatim">item</tt>, <tt class="verbatim">license</tt>).
+          class="verbatim">citation_author</tt> (one per author), <tt class="verbatim">citation_publication_date</tt>
+          (the <tt class="verbatim">Issued</tt> date, or else the <tt class="verbatim">Available</tt>
+          date of the current version), and <tt class="verbatim">citation_pdf_url</tt>
+          on the same host as the PDF; and SHOULD carry schema.org <tt class="verbatim">ScholarlyArticle</tt>
+          JSON-LD and FAIR Signposting links (<tt class="verbatim">cite-as</tt>, <tt
+          class="verbatim">describedby</tt>, <tt class="verbatim">item</tt>, <tt class="verbatim">license</tt>).
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Feeds.</strong> A feed (section 6.1) lists object versions
+          by their <tt class="verbatim">created</tt> date in the inventory: what is new
+          in the archive.
         </p>
       </li>
       <li>
@@ -1204,7 +1442,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-39">Appendix D. JSON Schemas (normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-40">Appendix D. JSON Schemas (normative)<span style="margin-left: 1em"></span></h2>
     <p>
       The schemas (JSON Schema draft 2020-12) are published with this
       specification and dedicated to the public domain under CC0 1.0, so that
@@ -1218,7 +1456,7 @@
       </li>
       <li>
         <p>
-          <a href="https://opensheaf.org/schemas/opensheaf-provenance-0.1.schema.json">opensheaf-provenance-0.1.schema.json</a> for <tt class="verbatim">provenance.json</tt>;
+          <a href="https://opensheaf.org/schemas/opensheaf-object-0.1.schema.json">opensheaf-object-0.1.schema.json</a> for <tt class="verbatim">object.json</tt>;
         </p>
       </li>
       <li>
@@ -1231,7 +1469,7 @@
       <tt class="verbatim">datacite.json</tt> is validated against the DataCite 4.7
       schema together with the requirements of section 8.
     </p>
-    <h2 id="auto-40">Appendix E. Examples (non-normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-41">Appendix E. Examples (non-normative)<span style="margin-left: 1em"></span></h2>
     <p>
       The values below come from the first archive. Digests are shortened, and
       the DOIs and ORCID iDs are placeholders.
@@ -1260,12 +1498,12 @@
 }</pre>
     </div>
     <p>
-      A <tt class="verbatim">provenance.json</tt> of a document version:
+      An <tt class="verbatim">object.json</tt> of a document version:
     </p>
     <div class="tmweb-code">
       <pre class="verbatim" xml:space="preserve">
 {
-  &quot;format&quot;: &quot;opensheaf-provenance/0.1&quot;,
+  &quot;format&quot;: &quot;opensheaf-object/0.1&quot;,
   &quot;specification&quot;: &quot;0.1&quot;,
   &quot;kind&quot;: &quot;document&quot;,
   &quot;archiveId&quot;: &quot;tag:opensheaf.org,2026:mgubi&quot;,
@@ -1275,12 +1513,47 @@
   &quot;sourceFormat&quot;: &quot;application/x-texmacs&quot;,
   &quot;renditions&quot;: [ { &quot;path&quot;: &quot;paper.pdf&quot;, &quot;mediaType&quot;: &quot;application/pdf&quot; } ],
   &quot;toolchain&quot;: [ { &quot;name&quot;: &quot;TeXmacs&quot;, &quot;version&quot;: &quot;2.1.5&quot; } ],
-  &quot;deposit&quot;: { &quot;date&quot;: &quot;2026-11-12T18:00:00Z&quot;,
-               &quot;agent&quot;: { &quot;name&quot;: &quot;Massimiliano Gubinelli&quot;, &quot;uri&quot;: &quot;https://orcid.org/0000-0000-0000-0000&quot; } },
+  &quot;stage&quot;: { &quot;scheme&quot;: &quot;NISO-JAV&quot;, &quot;value&quot;: &quot;AO&quot; },
   &quot;agreement&quot;: { &quot;by&quot;: [&quot;P. Duch&quot;, &quot;M. Gubinelli&quot;], &quot;date&quot;: &quot;2026-11-12&quot;, &quot;method&quot;: &quot;by e-mail&quot; },
+  &quot;external&quot;: [ { &quot;service&quot;: &quot;Zenodo&quot;, &quot;record&quot;: &quot;https://zenodo.org/records/1234567&quot;,
+                  &quot;doi&quot;: &quot;10.5281/zenodo.1234567&quot; } ],
   &quot;status&quot;: &quot;active&quot;
 }</pre>
     </div>
+    <p>
+      The <tt class="verbatim">object.json</tt> of a later version of a document whose
+      arXiv version 2 was found and deposited after version 4 (document
+      versions 1, 2, 3 for arXiv's v1, v3, v4, then 4 for arXiv's v2, placed
+      between 1 and 2 in the history), with a notice about version 2 (arXiv's
+      v3):
+    </p>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+{
+  &quot;format&quot;: &quot;opensheaf-object/0.1&quot;,
+  &hellip;
+  &quot;documentVersion&quot;: 3,
+  &quot;changes&quot;: { &quot;text&quot;: &quot;Corrected the proof of Lemma 2; 32 pages.&quot; },
+  &quot;stage&quot;: { &quot;scheme&quot;: &quot;NISO-JAV&quot;, &quot;value&quot;: &quot;AM&quot; },
+  &quot;history&quot;: [ &quot;v1&quot;, &quot;v4&quot;, &quot;v2&quot;, &quot;v5&quot; ],
+  &quot;notices&quot;: [ { &quot;documentVersion&quot;: 2, &quot;date&quot;: &quot;2026-12-01&quot;,
+                 &quot;text&quot;: &quot;Theorem 3 is wrong as stated; corrected in version 3.&quot;,
+                 &quot;path&quot;: &quot;notices/erratum-v2.pdf&quot;, &quot;mediaType&quot;: &quot;application/pdf&quot; } ],
+  &quot;external&quot;: [ { &quot;service&quot;: &quot;arXiv&quot;, &quot;record&quot;: &quot;https://arxiv.org/abs/2303.18112v4&quot;,
+                  &quot;doi&quot;: &quot;10.48550/arXiv.2303.18112&quot;, &quot;label&quot;: &quot;v4&quot; } ],
+  &quot;status&quot;: &quot;active&quot;
+}</pre>
+    </div>
+    <p>
+      Object versions <tt class="verbatim">v1</tt> to <tt class="verbatim">v3</tt> deposited
+      document versions 1 to 3; <tt class="verbatim">v4</tt> deposited document version
+      4 (arXiv's v2) and wrote the history <tt class="verbatim">[&quot;v1&quot;,
+      &quot;v4&quot;, &quot;v2&quot;, &quot;v3&quot;]</tt>, so that the
+      current version stayed document version 3 although the head held version
+      4; <tt class="verbatim">v5</tt>, shown here, is a description-only version adding
+      the notice, which holds the current version again. The current version
+      is document version 3, the last in the history.
+    </p>
     <p>
       A <tt class="verbatim">datacite.json</tt> of the same version:
     </p>
@@ -1299,7 +1572,8 @@
       &quot;affiliation&quot;: [ { &quot;name&quot;: &quot;Mathematical Institute, University of Oxford&quot; } ] } ],
   &quot;publisher&quot;: { &quot;name&quot;: &quot;Zenodo&quot; },
   &quot;publicationYear&quot;: 2026,
-  &quot;dates&quot;: [ { &quot;date&quot;: &quot;2026-11-12&quot;, &quot;dateType&quot;: &quot;Available&quot; } ],
+  &quot;dates&quot;: [ { &quot;date&quot;: &quot;2026-11-12&quot;, &quot;dateType&quot;: &quot;Issued&quot; },
+             { &quot;date&quot;: &quot;2026-11-12&quot;, &quot;dateType&quot;: &quot;Available&quot; } ],
   &quot;rightsList&quot;: [ { &quot;rights&quot;: &quot;Creative Commons Attribution 4.0 International&quot;,
                     &quot;rightsUri&quot;: &quot;https://creativecommons.org/licenses/by/4.0/&quot;,
                     &quot;rightsIdentifier&quot;: &quot;cc-by-4.0&quot;, &quot;rightsIdentifierScheme&quot;: &quot;SPDX&quot; } ],
@@ -1337,7 +1611,7 @@
   ]
 }</pre>
     </div>
-    <h2 id="auto-41">Appendix F. Rationale (non-normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-42">Appendix F. Rationale (non-normative)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1377,6 +1651,47 @@
       </li>
       <li>
         <p>
+          <strong>Why the archive numbers document versions itself.</strong>
+          External numberings have gaps (versions an external service no
+          longer serves) and do not cover versions that were never public
+          there. The archive's own numbers have no gaps; external labels are
+          recorded beside them.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Why an explicit history, and why it lists object
+          versions.</strong> Dates may be approximate or unknown, so they
+          cannot order versions, and pointers from each version to the
+          previous one cannot be corrected when a version is inserted later,
+          since earlier versions are fixed. A list kept in each object
+          version, with the head's list authoritative, can be corrected by a
+          new version and keeps a record of what was known before. Its entries
+          name object versions, which are exact and resolved directly through
+          the inventory, and name the last object version of each document
+          version, which carries its most complete description. Digests could
+          not be used: an object version cannot contain the digest of its own
+          inventory.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Why the deposit is read from the inventory.</strong> OCFL
+          already records when and by whom each object version was made;
+          repeating it in <tt class="verbatim">object.json</tt> would allow the two to
+          disagree.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Why notices are not new document versions.</strong> A notice
+          about a version is a later statement about it, not a change of the
+          work. The exact state a reader saw, with or without a notice, is
+          identified by the object version and its pin.
+        </p>
+      </li>
+      <li>
+        <p>
           <strong>Where witnesses live.</strong> A witness of an object
           version can only be made after the version is committed, so it
           cannot be part of it (a signature of an inventory cannot be listed
@@ -1407,7 +1722,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-42">Appendix G. References<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-43">Appendix G. References<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>

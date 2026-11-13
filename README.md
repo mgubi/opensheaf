@@ -84,7 +84,7 @@ This repository is the place to discuss OpenSheaf and to propose changes:
     OpenSheaf archive, following version 0.1, with TeXmacs sources, HTML
     versions and PDFs (profile `texmacs`).
 - **Tools:** `tools/papers.py` in [mgubi/papers](https://github.com/mgubi/papers),
-  which deposits documents as OCFL objects with DataCite and provenance
+  which deposits documents as OCFL objects with DataCite and OpenSheaf
   metadata, maintains a collection, writes the discovery document and the
   index, and verifies an archive (also with the JSON Schemas and the
   `ocfl-py` validator).
@@ -96,7 +96,7 @@ This repository is the place to discuss OpenSheaf and to propose changes:
 - [`FAQ.md`](FAQ.md): answers to common questions about the design.
 - `README.md`: this text, also the home page of the site.
 - `schemas/`: the JSON Schemas of the files defined by the specification
-  (`opensheaf.json`, `provenance.json`, `members.json`), also published at
+  (`opensheaf.json`, `object.json`, `members.json`), also published at
   `https://opensheaf.org/schemas/`.
 - `index.tm`/`index.html`, `opensheaf-specification-0.1.tm`/`.html`,
   `faq.tm`/`faq.html`: the pages of the site, generated from the Markdown

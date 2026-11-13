@@ -76,10 +76,31 @@ named globally by the pair (archive identifier, object identifier).
 ## What is the difference between a document version and an object version?
 
 The document version is the version of the work, what readers see and what
-gets a DOI: it changes only when the sources or the PDF change. The object
-version (`v1`, `v2`, ...) is OCFL's: it changes at every change of the
-object, including corrections of the description (adding the DOI of the
-journal version, fixing an affiliation).
+gets a DOI: it changes only when the document's own files change (sources,
+renditions, change note). The object version (`v1`, `v2`, ...) is OCFL's: it
+changes at every change of the object, including corrections of the
+description (adding the DOI of the journal version, fixing an affiliation)
+and notices about earlier versions.
+
+## How are versions numbered and ordered?
+
+The archive numbers document versions itself, from 1 and without gaps, even
+when an external service numbers them differently: if arXiv still serves only
+v1, v3 and v4 of a paper, they are document versions 1, 2 and 3, and the
+arXiv labels are recorded beside them. Versions are normally in the order of
+their numbers. When an earlier version turns up later, it gets the next
+number and an explicit `history` in `object.json` puts it in its place; the
+current version, the one readers are directed to, is the last in the
+history. Dates are only information: they may be approximate or unknown, so
+they never decide the order.
+
+## What if a version turns out to be wrong?
+
+Deposit a corrected version, with a change note saying what changed. To warn
+readers of the earlier version, add a notice about it (for instance an
+erratum, as text or as a file): notices are later statements about a version,
+kept with the object and shown with that version, and they never change the
+version itself.
 
 ## How do collections work across archives? What if another archive disappears?
 
@@ -139,7 +160,7 @@ OpenSheaf will adopt it when it is published.
 
 Yes. Each document carries the licence its authors choose; "All rights
 reserved" means readers may access the document but not reuse it. The
-metadata (descriptions, provenance, member lists, inventories) is CC0, so that
+metadata (descriptions, object records, member lists, inventories) is CC0, so that
 it can be harvested and mirrored freely. On Zenodo, "All rights reserved" is
 entered as a custom licence.
 

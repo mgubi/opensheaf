@@ -12,6 +12,13 @@
     "format": {
       "const": "opensheaf-collection/0.1"
     },
+    "order": {
+      "enum": [
+        "manual",
+        "issued-desc",
+        "issued-asc"
+      ]
+    },
     "members": {
       "type": "array",
       "items": {
@@ -82,6 +89,9 @@
               },
               "year": {
                 "type": "integer"
+              },
+              "issued": {
+                "type": "string"
               }
             }
           }

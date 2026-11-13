@@ -43,10 +43,13 @@ OpenSheaf proposes a lean common format instead:
   Layout (OCFL), used by research libraries for long-term preservation;
   description follows the DataCite metadata of DOIs. OpenSheaf only adds what
   these leave open.
-- **Collections that compose.** A collection, such as the papers of a
-  seminar, an editorial selection or a reading list, is itself a versioned
-  object pinning its members by digest, also across archives. Selections of
-  collections compose without copying, as local pieces glue into a sheaf.
+- **Collections that compose.** Archives keep documents whole, every
+  version, impartially; selections (a journal, a digest, a review journal, a
+  reading list) vet particular versions, and change only by an act of their
+  curator. Both are versioned objects pinning their members by digest, also
+  across archives, and compose without copying, as local pieces glue into a
+  sheaf. The [use cases](USE-CASES.md) show how authors, archives and
+  selections use them.
 - **Compatible with existing infrastructure.** Documents can also be on
   arXiv, get DOIs and be archived on Zenodo, and be found by Google Scholar;
   none of these is required.

@@ -155,6 +155,23 @@ def convert(md):
             blocks.append(f'  <\\with|par-mode|center>\n    {image(m.group(2), "0.6par")}\n  </with>')
             i += 1
             continue
+        if l.startswith('|') and i + 1 < len(lines) and re.match(r'^\|[\s:|-]+\|\s*$', lines[i + 1]):
+            # a Markdown table: a bordered TeXmacs table, header row in bold
+            def cells(row):
+                return [c.strip() for c in row.strip().strip('|').split('|')]
+            rows = [cells(l)]
+            i += 2
+            while i < len(lines) and lines[i].startswith('|'):
+                rows.append(cells(lines[i]))
+                i += 1
+            # rows, like cells, are separate arguments
+            body = '|'.join('<row|' + '|'.join(f'<cell|{inline(c)}>' for c in r) + '>' for r in rows)
+            # tformat takes each cell setting as an argument of its own
+            blocks.append('  <block|<tformat|<cwith|1|1|1|-1|font-series|bold>|'
+                          '<cwith|1|-1|1|-1|cell-valign|top>|'
+                          '<cwith|1|-1|1|-1|cell-hyphen|t>|'
+                          f'<table|{body}>>>')
+            continue
         m = re.match(r'> \[!(WARNING|NOTE|IMPORTANT|CAUTION|TIP)\]\s*$', l)
         if m:
             # GitHub's alert syntax: a box with a label
@@ -207,7 +224,7 @@ def convert(md):
             continue
         para = []
         while (i < len(lines) and lines[i].strip()
-               and not re.match(r'(#{1,3} |- |```|> )', lines[i])):
+               and not re.match(r'(#{1,3} |- |```|> |\|)', lines[i])):
             para.append(lines[i].strip())
             i += 1
         blocks.append('  ' + inline(' '.join(para)))

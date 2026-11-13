@@ -27,7 +27,8 @@
   </active*>
 
   <assign|notes-header-links|<macro|[<hlink|OpenSheaf|index.tm>]
-  [<hlink|specification|opensheaf-specification-0.1.tm>] [<hlink|FAQ|faq.tm>]
+  [<hlink|specification|opensheaf-specification-0.1.tm>] [<hlink|use
+  cases|use-cases.tm>] [<hlink|FAQ|faq.tm>]
   [<hlink|first archive|https://mgubi.org/papers/>]>>
 
   <assign|notes-header-name|OpenSheaf>

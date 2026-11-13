@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:x="https://www.texmacs.org/2002/extensions" xmlns:m="http://www.w3.org/1998/Math/MathML">
+  <head>
+    <title>OpenSheaf</title>
+    <meta charset="utf-8" content="TeXmacs 2.1.5" name="generator"></meta>
+    <link href="resources/notes-base.css" type="text/css" rel="stylesheet"></link>
+    <script src="resources/theme.js" language="javascript"></script>
+    <link href="resources/brand/favicon.svg" rel="icon"></link>
+    <link href="resources/opensheaf.css" type="text/css" rel="stylesheet"></link>
+    <script src="resources/highlight.pack.js" language="javascript" defer></script>
+    <script src="resources/notes-base.js" language="javascript" defer></script>
+    <script language="javascript" defer>var bs = String.fromCharCode(92), sp =
+    String.fromCharCode(32); window.MathJax = {tex: {macros: {xequal: [bs +
+    'xlongequal[#1]{#2}', 2, ''], marked: [bs + 'class{tm-marked}{#1}', 1],
+    llbracket: bs + 'mathopen{' + bs + 'unicode{x27E6}}', rrbracket: bs +
+    'mathclose{' + bs + 'unicode{x27E7}}', hyperref: ['#2', 2, ''], rotatebox:
+    [bs + 'style{display:inline-block;transform:rotate(calc(-1deg' + sp + '*'
+    + sp + '#2))}{#3}', 3, '']}}};</script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" language="javascript"></script>
+  </head>
+  <body>
+    <div class="notes-header">
+      <p>
+        [<a href="index.html">OpenSheaf</a>] [<a href="opensheaf-specification-0.1.html">specification</a>] [<a href="use-cases.html">use
+        cases</a>] [<a href="faq.html">FAQ</a>] [<a href="https://mgubi.org/papers/">first archive</a>]<em class="notes-header-name">OpenSheaf</em>
+      </p>
+    </div>
+    <h1 id="auto-1">OpenSheaf: use cases<span style="margin-left: 1em"></span></h1>
+    <p>
+      How the <a href="opensheaf-specification-0.1.html">specification</a> adapts to the people and institutions
+      that keep and select scholarly documents. It is non-normative: where it
+      and the specification differ, the specification holds. Commands of the
+      reference tools, <a href="https://github.com/opensheaf/opensheaf-py">opensheaf-py</a> (<tt class="verbatim">osheaf</tt>), are
+      given as illustrations; any tool following the specification will do.
+    </p>
+    <p>
+      Three roles recur:
+    </p>
+    <ul>
+      <li>
+        <p>
+          <strong>authors</strong> make documents and their versions;
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>archives</strong> keep documents, every version,
+          impartially: an author's own archive, an institution's repository,
+          an independent storage site;
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>selections</strong> vet particular versions (revisions) of
+          documents: a journal, a digest, a review journal, a reading list,
+          proceedings.
+        </p>
+      </li>
+    </ul>
+    <p>
+      They map to the two kinds of collections of section 10: an
+      <strong>archive collection</strong> pins objects whole and may follow
+      them as they grow; a <strong>selection</strong> pins revision sets and
+      changes only by an act of its curator. Copies are of two kinds too: a
+      <strong>mirror</strong> copies a whole object (an archive keeping
+      another archive's objects), an <strong>accepted copy</strong> takes one
+      vetted revision into the selection's own archive.
+    </p>
+    <h2 id="auto-2">Authors<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-3">A researcher's own archive<span style="margin-left: 1em"></span></h3>
+    <p>
+      A mathematician keeps an archive of her papers on her website (the first
+      archive, <a href="https://mgubi.org/papers/">mgubi.org/papers</a>, is one).
+    </p>
+    <ul>
+      <li>
+        <p>
+          Each paper is a document object; each version of the paper, a
+          document version, numbered by the archive from 1 without gaps.
+          Versions imported from arXiv keep arXiv's label (<tt class="verbatim">v3</tt>)
+          in <tt class="verbatim">external</tt>.
+        </p>
+      </li>
+      <li>
+        <p>
+          A draft or a submitted manuscript found later is deposited in its
+          place in the history (<tt class="verbatim">history</tt>), without renumbering
+          what exists; versions never public at the time carry a <tt class="verbatim">Created</tt>
+          date instead of <tt class="verbatim">Available</tt>.
+        </p>
+      </li>
+      <li>
+        <p>
+          An erratum is a notice about a version; a retraction is a
+          withdrawal. Both are description-only versions: nothing deposited
+          changes.
+        </p>
+      </li>
+      <li>
+        <p>
+          The archive's main collection is an <strong>archive
+          collection</strong> of her own documents, following them: the index
+          shows the current version of each.
+        </p>
+      </li>
+      <li>
+        <p>
+          DOIs come from the Zenodo binding (appendix A), one per document
+          version.
+        </p>
+      </li>
+    </ul>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+osheaf deposit kpz-uniqueness paper.tex --pdf paper.pdf --title &hellip; --author &hellip; --rights cc-by-4.0
+osheaf arxiv import downloads --update      # the new arXiv versions
+osheaf notice kpz-uniqueness --about 2 --text &quot;Lemma 3 is wrong as stated; corrected in version 3.&quot;
+osheaf collect &amp;&amp; osheaf index &amp;&amp; osheaf verify</pre>
+    </div>
+    <h3 id="auto-4">Co-authors in different archives<span style="margin-left: 1em"></span></h3>
+    <p>
+      Two co-authors each keep an archive; their joint paper is deposited
+      once, in one of them. The other lists it in a collection of her own
+      archive (for instance &quot;papers with my students&quot;) as a member
+      of another archive. In an <strong>archive collection</strong> with <tt
+      class="verbatim">follow</tt>, her list keeps pointing to the current version as
+      her co-author adds versions; nothing is copied, and no permission is
+      needed. If she wants the paper in her archive too, and every version is
+      openly licensed, she can <strong>mirror</strong> it: a byte-for-byte
+      copy of the whole object, which stays the co-author's object (<tt class="verbatim">mirrorOf</tt>).
+    </p>
+    <h3 id="auto-5">A research group, a seminar, lecture notes<span style="margin-left: 1em"></span></h3>
+    <p>
+      A group keeps one archive for its members' papers, theses and slides, or
+      each member keeps her own and the group keeps an archive collection of
+      members of those archives. Lecture notes and slides are documents like
+      papers (with <tt class="verbatim">types</tt> such as <tt class="verbatim">Text</tt> or <tt
+      class="verbatim">Audiovisual</tt>); notes revised every year are versions of one
+      document, or one document per edition when each edition should stay
+      citable on its own.
+    </p>
+    <h2 id="auto-6">Archives<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-7">An institutional repository<span style="margin-left: 1em"></span></h3>
+    <p>
+      A university keeps an archive of its members' work.
+    </p>
+    <ul>
+      <li>
+        <p>
+          Members may deposit directly in the institution's archive, whose
+          main collection is an archive collection of its documents, perhaps
+          with one archive collection per department.
+        </p>
+      </li>
+      <li>
+        <p>
+          Or members keep their own archives, and the institution
+          <strong>mirrors</strong> their documents: each mirror is a whole
+          copy, every version, kept up to date by copying new versions, and
+          listed with <tt class="verbatim">mirrorOf</tt> in the institution's discovery
+          document. Mirroring needs the right to redistribute every version
+          (an open licence, or the authors' agreement); otherwise the
+          institution only references the documents.
+        </p>
+      </li>
+      <li>
+        <p>
+          The institution is impartial: it keeps what its members deposit. It
+          does not vet versions; that is what selections do.
+        </p>
+      </li>
+    </ul>
+    <h3 id="auto-8">An independent storage site<span style="margin-left: 1em"></span></h3>
+    <p>
+      A preservation service (a library, a consortium, a site like Software
+      Heritage) keeps copies of archives so that they survive their owners'
+      servers.
+    </p>
+    <ul>
+      <li>
+        <p>
+          It mirrors whole archives, or chosen objects of them, byte for byte;
+          an archive mirrored entirely lists the copy in the <tt class="verbatim">mirrors</tt>
+          of its discovery document, so that clients find it when the original
+          fails (section 6.4).
+        </p>
+      </li>
+      <li>
+        <p>
+          Since every collection pins its members by digest, any copy whose
+          bytes match is as good as the original: integrity comes from the
+          pin, not from the place. Verifiers check mirrors exactly as
+          originals.
+        </p>
+      </li>
+      <li>
+        <p>
+          Zenodo deposits (appendix A) and timestamps (section 13.2) are
+          further witnesses that a version existed, with these bytes, at a
+          date.
+        </p>
+      </li>
+    </ul>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+osheaf mirror https://example.org/papers/ kpz-uniqueness
+osheaf verify --remote      # checks members on their mirrors when an archive fails</pre>
+    </div>
+    <h3 id="auto-9">An archive that moves<span style="margin-left: 1em"></span></h3>
+    <p>
+      An author moves her archive to a new domain. Its archive identifier (a
+      <tt class="verbatim">tag:</tt> URI) does not change; collections pinned it with
+      the base URL of the time, and clients that cannot reach it there try the
+      mirrors. Pins stay valid, because they fix bytes, not addresses.
+    </p>
+    <h2 id="auto-10">Selections<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-11">An overlay journal<span style="margin-left: 1em"></span></h3>
+    <p>
+      A journal whose papers are kept by their authors (on arXiv, or in their
+      own archives) accepts, after review, a particular version of each paper.
+    </p>
+    <ul>
+      <li>
+        <p>
+          An issue is a <strong>selection</strong>: each member pins the
+          revision set the editors vetted, usually the accepted version.
+        </p>
+      </li>
+      <li>
+        <p>
+          The authors' later versions are not in the issue: they have not been
+          reviewed. A correction accepted by the editors adds a revision to
+          the set, as a new version of the issue, recorded in its inventory as
+          the editors' act.
+        </p>
+      </li>
+      <li>
+        <p>
+          To make sure what it vetted stays available, the journal keeps an
+          <strong>accepted copy</strong> of each vetted revision, as a
+          document of its own archive: exactly the files of that version, byte
+          for byte, with the source and its pin recorded. Only the copied
+          revision needs a licence allowing redistribution; a paper whose
+          first preprint was under a restrictive licence can be accepted in a
+          later, openly licensed version. Later versions of the accepted copy
+          (corrections, notices, a withdrawal) are the editors' acts; the
+          authors' archive cannot change them.
+        </p>
+      </li>
+    </ul>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+osheaf accept https://authors.example.org/ network-discrimination --version v2 --stage VoR \
+  --agreement &quot;the journal's publication terms&quot;
+osheaf collection sync --from issue-7.yaml        # type: selection, the vetted revisions</pre>
+    </div>
+    <h3 id="auto-12">A journal that publishes its own version<span style="margin-left: 1em"></span></h3>
+    <p>
+      A journal typesets the accepted paper in its own layout, gives it a DOI,
+      and publishes it under its licence, with the authors' agreement.
+    </p>
+    <ul>
+      <li>
+        <p>
+          The journal's version of record is a document of the journal's
+          archive, not a version of the authors' document (section 7.3): it
+          has the journal as <tt class="verbatim">publisher</tt>, <tt class="verbatim">stage</tt>
+          <tt class="verbatim">VoR</tt>, the journal's <tt class="verbatim">rightsList</tt>, the
+          authors' agreement in <tt class="verbatim">object.json</tt>, and relations to
+          the authors' versions (<tt class="verbatim">IsVersionOf</tt>, <tt class="verbatim">IsIdenticalTo</tt>
+          the DOI it registered).
+        </p>
+      </li>
+      <li>
+        <p>
+          The authors' preprint is linked to it by a description-only version
+          of their own document (<tt class="verbatim">IsVersionOf</tt> the article's
+          DOI, section 8.1), if they want.
+        </p>
+      </li>
+      <li>
+        <p>
+          The journal's issues are selections of its own documents, or archive
+          collections of them: the journal's own documents change only by its
+          own acts in either case.
+        </p>
+      </li>
+    </ul>
+    <h3 id="auto-13">A digest, a reading list, a curated bibliography<span style="margin-left: 1em"></span></h3>
+    <p>
+      A researcher publishes a list of recommended papers on a topic, from any
+      archives.
+    </p>
+    <ul>
+      <li>
+        <p>
+          The list is a <strong>selection</strong>: each member pins the
+          revision she read and recommends. A later version of a paper enters
+          the list only if she adds it, after reading it.
+        </p>
+      </li>
+      <li>
+        <p>
+          Nothing is copied, so no permission is needed; the members' cached
+          citations keep the list readable if an archive disappears.
+        </p>
+      </li>
+      <li>
+        <p>
+          A selection may contain collections: a digest of digests, or of
+          journal issues, each pinned in the version vetted.
+        </p>
+      </li>
+    </ul>
+    <h3 id="auto-14">A review journal (like Mathematical Reviews or zbMATH Open)<span
+    style="margin-left: 1em"></span></h3>
+    <p>
+      A review journal publishes short reviews of papers published elsewhere.
+    </p>
+    <ul>
+      <li>
+        <p>
+          Each review is a document of the review journal's archive, written
+          by a reviewer, with <tt class="verbatim">relatedIdentifiers</tt> <tt class="verbatim">Reviews</tt>
+          pointing to the reviewed paper (its DOI, or the URL of the object
+          version reviewed).
+        </p>
+      </li>
+      <li>
+        <p>
+          The reviewed papers form a <strong>selection</strong>: each member
+          pins exactly the revision that was reviewed. When a paper gets a new
+          version, the review stays attached to the reviewed revision, and the
+          selection does not move; a new review of the new version adds a
+          revision to the set, by the editors' act.
+        </p>
+      </li>
+      <li>
+        <p>
+          Reviews and the selection are kept by the review journal, so the
+          record of what was reviewed, and in which version, is fixed and
+          checkable even if the papers' archives change.
+        </p>
+      </li>
+    </ul>
+    <h3 id="auto-15">Proceedings, special issues, volumes<span style="margin-left: 1em"></span></h3>
+    <p>
+      Proceedings of a conference are a selection of the talks' papers, each
+      vetted in the version presented; a volume is a selection whose members
+      are its issues (collections), each pinned in the version published. A
+      special issue of a journal is a selection of the journal's own
+      documents, or of accepted copies.
+    </p>
+    <h2 id="auto-16">What happens when &hellip;<span style="margin-left: 1em"></span></h2>
+    <p>
+      <table style="display: inline-table; vertical-align: middle">
+        <tbody><tr>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-left: 1px solid; border-top: 1px solid">Event</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid">Archive collection (an archive, a mirror)</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid">Selection (a journal, a digest)</td>
+        </tr><tr>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-left: 1px solid">the authors deposit a new version</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">it is followed (with <tt class="verbatim">follow</tt>): a new
+          collection version pins the new head</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">nothing changes; the curator may vet it and add it to the
+          revision set</td>
+        </tr><tr>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-left: 1px solid">the authors add a notice or a description</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">it is followed, like any new version</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">not vetted; presentations may show it, saying where it
+          comes from</td>
+        </tr><tr>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-left: 1px solid">the authors withdraw the document</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">it is followed: the withdrawn document stays, with its
+          notice</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">the vetted revisions stay; the curator decides (a notice
+          of its own, a withdrawal of its accepted copy)</td>
+        </tr><tr>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-left: 1px solid">the editors correct a vetted version</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">not applicable</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">a new revision in the set, or a new version of the
+          accepted copy: the editors' act, in the selection's history</td>
+        </tr><tr>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-left: 1px solid">the member's archive moves</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">the pin stays valid; clients try the mirrors</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">the same</td>
+        </tr><tr>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-left: 1px solid">the member's archive disappears</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">members are fetched from mirrors, Zenodo or snapshots;
+          the pin decides</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">the accepted copy keeps the vetted revision; references
+          keep their cached citations</td>
+        </tr><tr>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-left: 1px solid">a version's licence forbids redistribution</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">the object cannot be mirrored, only referenced</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid">the revision cannot be copied, only referenced (unless
+          the authors agree)</td>
+        </tr></tbody>
+      </table>
+    </p>
+  </body>
+</html>

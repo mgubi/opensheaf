@@ -34,6 +34,7 @@ PAGES = {
     "README.md": "index.tm",                                        # home page
     "opensheaf-specification-0.1.md": "opensheaf-specification-0.1.tm",
     "FAQ.md": "faq.tm",
+    "USE-CASES.md": "use-cases.tm",
 }
 SPEC = "opensheaf-specification-0.1.md"
 

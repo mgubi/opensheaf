@@ -243,3 +243,7 @@ div.os-alert.os-note .os-alert-label { color: #1c3554; }
 }
 :root[data-theme="dark"] div.os-alert { background: #2d2412; color: #f1e3c4; border-color: #8a6420; border-left-color: #d08a1c; }
 :root[data-theme="dark"] div.os-alert .os-alert-label { color: #f0b45a; }
+
+/* Tables from the Markdown sources: the first row is the header. */
+.tmweb-body table tr:first-child td, body table tr:first-child td { font-weight: bold; }
+body table td { padding: 0.3em 0.5em; }

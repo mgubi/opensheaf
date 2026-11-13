@@ -33,15 +33,20 @@ Sections marked non-normative, examples, notes and the appendices marked as such
 - **Storage root:** an OCFL 1.1 storage root holding the objects of the archive.
 - **Object:** an OCFL object. Its **kind** is `document` or `collection`.
 - **Document:** an object holding one scholarly work (an article, notes, a thesis, a book) with its sources and renditions.
-- **Collection:** an object holding a list of members.
-- **Selection:** a collection whose members include collections. Selections are collections; the word only describes their use.
+- **Collection:** an object holding a list of members. A collection is an archive collection or a selection (section 10.1).
+- **Archive collection:** a collection that keeps objects whole, impartial about their versions: each member pins an object with all its versions, and may follow it as it grows. An archive's main collection, and the list of objects an archive mirrors, are archive collections.
+- **Selection:** a collection that vets particular revisions of documents (a journal, a digest, a review journal, a reading list): each member pins a revision set, and earlier or later versions are not part of the selection unless its curator adds them, by a new version of the selection.
+- **Revision:** a document version, as vetted by a selection, pinned by the object version that held it when it was vetted.
+- **Revision set:** the revisions of one document vetted by a selection (usually one; more after a correction).
+- **Mirror:** a copy, in an archive's storage root, of another archive's object, whole and byte for byte (section 10.4).
+- **Accepted copy:** a document of a selection's archive holding exactly the files of a revision it vetted from another archive (section 10.5).
 - **Object version:** an OCFL version of an object (`v1`, `v2`, ...). It changes at every change of the object.
 - **Document version:** the version of the work, a positive integer numbered by the archive, in `object.json` and `datacite.json`. It changes exactly when the document's own files change (section 7.3).
 - **Description-only version:** an object version that holds an existing document version with its files unchanged, changing only the description, the state or the notices of the object (section 7.3).
 - **History:** the order of a document's versions in the history of the work (section 7.3).
 - **Current version:** the document version to which readers are directed: the last in the history.
 - **Note:** a short text, a file of the content, or both, as used for change notes, notices and withdrawals (section 9).
-- **Member:** an entry of a collection, pinning an object version of some archive.
+- **Member:** an entry of a collection: an object (in an archive collection) or a revision set of a document (in a selection), of any archive.
 - **Pin:** the pair (object version, SHA-512 digest of that version's inventory file).
 - **Rendition:** a file produced from the sources and deposited with them (a PDF, an EPUB).
 - **Presentation:** files generated from the archive for readers (web pages, indexes, HTML versions of documents). It is never authoritative.
@@ -86,7 +91,7 @@ The discovery document is the JSON file `opensheaf.json` at the base URL of the 
 - `name`: a human-readable name;
 - `storageRoot`: the URL of the storage root, ending with `/` (relative URLs are allowed);
 - `storageLayout`: `"0002-flat-direct-storage-layout"`;
-- `objects`: the list of all objects in the storage root, each with `id`, `kind`, `head` (the head object version), `inventorySha512` (the SHA-512 digest of the head inventory, as written in its checksum file) and `status` (`active` or `withdrawn`, section 11).
+- `objects`: the list of all objects in the storage root, each with `id`, `kind`, `head` (the head object version), `inventorySha512` (the SHA-512 digest of the head inventory, as written in its checksum file) and `status` (`active` or `withdrawn`, section 11); a mirror (section 10.4) also has `mirrorOf`, the archive identifier of the archive whose object it copies.
 
 It MUST also contain `profiles`, the list of profiles followed, from `zenodo`, `texmacs`, `website` (an empty list if none). It SHOULD contain `mainCollection` (the identifier of the collection that lists the archive's own documents) and `contact` (a URI). It MAY contain `mirrors` (base URLs of complete copies of the archive), `tombstones` (section 11.3), `keys` (section 13.2) and `feed` (the URL of an Atom feed of new object versions).
 
@@ -104,7 +109,7 @@ An object identifier MUST match `^[a-z0-9]+(-[a-z0-9]+)*$` and MUST be at most 6
 
 To fetch an object version of a member, a client:
 
-- reads the discovery document at the member's archive URL (section 10.1) and fetches `<storageRoot><id>/<version>/inventory.json`;
+- reads the discovery document at the member's archive URL (section 10.2) and fetches `<storageRoot><id>/<version>/inventory.json`;
 - if this fails, tries the mirrors listed in the member, then those listed in the archive's discovery document;
 - if this fails, MAY use external copies: the files of an external record named in the version's `object.json` (a DOI record), or a software archive snapshot (a SWHID).
 
@@ -145,7 +150,7 @@ HTML versions and other presentation files SHOULD NOT be deposited, since they d
 
 **History.** The order of the document versions in the history of the work is the order of their numbers, unless `object.json` has `history` (section 9): the list, in the order of the work, of the last object version holding each document version. The last object version is used because it carries the most complete description of that document version (a DOI added later, a corrected stage). An object version that deposits a document version out of order (an earlier version found later) MUST write `history`, and once an object version has `history`, every later object version MUST have it. A version whose place in the history is unknown goes just before the current version, and its `object.json` SHOULD say so in its change note. The history is read from the head version; earlier object versions keep the history as it was known when they were made.
 
-**Current version.** The current version of a document is the last entry of the history of its head version (without `history`: the highest document version). The head may hold another document version, after an earlier version is deposited out of order or described by a description-only version; the current version stays where it was. Landing pages, indexes, citations and the following of members (section 10.3) use the current version, not the head.
+**Current version.** The current version of a document is the last entry of the history of its head version (without `history`: the highest document version). The head may hold another document version, after an earlier version is deposited out of order or described by a description-only version; the current version stays where it was. Landing pages, indexes and citations use the current version, not the head; selections vet revisions explicitly (section 10.2).
 
 **Notices.** A notice about a document version (for instance that a theorem of version 2 is wrong as stated, and is corrected in version 3) is written after that version, which cannot change. Notices are added to `notices` in `object.json` (section 9) by description-only versions. A notice present in an object version is present, unchanged, in every later object version; a notice is corrected or withdrawn by a later notice that says so. Presentations showing a document version SHOULD show the current notices about it.
 
@@ -153,7 +158,7 @@ Dates never order document versions and never decide the current version (sectio
 
 ### 7.4 Collections
 
-A collection version contains `datacite.json`, `object.json` and `members.json` (section 10). Its `object.json` declares `kind` `collection`; its document version counts the changes of the member list, and it has none of the fields specific to documents (`mainSource`, `sourceFormat`, `sourcesMissing`, `renditions`, `toolchain`, `changes`, `stage`, `history`, `notices`).
+A collection version contains `datacite.json`, `object.json` and `members.json` (section 10), which states whether the collection is an archive collection or a selection. Its `object.json` declares `kind` `collection`; its document version counts the changes of the member list, and it has none of the fields specific to documents (`mainSource`, `sourceFormat`, `sourcesMissing`, `renditions`, `toolchain`, `changes`, `stage`, `history`, `notices`).
 
 ## 8. Description: datacite.json
 
@@ -193,7 +198,7 @@ Dates MAY be approximate, as DataCite allows (`2019`, `2019-03`, a range `2018/2
 - The same work published elsewhere SHOULD be linked with `IsIdenticalTo` (same content, for instance an arXiv version) or `IsVariantFormOf` (different content or form).
 - A preprint SHOULD be linked to its later published article with `IsVersionOf` the article's DOI, as DataCite recommends; consumers distinguish this relation from the concept DOI by its target. It is added by a description-only version.
 - The sources MAY be linked to a software archive snapshot (`relatedIdentifierType` `SWHID`).
-- A collection version MUST have `HasPart` for each member that has a version DOI, pointing to that version DOI. Members without a DOI are listed only in `members.json`.
+- A collection version MUST have `HasPart` for each member (each revision, in a selection) that has a version DOI, pointing to that version DOI. Members without a DOI are listed only in `members.json`.
 - A document MUST NOT state the collections that include it: membership is stated only by collections, so that including a document in any collection never changes the document.
 
 ## 9. The object: object.json
@@ -229,11 +234,21 @@ Any object MAY contain:
 
 ## 10. Collections: members.json
 
-### 10.1 The member list
+### 10.1 Archive collections and selections
+
+Collections are of two kinds, which differ in how they treat the versions of their members.
+
+- An **archive collection** keeps objects whole and is impartial about their versions. Each member pins an object, with all its versions, and the collection may follow it as it grows, whoever adds the versions: the owner of the object decides what its versions are. An archive's main collection (its own documents) and the list of objects an archive mirrors (section 10.4) are archive collections.
+- A **selection** vets particular revisions: a journal its accepted version, a digest or a review journal the version it reviewed, a reading list the version it recommends. Each member pins a revision set, the document versions the curator vetted; earlier and later versions of the same document are not part of the selection, and the selection changes only by an explicit act of its curator, which is a new version of the selection. A selection may also keep its own copies of the revisions it vetted (section 10.5).
+
+Both kinds may contain collections as members (an archive of archives, a selection of issues). `members.json` states the kind.
+
+### 10.2 The member list
 
 A collection version MUST contain `members.json` with:
 
 - `format`: `"opensheaf-collection/0.1"`;
+- `type`: `"archive"` or `"selection"`;
 - `members`: a list, in the order in which the members are presented. This order is authoritative: presentations MUST present members in it.
 
 It MAY contain `order`, the rule by which tools maintaining the collection place members: `manual` (the default: tools append new members and never reorder), `issued-desc` or `issued-asc` (by the members' `Issued` date, then their `Available` date, members with neither last, ties broken by object identifier, so that the result is reproducible).
@@ -243,25 +258,37 @@ Each member MUST have:
 - `kind`: `document` or `collection`;
 - `archive`: the archive identifier of the member's archive;
 - `archiveUrl`: the base URL of that archive when the collection version was made;
-- `id`: the object identifier;
-- `version`: the pinned object version;
-- `inventorySha512`: the SHA-512 digest of that version's inventory file.
+- `id`: the object identifier.
 
-Each member MAY have `mirrors` (base URLs), `doi` (the version DOI), `conceptDoi`, `follow` (`"latest"`, section 10.3) and `cite`, a cached citation (`title`, `creators` as a list of names, `year`, and `issued`, the member's `Issued` date) so that the collection stays readable, and can be ordered, without resolving its members, also if they become unavailable. `cite` is not authoritative.
+Each member MAY have `mirrors` (base URLs of archives holding a copy: section 10.4 for archive collections, section 10.5 for the accepted copy of a selection's revision), `doi` (the version DOI), `conceptDoi` and `cite`, a cached citation (`title`, `creators` as a list of names, `year`, and `issued`, the member's `Issued` date) so that the collection stays readable, and can be ordered, without resolving its members, also if they become unavailable. `cite` is not authoritative.
 
-Every member is pinned: a collection version states exactly which object version of each member it contains. A collection version therefore fixes everything it contains, also across archives; since a pin fixes an inventory, which fixes all its files, collections are hash trees. Pins cannot form cycles.
+**Members of an archive collection** MUST have `version`, the pinned object version (the head of the object when the collection version was made), and `inventorySha512`, the SHA-512 digest of that version's inventory file. Since the inventory of an object version lists every earlier version, the pin fixes the object with all its versions up to it. A member MAY have `follow`, `"latest"`: a curation setting, not a floating reference. A tool maintaining the collection reads the member archive's discovery document (or its feed); when the followed object has a new head, the tool writes a new collection version pinning it, whatever the new head holds (a new document version, a description, a notice, a withdrawal): an archive collection does not judge the versions of its members. A withdrawn member stays, and presentations show the withdrawal. Presentations show the current version of each member, read from the history of the pinned version (section 7.3).
 
-### 10.2 Members of other archives
+**Members of a selection** MUST have `revisions`: a non-empty list of the revisions vetted, in the order of the document's history, each with `documentVersion`, `version` (the object version vetted, which holds that document version) and `inventorySha512` (the digest of its inventory file). They MUST NOT have `version`, `inventorySha512` or `follow` themselves. The revision presented as the selection's is the last of the list. A revision pins the object version that was vetted: descriptions and notices added later by the document's archive are not vetted by the selection, and presentations that show them SHOULD say where they come from. Tools MUST NOT change revision sets on their own: adding a revision (for instance a corrected version, accepted after review), removing one, or adding or removing a member is a new version of the selection, made by its curator, recorded in the inventory (who and when) with a message saying what was decided. A revision set MAY hold several revisions of the same document, for instance a version accepted and its later correction.
 
-A member may belong to another archive. Nothing is copied: the member is resolved as in section 6.4. An archive MAY also mirror another archive's object by copying it into its own storage root, keeping its identifier only if no object of its own has it, and only if the licence of the member allows redistribution. A reference (a pin without a copy) needs no permission.
+Every member is pinned: a collection version states exactly which object versions it contains, whole objects up to a version in an archive collection, revisions in a selection. A collection version therefore fixes everything it contains, also across archives; since a pin fixes an inventory, which fixes all its files, collections are hash trees. Pins cannot form cycles.
 
-### 10.3 Following members
+### 10.3 Members of other archives
 
-`"follow": "latest"` is a curation setting, not a floating reference. A tool maintaining the collection reads the member archive's discovery document (or its feed); when the followed object has a new current version (section 7.3), or a new description of it, the tool writes a new collection version pinning the last object version holding the current version. If the followed object is withdrawn, the pin is kept and the tool reports it to the curator.
+A member may belong to another archive. Nothing is copied: the member is resolved as in section 6.4. A reference (a pin without a copy) needs no permission. Copies are of two kinds: mirrors (section 10.4) and accepted copies (section 10.5).
 
-### 10.4 Rights
+### 10.4 Mirrors
 
-The member list of a collection is placed under CC0. The licence of a collection never extends to its members.
+An archive MAY mirror an object of another archive: copy the whole object, every version with its inventories and files, byte for byte, into its own storage root, under the same identifier (only if no object of its own has it). A mirror is the same object, not a new one: its `object.json` files keep naming the original archive, and the discovery document lists it with `mirrorOf`, the identifier of the original archive (section 6.1). A mirror is brought up to date only by copying the new versions of the original, which is possible because OCFL objects only grow; it MUST NOT be changed otherwise. Mirroring is allowed only if the licences of all the versions copied allow redistribution. An archive collection MAY list a mirror of a member in the member's `mirrors`. An archive that mirrors another archive entirely SHOULD be listed in the `mirrors` of that archive's discovery document, with the agreement of its owner.
+
+Mirrors serve preservation and access (an institution keeping copies of its members' archives, an independent storage site): they are impartial, like archive collections, and carry every version.
+
+### 10.5 Accepted copies
+
+A selection MAY keep its own copy of a revision it vetted, as a document of the selection's archive, called an accepted copy, so that what it vetted stays available whatever happens to the original. Its first document version holds exactly the files of the vetted revision (every file except `datacite.json` and `object.json`), byte for byte; its `object.json` records the source in `external`, with `role` `source`, `service` `OpenSheaf`, `record` the URL of the source object version, `label` the source object identifier and object version (for instance `"paper v2"`), and `files` with one entry, `inventory.json`, whose `sha512` is the pin of the source version; its `datacite.json` describes it with the selection's archive as `publisher`, keeps the relations of the source, and links the source version with `IsIdenticalTo` (a `URL`). Copying requires the right to redistribute only the revision copied.
+
+Later document versions of an accepted copy are acts of the selection's curator (a corrected version accepted, a notice, a withdrawal); the authors' later versions change nothing in it. The selection lists the accepted copy as its member (a member of its own archive), or the original revision set with the accepted copy's archive in the member's `mirrors`.
+
+A version that the selection makes itself, such as a journal's typeset version of record, is a document of the selection's archive like any other, with the selection as `publisher`, the authors' agreement in `object.json` (section 9), and relations to the authors' versions (sections 7.3 and 8.1).
+
+### 10.6 Rights
+
+The member list of a collection is placed under CC0. The licence of a collection never extends to its members. Mirrors and accepted copies keep the licences of what they copy.
 
 ## 11. Withdrawal and takedown
 
@@ -321,7 +348,9 @@ A verifier checking an archive MUST:
 - check that the discovery document lists the objects of the storage root with their kinds, head versions, inventory digests and status as their head versions state them, and that no listed object has the identifier of a tombstone; a verifier reading the archive over HTTP cannot list folders, so it checks the listed objects and reports that completeness was not checked, while a verifier with access to the files also checks that no object is missing;
 - check the requirements of sections 7 to 11 on every object version, including that `datacite.json` and `object.json` agree on the document version and on the date of a withdrawal, and that `Available`, for a version first made public by the archive, is the date of its deposit (section 7.1);
 - check the document versions of each document (section 7.3): object versions with the same document version have the same sources, renditions and change note, except that a version with `sourcesMissing` may be completed by adding files (section 7.3); new numbers follow the rule of new versions, without gaps; `history`, when present, lists distinct document versions, covers all of them, each entry being the last object version holding its document version; no object version after the first one with `history` lacks it; every notice is kept unchanged in every later object version;
-- for each collection version, resolve each member as in section 6.4 and check its pin, reporting each member as verified, mismatch (a copy was found and does not match), unavailable (no copy found) or removed (tombstoned).
+- check that each `members.json` has a `type`, that the members of an archive collection have `version` and `inventorySha512`, and that the members of a selection have `revisions` and none of `version`, `inventorySha512` or `follow`, with distinct document versions;
+- for each collection version, resolve each member (each revision, in a selection) as in section 6.4 and check its pin, and for a revision that the pinned object version holds the stated document version, reporting each as verified, mismatch (a copy was found and does not match), unavailable (no copy found) or removed (tombstoned);
+- for each mirror (`mirrorOf`), check that its `object.json` files name that archive; for each accepted copy, check that its first document version holds exactly the files of the source version named in `external`, when the source is available.
 
 A verifier SHOULD check the witnesses it finds, and the requirements of the profiles the archive declares. It MUST NOT treat the presentation as authoritative. It SHOULD limit the depth and size of the collections it follows, and report when it stops.
 
@@ -343,6 +372,7 @@ A verifier SHOULD check the witnesses it finds, and the requirements of the prof
 ## 17. Changelog
 
 - **0.1 (draft), 13 November 2026:** first version.
+- **0.1 (draft), 13 November 2026, revision:** collections are archive collections or selections (`type` in `members.json`): an archive collection pins objects whole and may follow them; a selection pins revision sets, the document versions it vetted, and changes only by an act of its curator. Mirrors (whole objects, `mirrorOf` in the discovery document) and accepted copies (one vetted revision, as a document of the selection's archive) are defined. `follow` is for archive collections only, and follows the head.
 
 ## Appendix A. Zenodo binding (normative for archives declaring the profile `zenodo`)
 
@@ -482,29 +512,71 @@ The `object.json` of a later version of a document whose arXiv version 2 was fou
 
 Object versions `v1` to `v3` deposited document versions 1 to 3; `v4` deposited document version 4 (arXiv's v2) and wrote the history `["v1", "v4", "v2", "v3"]`, so that the current version stayed document version 3 although the head held version 4; `v5`, shown here, is a description-only version adding the notice, which holds the current version again. The current version is document version 3, the last in the history.
 
-A `members.json` of a collection version, with a member from another archive:
+A `members.json` of an archive collection: the main collection of an archive, following its documents whole:
 
 ```
 {
   "format": "opensheaf-collection/0.1",
+  "type": "archive",
+  "order": "issued-desc",
   "members": [
     { "kind": "document",
       "archive": "tag:opensheaf.org,2026:mgubi",
       "archiveUrl": "https://mgubi.org/papers/",
       "id": "fractional-phi42-mass-gap",
-      "version": "v1",
+      "version": "v3",
       "inventorySha512": "9a0c...",
-      "doi": "10.5281/zenodo.1234567",
       "follow": "latest",
-      "cite": { "title": "Mass gap for the fractional Phi^4_2 model",
-                "creators": ["P. Duch", "M. Gubinelli"], "year": 2026 } },
+      "cite": { "title": "Mass gap for the fractional $\\Phi^4_2$ model",
+                "creators": ["P. Duch", "M. Gubinelli"], "year": 2026, "issued": "2026-11-12" } }
+  ]
+}
+```
+
+A `members.json` of a selection: an issue of a journal, with a paper vetted in its version 2 and, after a correction accepted by the editors, its version 3; an accepted copy kept by the journal; and a member that is itself a collection, vetted in one version:
+
+```
+{
+  "format": "opensheaf-collection/0.1",
+  "type": "selection",
+  "members": [
+    { "kind": "document",
+      "archive": "tag:example.org,2026:authors",
+      "archiveUrl": "https://authors.example.org/",
+      "id": "network-discrimination",
+      "revisions": [
+        { "documentVersion": 2, "version": "v2", "inventorySha512": "4f1e..." },
+        { "documentVersion": 3, "version": "v4", "inventorySha512": "c07a..." } ],
+      "mirrors": ["https://journal.example.org/"],
+      "cite": { "title": "Quantum network discrimination", "creators": ["C. Hirche"], "year": 2021 } },
     { "kind": "collection",
       "archive": "tag:example.org,2026:seminar",
       "archiveUrl": "https://seminar.example.org/",
       "id": "collection-seminar-2026",
-      "version": "v3",
-      "inventorySha512": "7d21..." }
+      "revisions": [ { "documentVersion": 3, "version": "v3", "inventorySha512": "7d21..." } ] }
   ]
+}
+```
+
+The `object.json` of the journal's accepted copy of the first member's version 2:
+
+```
+{
+  "format": "opensheaf-object/0.1",
+  "specification": "0.1",
+  "kind": "document",
+  "archiveId": "tag:example.org,2026:journal",
+  "objectId": "network-discrimination",
+  "documentVersion": 1,
+  "mainSource": "paper.tex",
+  "sourceFormat": "application/x-tex",
+  "renditions": [ { "path": "paper.pdf", "mediaType": "application/pdf" } ],
+  "stage": { "scheme": "NISO-JAV", "value": "VoR" },
+  "external": [ { "role": "source", "service": "OpenSheaf",
+                  "record": "https://authors.example.org/ocfl/network-discrimination/v2/",
+                  "label": "network-discrimination v2",
+                  "files": [ { "name": "inventory.json", "sha512": "4f1e..." } ] } ],
+  "status": "active"
 }
 ```
 
@@ -514,6 +586,8 @@ A `members.json` of a collection version, with a member from another archive:
 - **Why the flat-direct layout.** Paths stay readable and resolvable by rule over plain HTTP; the cost is short identifiers without `/`.
 - **Why a discovery document.** Static web servers cannot list folders; one small file makes an archive discoverable, and its statements are checked against the storage root.
 - **Why pins by inventory digest.** One digest fixes a whole object version, so collections become hash trees across archives, and any matching copy will do.
+- **Why archive collections and selections.** Keeping and vetting are different acts. An archive (an author's, an institution's, a storage site) keeps what its members deposit, every version, without judging them: following an object as it grows is its job. A selection (a journal, a digest, a review journal) vouches for particular revisions: a later version by the authors has not been vetted, so it cannot enter the selection by itself, and a change of what is vetted is an editorial act that the selection's own history records. Pinning whole objects in one case and revision sets in the other makes the difference explicit and checkable.
+- **Why mirrors and accepted copies differ.** A mirror copies a whole object and stays the same object, owned by its original archive, so it can only grow by the original's versions. An accepted copy takes one vetted revision into the selection's own archive, where it continues under the selection's responsibility (corrections, notices, withdrawal); OCFL cannot hold part of an object, so a copy of one revision is necessarily a new object.
 - **Why separate document and object versions.** Readers and DOI services see versions of the work; the storage keeps every change, including corrections of the description.
 - **Why the archive numbers document versions itself.** External numberings have gaps (versions an external service no longer serves) and do not cover versions that were never public there. The archive's own numbers have no gaps; external labels are recorded beside them.
 - **Why an explicit history, and why it lists object versions.** Dates may be approximate or unknown, so they cannot order versions, and pointers from each version to the previous one cannot be corrected when a version is inserted later, since earlier versions are fixed. A list kept in each object version, with the head's list authoritative, can be corrected by a new version and keeps a record of what was known before. Its entries name object versions, which are exact and resolved directly through the inventory, and name the last object version of each document version, which carries its most complete description. Digests could not be used: an object version cannot contain the digest of its own inventory.

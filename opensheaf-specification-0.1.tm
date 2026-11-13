@@ -52,9 +52,19 @@
 
     <item><strong|Document:> an object holding one scholarly work (an article, notes, a thesis, a book) with its sources and renditions.
 
-    <item><strong|Collection:> an object holding a list of members.
+    <item><strong|Collection:> an object holding a list of members. A collection is an archive collection or a selection (section 10.1).
 
-    <item><strong|Selection:> a collection whose members include collections. Selections are collections; the word only describes their use.
+    <item><strong|Archive collection:> a collection that keeps objects whole, impartial about their versions: each member pins an object with all its versions, and may follow it as it grows. An archive's main collection, and the list of objects an archive mirrors, are archive collections.
+
+    <item><strong|Selection:> a collection that vets particular revisions of documents (a journal, a digest, a review journal, a reading list): each member pins a revision set, and earlier or later versions are not part of the selection unless its curator adds them, by a new version of the selection.
+
+    <item><strong|Revision:> a document version, as vetted by a selection, pinned by the object version that held it when it was vetted.
+
+    <item><strong|Revision set:> the revisions of one document vetted by a selection (usually one; more after a correction).
+
+    <item><strong|Mirror:> a copy, in an archive's storage root, of another archive's object, whole and byte for byte (section 10.4).
+
+    <item><strong|Accepted copy:> a document of a selection's archive holding exactly the files of a revision it vetted from another archive (section 10.5).
 
     <item><strong|Object version:> an OCFL version of an object (<verbatim|v1>, <verbatim|v2>, ...). It changes at every change of the object.
 
@@ -68,7 +78,7 @@
 
     <item><strong|Note:> a short text, a file of the content, or both, as used for change notes, notices and withdrawals (section 9).
 
-    <item><strong|Member:> an entry of a collection, pinning an object version of some archive.
+    <item><strong|Member:> an entry of a collection: an object (in an archive collection) or a revision set of a document (in a selection), of any archive.
 
     <item><strong|Pin:> the pair (object version, SHA-512 digest of that version's inventory file).
 
@@ -136,7 +146,7 @@
 
     <item><verbatim|storageLayout>: <verbatim|"0002-flat-direct-storage-layout">;
 
-    <item><verbatim|objects>: the list of all objects in the storage root, each with <verbatim|id>, <verbatim|kind>, <verbatim|head> (the head object version), <verbatim|inventorySha512> (the SHA-512 digest of the head inventory, as written in its checksum file) and <verbatim|status> (<verbatim|active> or <verbatim|withdrawn>, section 11).
+    <item><verbatim|objects>: the list of all objects in the storage root, each with <verbatim|id>, <verbatim|kind>, <verbatim|head> (the head object version), <verbatim|inventorySha512> (the SHA-512 digest of the head inventory, as written in its checksum file) and <verbatim|status> (<verbatim|active> or <verbatim|withdrawn>, section 11); a mirror (section 10.4) also has <verbatim|mirrorOf>, the archive identifier of the archive whose object it copies.
   </itemize>
 
   It MUST also contain <verbatim|profiles>, the list of profiles followed, from <verbatim|zenodo>, <verbatim|texmacs>, <verbatim|website> (an empty list if none). It SHOULD contain <verbatim|mainCollection> (the identifier of the collection that lists the archive's own documents) and <verbatim|contact> (a URI). It MAY contain <verbatim|mirrors> (base URLs of complete copies of the archive), <verbatim|tombstones> (section 11.3), <verbatim|keys> (section 13.2) and <verbatim|feed> (the URL of an Atom feed of new object versions).
@@ -156,7 +166,7 @@
   To fetch an object version of a member, a client:
 
   <\itemize>
-    <item>reads the discovery document at the member's archive URL (section 10.1) and fetches <verbatim|\<less\>storageRoot\<gtr\>\<less\>id\<gtr\>/\<less\>version\<gtr\>/inventory.json>;
+    <item>reads the discovery document at the member's archive URL (section 10.2) and fetches <verbatim|\<less\>storageRoot\<gtr\>\<less\>id\<gtr\>/\<less\>version\<gtr\>/inventory.json>;
 
     <item>if this fails, tries the mirrors listed in the member, then those listed in the archive's discovery document;
 
@@ -205,7 +215,7 @@
 
   <strong|History.> The order of the document versions in the history of the work is the order of their numbers, unless <verbatim|object.json> has <verbatim|history> (section 9): the list, in the order of the work, of the last object version holding each document version. The last object version is used because it carries the most complete description of that document version (a DOI added later, a corrected stage). An object version that deposits a document version out of order (an earlier version found later) MUST write <verbatim|history>, and once an object version has <verbatim|history>, every later object version MUST have it. A version whose place in the history is unknown goes just before the current version, and its <verbatim|object.json> SHOULD say so in its change note. The history is read from the head version; earlier object versions keep the history as it was known when they were made.
 
-  <strong|Current version.> The current version of a document is the last entry of the history of its head version (without <verbatim|history>: the highest document version). The head may hold another document version, after an earlier version is deposited out of order or described by a description-only version; the current version stays where it was. Landing pages, indexes, citations and the following of members (section 10.3) use the current version, not the head.
+  <strong|Current version.> The current version of a document is the last entry of the history of its head version (without <verbatim|history>: the highest document version). The head may hold another document version, after an earlier version is deposited out of order or described by a description-only version; the current version stays where it was. Landing pages, indexes and citations use the current version, not the head; selections vet revisions explicitly (section 10.2).
 
   <strong|Notices.> A notice about a document version (for instance that a theorem of version 2 is wrong as stated, and is corrected in version 3) is written after that version, which cannot change. Notices are added to <verbatim|notices> in <verbatim|object.json> (section 9) by description-only versions. A notice present in an object version is present, unchanged, in every later object version; a notice is corrected or withdrawn by a later notice that says so. Presentations showing a document version SHOULD show the current notices about it.
 
@@ -213,7 +223,7 @@
 
   <subsection*|7.4 Collections>
 
-  A collection version contains <verbatim|datacite.json>, <verbatim|object.json> and <verbatim|members.json> (section 10). Its <verbatim|object.json> declares <verbatim|kind> <verbatim|collection>; its document version counts the changes of the member list, and it has none of the fields specific to documents (<verbatim|mainSource>, <verbatim|sourceFormat>, <verbatim|sourcesMissing>, <verbatim|renditions>, <verbatim|toolchain>, <verbatim|changes>, <verbatim|stage>, <verbatim|history>, <verbatim|notices>).
+  A collection version contains <verbatim|datacite.json>, <verbatim|object.json> and <verbatim|members.json> (section 10), which states whether the collection is an archive collection or a selection. Its <verbatim|object.json> declares <verbatim|kind> <verbatim|collection>; its document version counts the changes of the member list, and it has none of the fields specific to documents (<verbatim|mainSource>, <verbatim|sourceFormat>, <verbatim|sourcesMissing>, <verbatim|renditions>, <verbatim|toolchain>, <verbatim|changes>, <verbatim|stage>, <verbatim|history>, <verbatim|notices>).
 
   <section*|8. Description: datacite.json>
 
@@ -274,7 +284,7 @@
 
     <item>The sources MAY be linked to a software archive snapshot (<verbatim|relatedIdentifierType> <verbatim|SWHID>).
 
-    <item>A collection version MUST have <verbatim|HasPart> for each member that has a version DOI, pointing to that version DOI. Members without a DOI are listed only in <verbatim|members.json>.
+    <item>A collection version MUST have <verbatim|HasPart> for each member (each revision, in a selection) that has a version DOI, pointing to that version DOI. Members without a DOI are listed only in <verbatim|members.json>.
 
     <item>A document MUST NOT state the collections that include it: membership is stated only by collections, so that including a document in any collection never changes the document.
   </itemize>
@@ -329,12 +339,26 @@
 
   <section*|10. Collections: members.json>
 
-  <subsection*|10.1 The member list>
+  <subsection*|10.1 Archive collections and selections>
+
+  Collections are of two kinds, which differ in how they treat the versions of their members.
+
+  <\itemize>
+    <item>An <strong|archive collection> keeps objects whole and is impartial about their versions. Each member pins an object, with all its versions, and the collection may follow it as it grows, whoever adds the versions: the owner of the object decides what its versions are. An archive's main collection (its own documents) and the list of objects an archive mirrors (section 10.4) are archive collections.
+
+    <item>A <strong|selection> vets particular revisions: a journal its accepted version, a digest or a review journal the version it reviewed, a reading list the version it recommends. Each member pins a revision set, the document versions the curator vetted; earlier and later versions of the same document are not part of the selection, and the selection changes only by an explicit act of its curator, which is a new version of the selection. A selection may also keep its own copies of the revisions it vetted (section 10.5).
+  </itemize>
+
+  Both kinds may contain collections as members (an archive of archives, a selection of issues). <verbatim|members.json> states the kind.
+
+  <subsection*|10.2 The member list>
 
   A collection version MUST contain <verbatim|members.json> with:
 
   <\itemize>
     <item><verbatim|format>: <verbatim|"opensheaf-collection/0.1">;
+
+    <item><verbatim|type>: <verbatim|"archive"> or <verbatim|"selection">;
 
     <item><verbatim|members>: a list, in the order in which the members are presented. This order is authoritative: presentations MUST present members in it.
   </itemize>
@@ -350,28 +374,38 @@
 
     <item><verbatim|archiveUrl>: the base URL of that archive when the collection version was made;
 
-    <item><verbatim|id>: the object identifier;
-
-    <item><verbatim|version>: the pinned object version;
-
-    <item><verbatim|inventorySha512>: the SHA-512 digest of that version's inventory file.
+    <item><verbatim|id>: the object identifier.
   </itemize>
 
-  Each member MAY have <verbatim|mirrors> (base URLs), <verbatim|doi> (the version DOI), <verbatim|conceptDoi>, <verbatim|follow> (<verbatim|"latest">, section 10.3) and <verbatim|cite>, a cached citation (<verbatim|title>, <verbatim|creators> as a list of names, <verbatim|year>, and <verbatim|issued>, the member's <verbatim|Issued> date) so that the collection stays readable, and can be ordered, without resolving its members, also if they become unavailable. <verbatim|cite> is not authoritative.
+  Each member MAY have <verbatim|mirrors> (base URLs of archives holding a copy: section 10.4 for archive collections, section 10.5 for the accepted copy of a selection's revision), <verbatim|doi> (the version DOI), <verbatim|conceptDoi> and <verbatim|cite>, a cached citation (<verbatim|title>, <verbatim|creators> as a list of names, <verbatim|year>, and <verbatim|issued>, the member's <verbatim|Issued> date) so that the collection stays readable, and can be ordered, without resolving its members, also if they become unavailable. <verbatim|cite> is not authoritative.
 
-  Every member is pinned: a collection version states exactly which object version of each member it contains. A collection version therefore fixes everything it contains, also across archives; since a pin fixes an inventory, which fixes all its files, collections are hash trees. Pins cannot form cycles.
+  <strong|Members of an archive collection> MUST have <verbatim|version>, the pinned object version (the head of the object when the collection version was made), and <verbatim|inventorySha512>, the SHA-512 digest of that version's inventory file. Since the inventory of an object version lists every earlier version, the pin fixes the object with all its versions up to it. A member MAY have <verbatim|follow>, <verbatim|"latest">: a curation setting, not a floating reference. A tool maintaining the collection reads the member archive's discovery document (or its feed); when the followed object has a new head, the tool writes a new collection version pinning it, whatever the new head holds (a new document version, a description, a notice, a withdrawal): an archive collection does not judge the versions of its members. A withdrawn member stays, and presentations show the withdrawal. Presentations show the current version of each member, read from the history of the pinned version (section 7.3).
 
-  <subsection*|10.2 Members of other archives>
+  <strong|Members of a selection> MUST have <verbatim|revisions>: a non-empty list of the revisions vetted, in the order of the document's history, each with <verbatim|documentVersion>, <verbatim|version> (the object version vetted, which holds that document version) and <verbatim|inventorySha512> (the digest of its inventory file). They MUST NOT have <verbatim|version>, <verbatim|inventorySha512> or <verbatim|follow> themselves. The revision presented as the selection's is the last of the list. A revision pins the object version that was vetted: descriptions and notices added later by the document's archive are not vetted by the selection, and presentations that show them SHOULD say where they come from. Tools MUST NOT change revision sets on their own: adding a revision (for instance a corrected version, accepted after review), removing one, or adding or removing a member is a new version of the selection, made by its curator, recorded in the inventory (who and when) with a message saying what was decided. A revision set MAY hold several revisions of the same document, for instance a version accepted and its later correction.
 
-  A member may belong to another archive. Nothing is copied: the member is resolved as in section 6.4. An archive MAY also mirror another archive's object by copying it into its own storage root, keeping its identifier only if no object of its own has it, and only if the licence of the member allows redistribution. A reference (a pin without a copy) needs no permission.
+  Every member is pinned: a collection version states exactly which object versions it contains, whole objects up to a version in an archive collection, revisions in a selection. A collection version therefore fixes everything it contains, also across archives; since a pin fixes an inventory, which fixes all its files, collections are hash trees. Pins cannot form cycles.
 
-  <subsection*|10.3 Following members>
+  <subsection*|10.3 Members of other archives>
 
-  <verbatim|"follow": "latest"> is a curation setting, not a floating reference. A tool maintaining the collection reads the member archive's discovery document (or its feed); when the followed object has a new current version (section 7.3), or a new description of it, the tool writes a new collection version pinning the last object version holding the current version. If the followed object is withdrawn, the pin is kept and the tool reports it to the curator.
+  A member may belong to another archive. Nothing is copied: the member is resolved as in section 6.4. A reference (a pin without a copy) needs no permission. Copies are of two kinds: mirrors (section 10.4) and accepted copies (section 10.5).
 
-  <subsection*|10.4 Rights>
+  <subsection*|10.4 Mirrors>
 
-  The member list of a collection is placed under CC0. The licence of a collection never extends to its members.
+  An archive MAY mirror an object of another archive: copy the whole object, every version with its inventories and files, byte for byte, into its own storage root, under the same identifier (only if no object of its own has it). A mirror is the same object, not a new one: its <verbatim|object.json> files keep naming the original archive, and the discovery document lists it with <verbatim|mirrorOf>, the identifier of the original archive (section 6.1). A mirror is brought up to date only by copying the new versions of the original, which is possible because OCFL objects only grow; it MUST NOT be changed otherwise. Mirroring is allowed only if the licences of all the versions copied allow redistribution. An archive collection MAY list a mirror of a member in the member's <verbatim|mirrors>. An archive that mirrors another archive entirely SHOULD be listed in the <verbatim|mirrors> of that archive's discovery document, with the agreement of its owner.
+
+  Mirrors serve preservation and access (an institution keeping copies of its members' archives, an independent storage site): they are impartial, like archive collections, and carry every version.
+
+  <subsection*|10.5 Accepted copies>
+
+  A selection MAY keep its own copy of a revision it vetted, as a document of the selection's archive, called an accepted copy, so that what it vetted stays available whatever happens to the original. Its first document version holds exactly the files of the vetted revision (every file except <verbatim|datacite.json> and <verbatim|object.json>), byte for byte; its <verbatim|object.json> records the source in <verbatim|external>, with <verbatim|role> <verbatim|source>, <verbatim|service> <verbatim|OpenSheaf>, <verbatim|record> the URL of the source object version, <verbatim|label> the source object identifier and object version (for instance <verbatim|"paper v2">), and <verbatim|files> with one entry, <verbatim|inventory.json>, whose <verbatim|sha512> is the pin of the source version; its <verbatim|datacite.json> describes it with the selection's archive as <verbatim|publisher>, keeps the relations of the source, and links the source version with <verbatim|IsIdenticalTo> (a <verbatim|URL>). Copying requires the right to redistribute only the revision copied.
+
+  Later document versions of an accepted copy are acts of the selection's curator (a corrected version accepted, a notice, a withdrawal); the authors' later versions change nothing in it. The selection lists the accepted copy as its member (a member of its own archive), or the original revision set with the accepted copy's archive in the member's <verbatim|mirrors>.
+
+  A version that the selection makes itself, such as a journal's typeset version of record, is a document of the selection's archive like any other, with the selection as <verbatim|publisher>, the authors' agreement in <verbatim|object.json> (section 9), and relations to the authors' versions (sections 7.3 and 8.1).
+
+  <subsection*|10.6 Rights>
+
+  The member list of a collection is placed under CC0. The licence of a collection never extends to its members. Mirrors and accepted copies keep the licences of what they copy.
 
   <section*|11. Withdrawal and takedown>
 
@@ -444,7 +478,11 @@
 
     <item>check the document versions of each document (section 7.3): object versions with the same document version have the same sources, renditions and change note, except that a version with <verbatim|sourcesMissing> may be completed by adding files (section 7.3); new numbers follow the rule of new versions, without gaps; <verbatim|history>, when present, lists distinct document versions, covers all of them, each entry being the last object version holding its document version; no object version after the first one with <verbatim|history> lacks it; every notice is kept unchanged in every later object version;
 
-    <item>for each collection version, resolve each member as in section 6.4 and check its pin, reporting each member as verified, mismatch (a copy was found and does not match), unavailable (no copy found) or removed (tombstoned).
+    <item>check that each <verbatim|members.json> has a <verbatim|type>, that the members of an archive collection have <verbatim|version> and <verbatim|inventorySha512>, and that the members of a selection have <verbatim|revisions> and none of <verbatim|version>, <verbatim|inventorySha512> or <verbatim|follow>, with distinct document versions;
+
+    <item>for each collection version, resolve each member (each revision, in a selection) as in section 6.4 and check its pin, and for a revision that the pinned object version holds the stated document version, reporting each as verified, mismatch (a copy was found and does not match), unavailable (no copy found) or removed (tombstoned);
+
+    <item>for each mirror (<verbatim|mirrorOf>), check that its <verbatim|object.json> files name that archive; for each accepted copy, check that its first document version holds exactly the files of the source version named in <verbatim|external>, when the source is available.
   </itemize>
 
   A verifier SHOULD check the witnesses it finds, and the requirements of the profiles the archive declares. It MUST NOT treat the presentation as authoritative. It SHOULD limit the depth and size of the collections it follows, and report when it stops.
@@ -479,6 +517,8 @@
 
   <\itemize>
     <item><strong|0.1 (draft), 13 November 2026:> first version.
+
+    <item><strong|0.1 (draft), 13 November 2026, revision:> collections are archive collections or selections (<verbatim|type> in <verbatim|members.json>): an archive collection pins objects whole and may follow them; a selection pins revision sets, the document versions it vetted, and changes only by an act of its curator. Mirrors (whole objects, <verbatim|mirrorOf> in the discovery document) and accepted copies (one vetted revision, as a document of the selection's archive) are defined. <verbatim|follow> is for archive collections only, and follows the head.
   </itemize>
 
   <section*|Appendix A. Zenodo binding (normative for archives declaring the profile <verbatim|zenodo>)>
@@ -713,12 +753,16 @@
 
   Object versions <verbatim|v1> to <verbatim|v3> deposited document versions 1 to 3; <verbatim|v4> deposited document version 4 (arXiv's v2) and wrote the history <verbatim|["v1", "v4", "v2", "v3"]>, so that the current version stayed document version 3 although the head held version 4; <verbatim|v5>, shown here, is a description-only version adding the notice, which holds the current version again. The current version is document version 3, the last in the history.
 
-  A <verbatim|members.json> of a collection version, with a member from another archive:
+  A <verbatim|members.json> of an archive collection: the main collection of an archive, following its documents whole:
 
   <\verbatim-code>
     {
 
     \ \ "format": "opensheaf-collection/0.1",
+
+    \ \ "type": "archive",
+
+    \ \ "order": "issued-desc",
 
     \ \ "members": [
 
@@ -730,17 +774,49 @@
 
     \ \ \ \ \ \ "id": "fractional-phi42-mass-gap",
 
-    \ \ \ \ \ \ "version": "v1",
+    \ \ \ \ \ \ "version": "v3",
 
     \ \ \ \ \ \ "inventorySha512": "9a0c...",
 
-    \ \ \ \ \ \ "doi": "10.5281/zenodo.1234567",
-
     \ \ \ \ \ \ "follow": "latest",
 
-    \ \ \ \ \ \ "cite": { "title": "Mass gap for the fractional Phi^4_2 model",
+    \ \ \ \ \ \ "cite": { "title": "Mass gap for the fractional $\\\\Phi^4_2$ model",
 
-    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "creators": ["P. Duch", "M. Gubinelli"], "year": 2026 } },
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "creators": ["P. Duch", "M. Gubinelli"], "year": 2026, "issued": "2026-11-12" } }
+
+    \ \ ]
+
+    }
+  </verbatim-code>
+
+  A <verbatim|members.json> of a selection: an issue of a journal, with a paper vetted in its version 2 and, after a correction accepted by the editors, its version 3; an accepted copy kept by the journal; and a member that is itself a collection, vetted in one version:
+
+  <\verbatim-code>
+    {
+
+    \ \ "format": "opensheaf-collection/0.1",
+
+    \ \ "type": "selection",
+
+    \ \ "members": [
+
+    \ \ \ \ { "kind": "document",
+
+    \ \ \ \ \ \ "archive": "tag:example.org,2026:authors",
+
+    \ \ \ \ \ \ "archiveUrl": "https://authors.example.org/",
+
+    \ \ \ \ \ \ "id": "network-discrimination",
+
+    \ \ \ \ \ \ "revisions": [
+
+    \ \ \ \ \ \ \ \ { "documentVersion": 2, "version": "v2", "inventorySha512": "4f1e..." },
+
+    \ \ \ \ \ \ \ \ { "documentVersion": 3, "version": "v4", "inventorySha512": "c07a..." } ],
+
+    \ \ \ \ \ \ "mirrors": ["https://journal.example.org/"],
+
+    \ \ \ \ \ \ "cite": { "title": "Quantum network discrimination", "creators": ["C. Hirche"], "year": 2021 } },
 
     \ \ \ \ { "kind": "collection",
 
@@ -750,11 +826,47 @@
 
     \ \ \ \ \ \ "id": "collection-seminar-2026",
 
-    \ \ \ \ \ \ "version": "v3",
-
-    \ \ \ \ \ \ "inventorySha512": "7d21..." }
+    \ \ \ \ \ \ "revisions": [ { "documentVersion": 3, "version": "v3", "inventorySha512": "7d21..." } ] }
 
     \ \ ]
+
+    }
+  </verbatim-code>
+
+  The <verbatim|object.json> of the journal's accepted copy of the first member's version 2:
+
+  <\verbatim-code>
+    {
+
+    \ \ "format": "opensheaf-object/0.1",
+
+    \ \ "specification": "0.1",
+
+    \ \ "kind": "document",
+
+    \ \ "archiveId": "tag:example.org,2026:journal",
+
+    \ \ "objectId": "network-discrimination",
+
+    \ \ "documentVersion": 1,
+
+    \ \ "mainSource": "paper.tex",
+
+    \ \ "sourceFormat": "application/x-tex",
+
+    \ \ "renditions": [ { "path": "paper.pdf", "mediaType": "application/pdf" } ],
+
+    \ \ "stage": { "scheme": "NISO-JAV", "value": "VoR" },
+
+    \ \ "external": [ { "role": "source", "service": "OpenSheaf",
+
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "record": "https://authors.example.org/ocfl/network-discrimination/v2/",
+
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "label": "network-discrimination v2",
+
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "files": [ { "name": "inventory.json", "sha512": "4f1e..." } ] } ],
+
+    \ \ "status": "active"
 
     }
   </verbatim-code>
@@ -769,6 +881,10 @@
     <item><strong|Why a discovery document.> Static web servers cannot list folders; one small file makes an archive discoverable, and its statements are checked against the storage root.
 
     <item><strong|Why pins by inventory digest.> One digest fixes a whole object version, so collections become hash trees across archives, and any matching copy will do.
+
+    <item><strong|Why archive collections and selections.> Keeping and vetting are different acts. An archive (an author's, an institution's, a storage site) keeps what its members deposit, every version, without judging them: following an object as it grows is its job. A selection (a journal, a digest, a review journal) vouches for particular revisions: a later version by the authors has not been vetted, so it cannot enter the selection by itself, and a change of what is vetted is an editorial act that the selection's own history records. Pinning whole objects in one case and revision sets in the other makes the difference explicit and checkable.
+
+    <item><strong|Why mirrors and accepted copies differ.> A mirror copies a whole object and stays the same object, owned by its original archive, so it can only grow by the original's versions. An accepted copy takes one vetted revision into the selection's own archive, where it continues under the selection's responsibility (corrections, notices, withdrawal); OCFL cannot hold part of an object, so a copy of one revision is necessarily a new object.
 
     <item><strong|Why separate document and object versions.> Readers and DOI services see versions of the work; the storage keeps every change, including corrections of the description.
 

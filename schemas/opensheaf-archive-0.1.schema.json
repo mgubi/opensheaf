@@ -105,6 +105,10 @@
               "active",
               "withdrawn"
             ]
+          },
+          "mirrorOf": {
+            "type": "string",
+            "format": "uri"
           }
         }
       }

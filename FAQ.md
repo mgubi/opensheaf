@@ -113,12 +113,30 @@ mirror, from its DOI deposit or from a Software Heritage snapshot: any copy
 that matches the pin is the right one. A collection also keeps a cached
 citation of each member, so that it stays readable even if no copy is found.
 
+## What is the difference between an archive and a selection?
+
+Keeping and vetting are different acts, and OpenSheaf has a kind of
+collection for each. An **archive collection** keeps objects whole and is
+impartial about their versions: each member pins an object with all its
+versions, and the collection may follow it as its owner adds versions. An
+author's archive, an institution's repository and a storage site keep
+documents this way. A **selection** vets particular revisions: a journal its
+accepted version, a digest or a review journal the version it read. Each
+member pins the revision set that was vetted; later versions by the authors
+are not part of it, and any change of what is vetted (a correction accepted
+by the editors) is an explicit act of the curator, recorded as a new version
+of the selection. The [use cases](USE-CASES.md) show both at work.
+
 ## Can I put someone else's paper in my collection?
 
-Yes. A reference (a pin) copies nothing and needs no permission. Copying
-(mirroring) another archive's object into your own storage root is allowed
-only if the document's licence permits redistribution. The licence of a
-collection (CC0 for the list) never extends to its members.
+Yes. A reference (a pin) copies nothing and needs no permission. There are
+two ways to keep a copy, both allowed only if the licence of what is copied
+permits redistribution (or the authors agree): a **mirror** copies the whole
+object, every version, and stays the original archive's object (for an
+institution or a storage site); an **accepted copy** takes the one revision a
+selection vetted into the selection's own archive, where later changes are
+the curator's acts (for a journal). The licence of a collection (CC0 for the
+list) never extends to its members.
 
 ## Where do signatures and timestamps go, and why not in the version itself?
 

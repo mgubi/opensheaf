@@ -22,8 +22,8 @@
   <body>
     <div class="notes-header">
       <p>
-        [<a href="index.html">OpenSheaf</a>] [<a href="opensheaf-specification-0.1.html">specification</a>] [<a href="faq.html">FAQ</a>]
-        [<a href="https://mgubi.org/papers/">first archive</a>]<em class="notes-header-name">OpenSheaf</em>
+        [<a href="index.html">OpenSheaf</a>] [<a href="opensheaf-specification-0.1.html">specification</a>] [<a href="use-cases.html">use
+        cases</a>] [<a href="faq.html">FAQ</a>] [<a href="https://mgubi.org/papers/">first archive</a>]<em class="notes-header-name">OpenSheaf</em>
       </p>
     </div>
     <h1 id="auto-1">OpenSheaf: an open format for document archives and
@@ -162,14 +162,52 @@
       </li>
       <li>
         <p>
-          <strong>Collection:</strong> an object holding a list of members.
+          <strong>Collection:</strong> an object holding a list of members. A
+          collection is an archive collection or a selection (section 10.1).
         </p>
       </li>
       <li>
         <p>
-          <strong>Selection:</strong> a collection whose members include
-          collections. Selections are collections; the word only describes
-          their use.
+          <strong>Archive collection:</strong> a collection that keeps objects
+          whole, impartial about their versions: each member pins an object
+          with all its versions, and may follow it as it grows. An archive's
+          main collection, and the list of objects an archive mirrors, are
+          archive collections.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Selection:</strong> a collection that vets particular
+          revisions of documents (a journal, a digest, a review journal, a
+          reading list): each member pins a revision set, and earlier or later
+          versions are not part of the selection unless its curator adds them,
+          by a new version of the selection.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Revision:</strong> a document version, as vetted by a
+          selection, pinned by the object version that held it when it was
+          vetted.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Revision set:</strong> the revisions of one document vetted
+          by a selection (usually one; more after a correction).
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Mirror:</strong> a copy, in an archive's storage root, of
+          another archive's object, whole and byte for byte (section 10.4).
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Accepted copy:</strong> a document of a selection's archive
+          holding exactly the files of a revision it vetted from another
+          archive (section 10.5).
         </p>
       </li>
       <li>
@@ -215,8 +253,9 @@
       </li>
       <li>
         <p>
-          <strong>Member:</strong> an entry of a collection, pinning an object
-          version of some archive.
+          <strong>Member:</strong> an entry of a collection: an object (in an
+          archive collection) or a revision set of a document (in a
+          selection), of any archive.
         </p>
       </li>
       <li>
@@ -397,7 +436,9 @@
           (the head object version), <tt class="verbatim">inventorySha512</tt> (the
           SHA-512 digest of the head inventory, as written in its checksum
           file) and <tt class="verbatim">status</tt> (<tt class="verbatim">active</tt> or <tt
-          class="verbatim">withdrawn</tt>, section 11).
+          class="verbatim">withdrawn</tt>, section 11); a mirror (section 10.4) also has
+          <tt class="verbatim">mirrorOf</tt>, the archive identifier of the archive
+          whose object it copies.
         </p>
       </li>
     </ul>
@@ -452,7 +493,7 @@
       <li>
         <p>
           reads the discovery document at the member's archive URL (section
-          10.1) and fetches <tt class="verbatim">&lt;storageRoot&gt;&lt;id&gt;/&lt;version&gt;/inventory.json</tt>;
+          10.2) and fetches <tt class="verbatim">&lt;storageRoot&gt;&lt;id&gt;/&lt;version&gt;/inventory.json</tt>;
         </p>
       </li>
       <li>
@@ -613,8 +654,8 @@
       the highest document version). The head may hold another document
       version, after an earlier version is deposited out of order or described
       by a description-only version; the current version stays where it was.
-      Landing pages, indexes, citations and the following of members (section
-      10.3) use the current version, not the head.
+      Landing pages, indexes and citations use the current version, not the
+      head; selections vet revisions explicitly (section 10.2).
     </p>
     <p>
       <strong>Notices.</strong> A notice about a document version (for
@@ -633,7 +674,8 @@
     <h3 id="auto-16">7.4 Collections<span style="margin-left: 1em"></span></h3>
     <p>
       A collection version contains <tt class="verbatim">datacite.json</tt>, <tt class="verbatim">object.json</tt>
-      and <tt class="verbatim">members.json</tt> (section 10). Its <tt class="verbatim">object.json</tt>
+      and <tt class="verbatim">members.json</tt> (section 10), which states whether the
+      collection is an archive collection or a selection. Its <tt class="verbatim">object.json</tt>
       declares <tt class="verbatim">kind</tt> <tt class="verbatim">collection</tt>; its document
       version counts the changes of the member list, and it has none of the
       fields specific to documents (<tt class="verbatim">mainSource</tt>, <tt class="verbatim">sourceFormat</tt>,
@@ -834,8 +876,9 @@
       <li>
         <p>
           A collection version MUST have <tt class="verbatim">HasPart</tt> for each
-          member that has a version DOI, pointing to that version DOI. Members
-          without a DOI are listed only in <tt class="verbatim">members.json</tt>.
+          member (each revision, in a selection) that has a version DOI,
+          pointing to that version DOI. Members without a DOI are listed only
+          in <tt class="verbatim">members.json</tt>.
         </p>
       </li>
       <li>
@@ -997,7 +1040,41 @@
       16).
     </p>
     <h2 id="auto-20">10. Collections: members.json<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-21">10.1 The member list<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-21">10.1 Archive collections and selections<span style="margin-left: 1em"></span></h3>
+    <p>
+      Collections are of two kinds, which differ in how they treat the
+      versions of their members.
+    </p>
+    <ul>
+      <li>
+        <p>
+          An <strong>archive collection</strong> keeps objects whole and is
+          impartial about their versions. Each member pins an object, with all
+          its versions, and the collection may follow it as it grows, whoever
+          adds the versions: the owner of the object decides what its versions
+          are. An archive's main collection (its own documents) and the list
+          of objects an archive mirrors (section 10.4) are archive
+          collections.
+        </p>
+      </li>
+      <li>
+        <p>
+          A <strong>selection</strong> vets particular revisions: a journal
+          its accepted version, a digest or a review journal the version it
+          reviewed, a reading list the version it recommends. Each member pins
+          a revision set, the document versions the curator vetted; earlier
+          and later versions of the same document are not part of the
+          selection, and the selection changes only by an explicit act of its
+          curator, which is a new version of the selection. A selection may
+          also keep its own copies of the revisions it vetted (section 10.5).
+        </p>
+      </li>
+    </ul>
+    <p>
+      Both kinds may contain collections as members (an archive of archives, a
+      selection of issues). <tt class="verbatim">members.json</tt> states the kind.
+    </p>
+    <h3 id="auto-22">10.2 The member list<span style="margin-left: 1em"></span></h3>
     <p>
       A collection version MUST contain <tt class="verbatim">members.json</tt> with:
     </p>
@@ -1005,6 +1082,12 @@
       <li>
         <p>
           <tt class="verbatim">format</tt>: <tt class="verbatim">&quot;opensheaf-collection/0.1&quot;</tt>;
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">type</tt>: <tt class="verbatim">&quot;archive&quot;</tt> or <tt
+          class="verbatim">&quot;selection&quot;</tt>;
         </p>
       </li>
       <li>
@@ -1047,64 +1130,136 @@
       </li>
       <li>
         <p>
-          <tt class="verbatim">id</tt>: the object identifier;
-        </p>
-      </li>
-      <li>
-        <p>
-          <tt class="verbatim">version</tt>: the pinned object version;
-        </p>
-      </li>
-      <li>
-        <p>
-          <tt class="verbatim">inventorySha512</tt>: the SHA-512 digest of that
-          version's inventory file.
+          <tt class="verbatim">id</tt>: the object identifier.
         </p>
       </li>
     </ul>
     <p>
-      Each member MAY have <tt class="verbatim">mirrors</tt> (base URLs), <tt class="verbatim">doi</tt>
-      (the version DOI), <tt class="verbatim">conceptDoi</tt>, <tt class="verbatim">follow</tt>
-      (<tt class="verbatim">&quot;latest&quot;</tt>, section 10.3) and <tt class="verbatim">cite</tt>,
-      a cached citation (<tt class="verbatim">title</tt>, <tt class="verbatim">creators</tt> as a
+      Each member MAY have <tt class="verbatim">mirrors</tt> (base URLs of archives
+      holding a copy: section 10.4 for archive collections, section 10.5 for
+      the accepted copy of a selection's revision), <tt class="verbatim">doi</tt> (the
+      version DOI), <tt class="verbatim">conceptDoi</tt> and <tt class="verbatim">cite</tt>, a
+      cached citation (<tt class="verbatim">title</tt>, <tt class="verbatim">creators</tt> as a
       list of names, <tt class="verbatim">year</tt>, and <tt class="verbatim">issued</tt>, the
       member's <tt class="verbatim">Issued</tt> date) so that the collection stays
       readable, and can be ordered, without resolving its members, also if
       they become unavailable. <tt class="verbatim">cite</tt> is not authoritative.
     </p>
     <p>
+      <strong>Members of an archive collection</strong> MUST have <tt class="verbatim">version</tt>,
+      the pinned object version (the head of the object when the collection
+      version was made), and <tt class="verbatim">inventorySha512</tt>, the SHA-512
+      digest of that version's inventory file. Since the inventory of an
+      object version lists every earlier version, the pin fixes the object
+      with all its versions up to it. A member MAY have <tt class="verbatim">follow</tt>,
+      <tt class="verbatim">&quot;latest&quot;</tt>: a curation setting, not a floating
+      reference. A tool maintaining the collection reads the member archive's
+      discovery document (or its feed); when the followed object has a new
+      head, the tool writes a new collection version pinning it, whatever the
+      new head holds (a new document version, a description, a notice, a
+      withdrawal): an archive collection does not judge the versions of its
+      members. A withdrawn member stays, and presentations show the
+      withdrawal. Presentations show the current version of each member, read
+      from the history of the pinned version (section 7.3).
+    </p>
+    <p>
+      <strong>Members of a selection</strong> MUST have <tt class="verbatim">revisions</tt>:
+      a non-empty list of the revisions vetted, in the order of the document's
+      history, each with <tt class="verbatim">documentVersion</tt>, <tt class="verbatim">version</tt>
+      (the object version vetted, which holds that document version) and <tt
+      class="verbatim">inventorySha512</tt> (the digest of its inventory file). They
+      MUST NOT have <tt class="verbatim">version</tt>, <tt class="verbatim">inventorySha512</tt>
+      or <tt class="verbatim">follow</tt> themselves. The revision presented as the
+      selection's is the last of the list. A revision pins the object version
+      that was vetted: descriptions and notices added later by the document's
+      archive are not vetted by the selection, and presentations that show
+      them SHOULD say where they come from. Tools MUST NOT change revision
+      sets on their own: adding a revision (for instance a corrected version,
+      accepted after review), removing one, or adding or removing a member is
+      a new version of the selection, made by its curator, recorded in the
+      inventory (who and when) with a message saying what was decided. A
+      revision set MAY hold several revisions of the same document, for
+      instance a version accepted and its later correction.
+    </p>
+    <p>
       Every member is pinned: a collection version states exactly which object
-      version of each member it contains. A collection version therefore fixes
-      everything it contains, also across archives; since a pin fixes an
+      versions it contains, whole objects up to a version in an archive
+      collection, revisions in a selection. A collection version therefore
+      fixes everything it contains, also across archives; since a pin fixes an
       inventory, which fixes all its files, collections are hash trees. Pins
       cannot form cycles.
     </p>
-    <h3 id="auto-22">10.2 Members of other archives<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-23">10.3 Members of other archives<span style="margin-left: 1em"></span></h3>
     <p>
       A member may belong to another archive. Nothing is copied: the member is
-      resolved as in section 6.4. An archive MAY also mirror another archive's
-      object by copying it into its own storage root, keeping its identifier
-      only if no object of its own has it, and only if the licence of the
-      member allows redistribution. A reference (a pin without a copy) needs
-      no permission.
+      resolved as in section 6.4. A reference (a pin without a copy) needs no
+      permission. Copies are of two kinds: mirrors (section 10.4) and accepted
+      copies (section 10.5).
     </p>
-    <h3 id="auto-23">10.3 Following members<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-24">10.4 Mirrors<span style="margin-left: 1em"></span></h3>
     <p>
-      <tt class="verbatim">&quot;follow&quot;: &quot;latest&quot;</tt> is a curation
-      setting, not a floating reference. A tool maintaining the collection
-      reads the member archive's discovery document (or its feed); when the
-      followed object has a new current version (section 7.3), or a new
-      description of it, the tool writes a new collection version pinning the
-      last object version holding the current version. If the followed object
-      is withdrawn, the pin is kept and the tool reports it to the curator.
+      An archive MAY mirror an object of another archive: copy the whole
+      object, every version with its inventories and files, byte for byte,
+      into its own storage root, under the same identifier (only if no object
+      of its own has it). A mirror is the same object, not a new one: its <tt
+      class="verbatim">object.json</tt> files keep naming the original archive, and the
+      discovery document lists it with <tt class="verbatim">mirrorOf</tt>, the
+      identifier of the original archive (section 6.1). A mirror is brought up
+      to date only by copying the new versions of the original, which is
+      possible because OCFL objects only grow; it MUST NOT be changed
+      otherwise. Mirroring is allowed only if the licences of all the versions
+      copied allow redistribution. An archive collection MAY list a mirror of
+      a member in the member's <tt class="verbatim">mirrors</tt>. An archive that
+      mirrors another archive entirely SHOULD be listed in the <tt class="verbatim">mirrors</tt>
+      of that archive's discovery document, with the agreement of its owner.
     </p>
-    <h3 id="auto-24">10.4 Rights<span style="margin-left: 1em"></span></h3>
+    <p>
+      Mirrors serve preservation and access (an institution keeping copies of
+      its members' archives, an independent storage site): they are impartial,
+      like archive collections, and carry every version.
+    </p>
+    <h3 id="auto-25">10.5 Accepted copies<span style="margin-left: 1em"></span></h3>
+    <p>
+      A selection MAY keep its own copy of a revision it vetted, as a document
+      of the selection's archive, called an accepted copy, so that what it
+      vetted stays available whatever happens to the original. Its first
+      document version holds exactly the files of the vetted revision (every
+      file except <tt class="verbatim">datacite.json</tt> and <tt class="verbatim">object.json</tt>),
+      byte for byte; its <tt class="verbatim">object.json</tt> records the source in <tt
+      class="verbatim">external</tt>, with <tt class="verbatim">role</tt> <tt class="verbatim">source</tt>,
+      <tt class="verbatim">service</tt> <tt class="verbatim">OpenSheaf</tt>, <tt class="verbatim">record</tt>
+      the URL of the source object version, <tt class="verbatim">label</tt> the source
+      object identifier and object version (for instance <tt class="verbatim">&quot;paper
+      v2&quot;</tt>), and <tt class="verbatim">files</tt> with one entry, <tt class="verbatim">inventory.json</tt>,
+      whose <tt class="verbatim">sha512</tt> is the pin of the source version; its <tt
+      class="verbatim">datacite.json</tt> describes it with the selection's archive as
+      <tt class="verbatim">publisher</tt>, keeps the relations of the source, and links
+      the source version with <tt class="verbatim">IsIdenticalTo</tt> (a <tt class="verbatim">URL</tt>).
+      Copying requires the right to redistribute only the revision copied.
+    </p>
+    <p>
+      Later document versions of an accepted copy are acts of the selection's
+      curator (a corrected version accepted, a notice, a withdrawal); the
+      authors' later versions change nothing in it. The selection lists the
+      accepted copy as its member (a member of its own archive), or the
+      original revision set with the accepted copy's archive in the member's
+      <tt class="verbatim">mirrors</tt>.
+    </p>
+    <p>
+      A version that the selection makes itself, such as a journal's typeset
+      version of record, is a document of the selection's archive like any
+      other, with the selection as <tt class="verbatim">publisher</tt>, the authors'
+      agreement in <tt class="verbatim">object.json</tt> (section 9), and relations to
+      the authors' versions (sections 7.3 and 8.1).
+    </p>
+    <h3 id="auto-26">10.6 Rights<span style="margin-left: 1em"></span></h3>
     <p>
       The member list of a collection is placed under CC0. The licence of a
-      collection never extends to its members.
+      collection never extends to its members. Mirrors and accepted copies
+      keep the licences of what they copy.
     </p>
-    <h2 id="auto-25">11. Withdrawal and takedown<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-26">11.1 Withdrawal<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-27">11. Withdrawal and takedown<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-28">11.1 Withdrawal<span style="margin-left: 1em"></span></h3>
     <p>
       A document or collection is withdrawn (for instance retracted by its
       authors) by a description-only version whose <tt class="verbatim">object.json</tt>
@@ -1117,13 +1272,13 @@
       <tt class="verbatim">withdrawn</tt>. Presentations MUST show the withdrawal notice
       with the document.
     </p>
-    <h3 id="auto-27">11.2 Takedown<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-29">11.2 Takedown<span style="margin-left: 1em"></span></h3>
     <p>
       When content must be removed (by law, or for a breach of rights), the
       object is deleted from the storage root and a tombstone MUST be added to
       the discovery document.
     </p>
-    <h3 id="auto-28">11.3 Tombstones<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-30">11.3 Tombstones<span style="margin-left: 1em"></span></h3>
     <p>
       A tombstone records <tt class="verbatim">id</tt>, <tt class="verbatim">kind</tt>, <tt class="verbatim">lastVersion</tt>,
       <tt class="verbatim">inventorySha512</tt> of that version, <tt class="verbatim">date</tt>
@@ -1141,7 +1296,7 @@
       mechanism is published, a later version of this specification will adopt
       it for takedowns of single files.
     </p>
-    <h2 id="auto-29">12. Versioning of this specification<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-31">12. Versioning of this specification<span style="margin-left: 1em"></span></h2>
     <p>
       This specification is versioned MAJOR.MINOR.PATCH, a form of semantic
       versioning adapted to a format:
@@ -1196,8 +1351,8 @@
       and is not changed after the version is final, except by patch versions,
       which are listed in its changelog.
     </p>
-    <h2 id="auto-30">13. Integrity and authenticity<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-31">13.1 Integrity<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-32">13. Integrity and authenticity<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-33">13.1 Integrity<span style="margin-left: 1em"></span></h3>
     <p>
       Integrity rests on OCFL digests: every file is fixed by its SHA-512
       digest in the inventory, every inventory by its checksum file, and every
@@ -1206,7 +1361,7 @@
       block; archives following the Zenodo binding MUST record MD5 (appendix
       A).
     </p>
-    <h3 id="auto-32">13.2 Authenticity and dates<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-34">13.2 Authenticity and dates<span style="margin-left: 1em"></span></h3>
     <p>
       Digests show that files were not changed; they do not show who made them
       or when. An archive MAY provide, for each object version:
@@ -1250,7 +1405,7 @@
       tags, but git hashes are not part of the integrity chain of this
       specification.
     </p>
-    <h2 id="auto-33">14. Verification<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-35">14. Verification<span style="margin-left: 1em"></span></h2>
     <p>
       A verifier checking an archive MUST:
     </p>
@@ -1305,10 +1460,30 @@
       </li>
       <li>
         <p>
-          for each collection version, resolve each member as in section 6.4
-          and check its pin, reporting each member as verified, mismatch (a
-          copy was found and does not match), unavailable (no copy found) or
-          removed (tombstoned).
+          check that each <tt class="verbatim">members.json</tt> has a <tt class="verbatim">type</tt>,
+          that the members of an archive collection have <tt class="verbatim">version</tt>
+          and <tt class="verbatim">inventorySha512</tt>, and that the members of a
+          selection have <tt class="verbatim">revisions</tt> and none of <tt class="verbatim">version</tt>,
+          <tt class="verbatim">inventorySha512</tt> or <tt class="verbatim">follow</tt>, with
+          distinct document versions;
+        </p>
+      </li>
+      <li>
+        <p>
+          for each collection version, resolve each member (each revision, in
+          a selection) as in section 6.4 and check its pin, and for a revision
+          that the pinned object version holds the stated document version,
+          reporting each as verified, mismatch (a copy was found and does not
+          match), unavailable (no copy found) or removed (tombstoned);
+        </p>
+      </li>
+      <li>
+        <p>
+          for each mirror (<tt class="verbatim">mirrorOf</tt>), check that its <tt
+          class="verbatim">object.json</tt> files name that archive; for each accepted
+          copy, check that its first document version holds exactly the files
+          of the source version named in <tt class="verbatim">external</tt>, when the
+          source is available.
         </p>
       </li>
     </ul>
@@ -1318,7 +1493,7 @@
       authoritative. It SHOULD limit the depth and size of the collections it
       follows, and report when it stops.
     </p>
-    <h2 id="auto-34">15. Security considerations<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-36">15. Security considerations<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1367,7 +1542,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-35">16. Privacy and rights<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-37">16. Privacy and rights<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1395,15 +1570,28 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-36">17. Changelog<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-38">17. Changelog<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
           <strong>0.1 (draft), 13 November 2026:</strong> first version.
         </p>
       </li>
+      <li>
+        <p>
+          <strong>0.1 (draft), 13 November 2026, revision:</strong>
+          collections are archive collections or selections (<tt class="verbatim">type</tt>
+          in <tt class="verbatim">members.json</tt>): an archive collection pins objects
+          whole and may follow them; a selection pins revision sets, the
+          document versions it vetted, and changes only by an act of its
+          curator. Mirrors (whole objects, <tt class="verbatim">mirrorOf</tt> in the
+          discovery document) and accepted copies (one vetted revision, as a
+          document of the selection's archive) are defined. <tt class="verbatim">follow</tt>
+          is for archive collections only, and follows the head.
+        </p>
+      </li>
     </ul>
-    <h2 id="auto-37">Appendix A. Zenodo binding (normative for archives declaring the
+    <h2 id="auto-39">Appendix A. Zenodo binding (normative for archives declaring the
     profile <tt class="verbatim">zenodo</tt>)<span style="margin-left: 1em"></span></h2>
     <p>
       Zenodo issues DataCite DOIs (prefix <tt class="verbatim">10.5281</tt>) and keeps
@@ -1492,7 +1680,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-38">Appendix B. TeXmacs profile (normative for archives declaring the
+    <h2 id="auto-40">Appendix B. TeXmacs profile (normative for archives declaring the
     profile <tt class="verbatim">texmacs</tt>)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
@@ -1541,7 +1729,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-39">Appendix C. Website profile (normative for archives declaring the
+    <h2 id="auto-41">Appendix C. Website profile (normative for archives declaring the
     profile <tt class="verbatim">website</tt>)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
@@ -1601,7 +1789,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-40">Appendix D. JSON Schemas (normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-42">Appendix D. JSON Schemas (normative)<span style="margin-left: 1em"></span></h2>
     <p>
       The schemas (JSON Schema draft 2020-12) are published with this
       specification and dedicated to the public domain under CC0 1.0, so that
@@ -1631,7 +1819,7 @@
       against the DataCite 4.7 XML Schema, together with the requirements of
       section 8.
     </p>
-    <h2 id="auto-41">Appendix E. Examples (non-normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-43">Appendix E. Examples (non-normative)<span style="margin-left: 1em"></span></h2>
     <p>
       The values below come from the first archive. Digests are shortened, and
       the DOIs and ORCID iDs are placeholders.
@@ -1746,34 +1934,82 @@
       is document version 3, the last in the history.
     </p>
     <p>
-      A <tt class="verbatim">members.json</tt> of a collection version, with a member
-      from another archive:
+      A <tt class="verbatim">members.json</tt> of an archive collection: the main
+      collection of an archive, following its documents whole:
     </p>
     <div class="tmweb-code">
       <pre class="verbatim" xml:space="preserve">
 {
   &quot;format&quot;: &quot;opensheaf-collection/0.1&quot;,
+  &quot;type&quot;: &quot;archive&quot;,
+  &quot;order&quot;: &quot;issued-desc&quot;,
   &quot;members&quot;: [
     { &quot;kind&quot;: &quot;document&quot;,
       &quot;archive&quot;: &quot;tag:opensheaf.org,2026:mgubi&quot;,
       &quot;archiveUrl&quot;: &quot;https://mgubi.org/papers/&quot;,
       &quot;id&quot;: &quot;fractional-phi42-mass-gap&quot;,
-      &quot;version&quot;: &quot;v1&quot;,
+      &quot;version&quot;: &quot;v3&quot;,
       &quot;inventorySha512&quot;: &quot;9a0c&hellip;&quot;,
-      &quot;doi&quot;: &quot;10.5281/zenodo.1234567&quot;,
       &quot;follow&quot;: &quot;latest&quot;,
-      &quot;cite&quot;: { &quot;title&quot;: &quot;Mass gap for the fractional Phi^4_2 model&quot;,
-                &quot;creators&quot;: [&quot;P. Duch&quot;, &quot;M. Gubinelli&quot;], &quot;year&quot;: 2026 } },
+      &quot;cite&quot;: { &quot;title&quot;: &quot;Mass gap for the fractional $\\Phi^4_2$ model&quot;,
+                &quot;creators&quot;: [&quot;P. Duch&quot;, &quot;M. Gubinelli&quot;], &quot;year&quot;: 2026, &quot;issued&quot;: &quot;2026-11-12&quot; } }
+  ]
+}</pre>
+    </div>
+    <p>
+      A <tt class="verbatim">members.json</tt> of a selection: an issue of a journal,
+      with a paper vetted in its version 2 and, after a correction accepted by
+      the editors, its version 3; an accepted copy kept by the journal; and a
+      member that is itself a collection, vetted in one version:
+    </p>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+{
+  &quot;format&quot;: &quot;opensheaf-collection/0.1&quot;,
+  &quot;type&quot;: &quot;selection&quot;,
+  &quot;members&quot;: [
+    { &quot;kind&quot;: &quot;document&quot;,
+      &quot;archive&quot;: &quot;tag:example.org,2026:authors&quot;,
+      &quot;archiveUrl&quot;: &quot;https://authors.example.org/&quot;,
+      &quot;id&quot;: &quot;network-discrimination&quot;,
+      &quot;revisions&quot;: [
+        { &quot;documentVersion&quot;: 2, &quot;version&quot;: &quot;v2&quot;, &quot;inventorySha512&quot;: &quot;4f1e&hellip;&quot; },
+        { &quot;documentVersion&quot;: 3, &quot;version&quot;: &quot;v4&quot;, &quot;inventorySha512&quot;: &quot;c07a&hellip;&quot; } ],
+      &quot;mirrors&quot;: [&quot;https://journal.example.org/&quot;],
+      &quot;cite&quot;: { &quot;title&quot;: &quot;Quantum network discrimination&quot;, &quot;creators&quot;: [&quot;C. Hirche&quot;], &quot;year&quot;: 2021 } },
     { &quot;kind&quot;: &quot;collection&quot;,
       &quot;archive&quot;: &quot;tag:example.org,2026:seminar&quot;,
       &quot;archiveUrl&quot;: &quot;https://seminar.example.org/&quot;,
       &quot;id&quot;: &quot;collection-seminar-2026&quot;,
-      &quot;version&quot;: &quot;v3&quot;,
-      &quot;inventorySha512&quot;: &quot;7d21&hellip;&quot; }
+      &quot;revisions&quot;: [ { &quot;documentVersion&quot;: 3, &quot;version&quot;: &quot;v3&quot;, &quot;inventorySha512&quot;: &quot;7d21&hellip;&quot; } ] }
   ]
 }</pre>
     </div>
-    <h2 id="auto-42">Appendix F. Rationale (non-normative)<span style="margin-left: 1em"></span></h2>
+    <p>
+      The <tt class="verbatim">object.json</tt> of the journal's accepted copy of the
+      first member's version 2:
+    </p>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+{
+  &quot;format&quot;: &quot;opensheaf-object/0.1&quot;,
+  &quot;specification&quot;: &quot;0.1&quot;,
+  &quot;kind&quot;: &quot;document&quot;,
+  &quot;archiveId&quot;: &quot;tag:example.org,2026:journal&quot;,
+  &quot;objectId&quot;: &quot;network-discrimination&quot;,
+  &quot;documentVersion&quot;: 1,
+  &quot;mainSource&quot;: &quot;paper.tex&quot;,
+  &quot;sourceFormat&quot;: &quot;application/x-tex&quot;,
+  &quot;renditions&quot;: [ { &quot;path&quot;: &quot;paper.pdf&quot;, &quot;mediaType&quot;: &quot;application/pdf&quot; } ],
+  &quot;stage&quot;: { &quot;scheme&quot;: &quot;NISO-JAV&quot;, &quot;value&quot;: &quot;VoR&quot; },
+  &quot;external&quot;: [ { &quot;role&quot;: &quot;source&quot;, &quot;service&quot;: &quot;OpenSheaf&quot;,
+                  &quot;record&quot;: &quot;https://authors.example.org/ocfl/network-discrimination/v2/&quot;,
+                  &quot;label&quot;: &quot;network-discrimination v2&quot;,
+                  &quot;files&quot;: [ { &quot;name&quot;: &quot;inventory.json&quot;, &quot;sha512&quot;: &quot;4f1e&hellip;&quot; } ] } ],
+  &quot;status&quot;: &quot;active&quot;
+}</pre>
+    </div>
+    <h2 id="auto-44">Appendix F. Rationale (non-normative)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1802,6 +2038,31 @@
           <strong>Why pins by inventory digest.</strong> One digest fixes a
           whole object version, so collections become hash trees across
           archives, and any matching copy will do.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Why archive collections and selections.</strong> Keeping and
+          vetting are different acts. An archive (an author's, an
+          institution's, a storage site) keeps what its members deposit, every
+          version, without judging them: following an object as it grows is
+          its job. A selection (a journal, a digest, a review journal) vouches
+          for particular revisions: a later version by the authors has not
+          been vetted, so it cannot enter the selection by itself, and a
+          change of what is vetted is an editorial act that the selection's
+          own history records. Pinning whole objects in one case and revision
+          sets in the other makes the difference explicit and checkable.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Why mirrors and accepted copies differ.</strong> A mirror
+          copies a whole object and stays the same object, owned by its
+          original archive, so it can only grow by the original's versions. An
+          accepted copy takes one vetted revision into the selection's own
+          archive, where it continues under the selection's responsibility
+          (corrections, notices, withdrawal); OCFL cannot hold part of an
+          object, so a copy of one revision is necessarily a new object.
         </p>
       </li>
       <li>
@@ -1884,7 +2145,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-43">Appendix G. References<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-45">Appendix G. References<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>

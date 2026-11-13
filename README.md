@@ -24,9 +24,10 @@ tools, the templates and the test data) lives in the GitHub organisation
 ## Why
 
 Scholarly documents now live in a few central places: preprint servers such
-as arXiv, publishers' platforms, institutional repositories. They work, but
-authors depend on them for something that could be much simpler, and what
-they keep is often only a PDF.
+as arXiv, publishers' platforms, institutional repositories. Each package is
+centralised, opaque and non-composable with the others, and sometimes
+preserves only part of the life cycle of a scientific document, for example
+only the PDF or only a specific version.
 
 OpenSheaf proposes a lean common format instead:
 

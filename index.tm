@@ -15,7 +15,7 @@
 
   <os-alert|warning|Warning.|<strong|Draft.> OpenSheaf 0.1 is a draft specification. Until version 1.0, any revision may change the format in incompatible ways. Archives and collections made now may have to be rebuilt or migrated, and the tools follow the latest draft. Do not rely on it yet for anything you cannot redo.>
 
-  <strong|Source:> the specification and this site are kept in the GitHub repository <hlink|opensheaf/opensheaf.github.io|https://github.com/opensheaf/opensheaf.github.io>, which is also the place to discuss them (see below).
+  <strong|Source:> the specification and this site are kept in the GitHub repository <hlink|opensheaf/opensheaf.github.io|https://github.com/opensheaf/opensheaf.github.io>, which is also the place to discuss them (see below). The whole ecosystem (the specification, the tools, the templates and the test data) lives in the GitHub organisation <hlink|opensheaf|https://github.com/opensheaf>.
 
   <section*|Why>
 
@@ -56,6 +56,8 @@
   </itemize>
 
   <section*|Implementations>
+
+  The repositories of the <hlink|opensheaf|https://github.com/opensheaf> organisation on GitHub, and archives made with them.
 
   <\itemize>
     <item><strong|Archives>

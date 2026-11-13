@@ -17,7 +17,9 @@ collections of them. Read the
 
 **Source:** the specification and this site are kept in the GitHub repository
 [opensheaf/opensheaf.github.io](https://github.com/opensheaf/opensheaf.github.io), which is also the place
-to discuss them (see below).
+to discuss them (see below). The whole ecosystem (the specification, the
+tools, the templates and the test data) lives in the GitHub organisation
+[opensheaf](https://github.com/opensheaf).
 
 ## Why
 
@@ -80,6 +82,9 @@ This repository is the place to discuss OpenSheaf and to propose changes:
   OpenSheaf, open an issue so that it can be added to the list below.
 
 ## Implementations
+
+The repositories of the [opensheaf](https://github.com/opensheaf) organisation
+on GitHub, and archives made with them.
 
 - **Archives**
   - [Papers of Massimiliano Gubinelli](https://mgubi.org/papers/)

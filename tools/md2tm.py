@@ -12,7 +12,9 @@ Handles the subset of Markdown used by spec.md:
   *italics*, becomes the abstract. The first line may instead be an image
   `![Title](logo.svg)`, which then stands as the title, or a `<picture>`
   block (light and dark variants, as GitHub shows them), whose logo is the
-  hero of the page: centred at two fifths of the width, with space around;
+  hero of the page: centred at two fifths of the width, with space around.
+  A first line `<!-- site hero: logo.svg -->`, hidden on GitHub, makes that
+  logo the hero instead of the image on the next line;
 - images `![alt](path)` on a line of their own (centred);
 - `## Section`, `### Subsection`;
 - paragraphs; lists with `- ` and nested lists indented by two spaces;
@@ -76,6 +78,7 @@ def code_line(c):
     return '    ' + '\\ ' * n + rest
 
 
+SITE_HERO_RE = re.compile(r'^<!--\s*site hero:\s*(\S+)\s*-->\s*$')
 IMAGE_RE = re.compile(r'^!\[([^\]]*)\]\(([^)\s]+)\)\s*$')
 
 
@@ -87,7 +90,12 @@ def convert(md):
     lines = md.split('\n')
     first = IMAGE_RE.match(lines[0]) if lines else None
     hero = None
-    if lines and lines[0].strip().startswith('<picture'):
+    site = SITE_HERO_RE.match(lines[0]) if lines else None
+    if site:
+        # this logo is the hero, in place of the image heading the file on GitHub
+        hero = image(site.group(1), '0.4par')
+        lines = [''] + lines[2:]
+    elif lines and lines[0].strip().startswith('<picture'):
         # a <picture> (variants for light and dark themes, as on GitHub):
         # its <img> is the hero of the page
         j = next(k for k, ln in enumerate(lines) if '</picture>' in ln)

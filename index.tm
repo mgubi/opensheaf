@@ -82,7 +82,7 @@
 
     <item><verbatim|notes-meta.ts>: the TeXmacs style package of the page; <verbatim|resources/>: its stylesheets, scripts and fonts.
 
-    <item><verbatim|resources/brand/>: the logo (dot mark and lettering), the symbol, the wordmark and the favicon, as self-contained SVG files (with PNG and PDF copies of the logo); see its README. The lettering is outlined from Geist Serif (SIL Open Font License).
+    <item><verbatim|resources/brand/>: the logo (dot mark and lettering), the symbol, the wordmark and the favicon, as self-contained SVG files (with PNG and PDF copies of the logo) and the banner; see its README. The lettering is outlined from Cormorant Garamond (SIL Open Font License).
 
     <item><verbatim|tools/build.py>: converts the Markdown files to TeXmacs (<verbatim|tools/md2tm.py>) and exports them to HTML with TeXmacs. It needs the <verbatim|notes> and <verbatim|max-html> TeXmacs plugins, linked in <verbatim|~/.TeXmacs/plugins>.
 

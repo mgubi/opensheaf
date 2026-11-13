@@ -104,8 +104,7 @@
               "withdrawn"
             ]
           }
-        },
-        "additionalProperties": false
+        }
       }
     },
     "tombstones": {
@@ -147,8 +146,7 @@
           "reason": {
             "type": "string"
           }
-        },
-        "additionalProperties": false
+        }
       }
     },
     "keys": {

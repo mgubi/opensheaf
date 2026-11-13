@@ -110,8 +110,7 @@
           "type": "string",
           "minLength": 1
         }
-      },
-      "additionalProperties": false
+      }
     },
     "history": {
       "type": "array",
@@ -172,8 +171,7 @@
         "method": {
           "type": "string"
         }
-      },
-      "additionalProperties": false
+      }
     },
     "external": {
       "type": "array",

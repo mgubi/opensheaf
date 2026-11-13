@@ -383,9 +383,23 @@
 
   <section*|12. Versioning of this specification>
 
-  Every JSON file defined here declares its format version, and the discovery document and every <verbatim|object.json> declare the version of this specification. Before version 1.0, any change of the minor version (0.1, 0.2, ...) may be incompatible; a reader that finds a version it does not know SHOULD report it and MUST NOT silently treat the files as valid. From version 1.0, minor versions will be backward compatible.
+  This specification is versioned MAJOR.MINOR.PATCH, a form of semantic versioning adapted to a format:
 
-  The text of each version is published at <verbatim|https://opensheaf.org/opensheaf-specification-\<less\>version\<gtr\>.md> and is not changed after the version is final.
+  <\itemize>
+    <item>a <strong|major> version (1.0, 2.0) may make incompatible changes;
+
+    <item>a <strong|minor> version (1.1, 1.2) only adds: every file valid under 1.x remains valid under 1.y for y \<gtr\> x, with the same meaning;
+
+    <item>a <strong|patch> version (1.1.1) corrects or clarifies the text without changing any requirement.
+  </itemize>
+
+  Before version 1.0, any change of the minor version (0.1, 0.2, ...) may be incompatible, as semantic versioning allows for initial development.
+
+  Every JSON file defined here declares its format version, and the discovery document and every <verbatim|object.json> declare the version of this specification, both as MAJOR.MINOR only (for instance <verbatim|"opensheaf-object/0.1"> and <verbatim|"0.1">): a patch version never changes what is valid, so files do not record it.
+
+  A reader that finds a major version it does not know (or, before 1.0, a minor version it does not know) SHOULD report it and MUST NOT silently treat the files as valid. A reader that finds a later minor version of a major version it knows (from 1.0) reads the files as that major version, ignoring properties it does not know, and SHOULD report the version. For this to work, readers MUST ignore unknown properties in files of a major version they know, and the schemas of this specification do not forbid additional properties.
+
+  While a version is a draft, successive drafts are identified by the date in the heading and by the changelog (section 17). The text of each version is published at <verbatim|https://opensheaf.org/opensheaf-specification-\<less\>MAJOR.MINOR\<gtr\>.md> and is not changed after the version is final, except by patch versions, which are listed in its changelog.
 
   <section*|13. Integrity and authenticity>
 

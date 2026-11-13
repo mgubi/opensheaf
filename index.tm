@@ -11,7 +11,7 @@
 
   <strong|Status:> version 0.1, a draft. It is experimental and may change in incompatible ways before version 1.0.
 
-  <strong|Author:> <hlink|Massimiliano Gubinelli|https://mgubi.github.io/docs/main.html> (Mathematical Institute, University of Oxford).
+  <strong|Author:> <hlink|Massimiliano Gubinelli|https://mgubi.org/docs/main.html> (Mathematical Institute, University of Oxford).
 
   <section*|Why>
 

@@ -16,7 +16,7 @@
     </src-title>
   </active*>
 
-  <assign|notes-main-dir|https://mgubi.github.io/docs>
+  <assign|notes-main-dir|https://mgubi.org/docs>
 
   <assign|notes-meta-name|papers>
 

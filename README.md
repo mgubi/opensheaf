@@ -9,7 +9,7 @@ collections of them. Read the
 **Status:** version 0.1, a draft. It is experimental and may change in
 incompatible ways before version 1.0.
 
-**Author:** [Massimiliano Gubinelli](https://mgubi.github.io/docs/main.html)
+**Author:** [Massimiliano Gubinelli](https://mgubi.org/docs/main.html)
 (Mathematical Institute, University of Oxford).
 
 ## Why

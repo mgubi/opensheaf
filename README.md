@@ -104,7 +104,11 @@ This repository is the place to discuss OpenSheaf and to propose changes:
 ## Licence
 
 The text of the specification and of the FAQ is licensed under the
-[Creative Commons Attribution 4.0 International licence](https://creativecommons.org/licenses/by/4.0/)
-(CC BY 4.0). The schemas, tools and style files are licensed under the GNU
+[Creative Commons Attribution-ShareAlike 4.0 International licence](https://creativecommons.org/licenses/by-sa/4.0/)
+(CC BY-SA 4.0): it may be copied and adapted with attribution, and adapted
+versions must be shared under the same licence. The JSON Schemas in
+`schemas/` are dedicated to the public domain under
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), so that they can
+be embedded in any software. The tools and style files are licensed under the GNU
 General Public License, version 3 or later. The fonts in `resources/fonts/`
 keep their own licence (SIL Open Font License).

@@ -1,6 +1,6 @@
 # OpenSheaf: an open format for document archives and collections
 
-*Specification, version 0.1 (draft), 13 November 2026. OpenSheaf is a common, open format for archives of scholarly documents and for collections of them, built on the Oxford Common File Layout (OCFL 1.1) and the DataCite Metadata Schema (4.7). This version is experimental and may change in incompatible ways before version 1.0. The text is licensed under CC BY 4.0.*
+*Specification, version 0.1 (draft), 13 November 2026. OpenSheaf is a common, open format for archives of scholarly documents and for collections of them, built on the Oxford Common File Layout (OCFL 1.1) and the DataCite Metadata Schema (4.7). This version is experimental and may change in incompatible ways before version 1.0. The text is licensed under CC BY-SA 4.0; the JSON Schemas are dedicated to the public domain under CC0 1.0.*
 
 ## 1. Introduction (non-normative)
 
@@ -315,7 +315,7 @@ Zenodo issues DataCite DOIs (prefix `10.5281`) and keeps files permanently. Unde
 
 ## Appendix D. JSON Schemas (normative)
 
-The schemas (JSON Schema draft 2020-12) are published with this specification:
+The schemas (JSON Schema draft 2020-12) are published with this specification and dedicated to the public domain under CC0 1.0, so that they can be embedded in any software:
 
 - [opensheaf-archive-0.1.schema.json](https://opensheaf.org/schemas/opensheaf-archive-0.1.schema.json) for `opensheaf.json`;
 - [opensheaf-provenance-0.1.schema.json](https://opensheaf.org/schemas/opensheaf-provenance-0.1.schema.json) for `provenance.json`;

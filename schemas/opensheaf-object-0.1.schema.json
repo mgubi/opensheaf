@@ -174,10 +174,17 @@
       "items": {
         "type": "object",
         "required": [
+          "role",
           "service",
           "record"
         ],
         "properties": {
+          "role": {
+            "enum": [
+              "deposit",
+              "source"
+            ]
+          },
           "service": {
             "type": "string"
           },

@@ -154,7 +154,7 @@ Every object version MUST contain `datacite.json`, a JSON object with the DataCi
 
 It SHOULD contain:
 
-- `descriptions` with a `descriptionType` `Abstract`, as plain text;
+- `descriptions` with a `descriptionType` `Abstract`, as plain text with mathematics as below;
 - `subjects` with a `subjectScheme` (any scheme; MSC2020 is common in mathematics);
 - `dates`, as below;
 - `rightsList`, with an SPDX identifier in lower case and the licence URL, or a statement such as "All rights reserved";
@@ -173,6 +173,8 @@ It SHOULD contain:
 - `Updated`: the date of a description-only version.
 - `Created` (when a version was written, for a version not public at the time), `Submitted` and `Accepted` (journal milestones), OPTIONAL.
 - `Withdrawn`: the date of a withdrawal, equal to `withdrawal.date` in `object.json` (section 11.1).
+
+**Mathematics in titles and abstracts.** Titles and abstracts are plain text in which mathematics MAY be written in LaTeX between single dollar signs (`$\Phi^4_3$`); a literal dollar sign is written `\$`. The LaTeX SHOULD use only the mathematical commands of LaTeX with the `amsmath` and `amssymb` packages, which common renderers (MathJax, KaTeX) display without the document's preamble; presentations render it, and readers that do not are left with readable LaTeX. Tools importing titles and abstracts from elsewhere SHOULD replace the authors' own macros (such as `\R` or `\be`) with standard LaTeX when their definitions are known, for instance from the preamble of the imported sources, and otherwise keep them unchanged; they never invent definitions.
 
 Dates MAY be approximate, as DataCite allows (`2019`, `2019-03`, a range `2018/2019`), with `dateInformation` explaining them (for instance "from file timestamps"); unknown dates are omitted.
 
@@ -210,7 +212,7 @@ A document MAY contain:
 Any object MAY contain:
 
 - `agreement`: a minimal record that the authors agreed to the deposit and to the licence: who agreed (names only), when, and how (for instance "by e-mail"). It MUST NOT contain e-mail addresses, correspondence or signatures of persons;
-- `external`: the external records of this version: deposits of it (appendix A) and the record it was imported from, each with the `service`, the `record` (a URL), the `doi`, the `label` the service gives the version (for instance `v3` on arXiv), and the digests of any file kept there that is not in the content (such as a source archive);
+- `external`: the external records of this version, each with its `role`: `deposit` for a deposit of the version made by the archive (appendix A), `source` for the record it was imported from; the `service`, the `record` (a URL), the `doi`, the `label` the service gives the version (for instance `v3` on arXiv), and the digests of files kept there that are not in the content (for a deposit, such as a source archive uploaded instead of the sources) or of the files received from it (for a source, as they were received before being unpacked);
 - `withdrawal` (section 11).
 
 `object.json` is metadata and is placed under CC0 (section 16).
@@ -328,7 +330,7 @@ Zenodo issues DataCite DOIs (prefix `10.5281`) and keeps files permanently. Unde
 
 - **Records.** Each document is one Zenodo record with versions: the concept DOI stands for the document, and each document version is one record version with its own DOI, of Zenodo resource type `publication-preprint` (or the type matching `resourceTypeGeneral`). Description-only versions are metadata edits of the existing record version, not new record versions; files they add (such as notices) are not uploaded, since the files of a published record version are fixed.
 - **Versions out of order.** Zenodo orders the versions of a record by publication, and its concept DOI resolves to the latest. A document version deposited out of order (section 7.3) is therefore not deposited as a new version of the record; it MAY be deposited as a separate record, with `IsVersionOf` the concept DOI of the document.
-- **Files.** The record version holds the content files of the object version as deposited. Zenodo records have no folders: if the sources have sub-folders, or the record would exceed Zenodo's file count, the sources are uploaded as one archive `sources.zip`, built reproducibly (entries in byte order of their names, fixed timestamps, no extra attributes), whose digests are recorded in `object.json` under `external`. Inventories MUST record MD5 digests in `fixity`, so that the checksums reported by Zenodo can be compared directly.
+- **Files.** The record version holds the content files of the object version as deposited. Zenodo records have no folders: if the sources have sub-folders, or the record would exceed Zenodo's file count, the sources are uploaded as one archive `sources.zip`, built reproducibly (entries in byte order of their names, fixed timestamps, no extra attributes), whose digests are recorded in `object.json` under `external`, in the entry of the deposit (`role` `deposit`). Inventories MUST record MD5 digests in `fixity`, so that the checksums reported by Zenodo can be compared directly.
 - **Order of operations.** (1) Create a draft, or a new version of the record (a new version inherits the files of the previous one, which are deleted). (2) Reserve its DOI (Zenodo reserves one with each draft; its sandbox reserves DOIs with the prefix `10.5281` but publishes them with the test prefix `10.5072`). (3) Write `datacite.json` with that DOI and build the object version in a staging area. (4) Upload the files and compare the MD5 checksums reported by Zenodo with the fixity block. (5) Publish. (6) Commit the object version and update the discovery document. If a step fails before publication, the draft is discarded. If publication succeeds and the commit fails, the tool MUST complete the object version from the staging area before any other deposit of that document; it SHOULD hold a lock per document during a deposit, since Zenodo allows one unpublished version per record.
 - **Corrections.** Zenodo allows the files of a published version to be changed within 30 days. Archives following this binding MUST NOT use this: a correction is a new document version.
 - **Metadata differences.** Zenodo generates its own DataCite record for the DOI: its `url` is the Zenodo landing page, its `publisher` is Zenodo, and it adds relations of its own (such as `IsVersionOf` the concept DOI). `datacite.json` remains authoritative; verifiers tolerate exactly these differences.
@@ -339,7 +341,7 @@ Zenodo issues DataCite DOIs (prefix `10.5281`) and keeps files permanently. Unde
 - The main source is a TeXmacs document; `sourceFormat` is `application/x-texmacs` (not a registered media type; it is the type TeXmacs uses).
 - `toolchain` records the TeXmacs version and the style packages and plugins used that are not part of the TeXmacs distribution; such packages that belong to the document are deposited with the sources.
 - Renditions are produced without regenerating bibliographies or tables of contents, so that the deposited sources, with their stored references, reproduce them even if a bibliography database is not deposited; deposits SHOULD nevertheless include the databases used.
-- The abstract in `datacite.json` is the TeXmacs abstract converted to plain text, with mathematics written in LaTeX between dollar signs.
+- The title and abstract in `datacite.json` are converted from the TeXmacs document to plain text, with mathematics in LaTeX as in section 8.
 - HTML versions are exported by TeXmacs from a copy of the sources with presentation packages added to its style; the deposited sources are not modified.
 - An archive whose files are kept inside a website built with TeXmacs' website converter SHOULD place an empty file `.texmacs-noconvert` at its top (honoured by the `max-html` plugin), so that the converter never rewrites deposited files.
 
@@ -405,7 +407,7 @@ An `object.json` of a document version:
   "toolchain": [ { "name": "TeXmacs", "version": "2.1.5" } ],
   "stage": { "scheme": "NISO-JAV", "value": "AO" },
   "agreement": { "by": ["P. Duch", "M. Gubinelli"], "date": "2026-11-12", "method": "by e-mail" },
-  "external": [ { "service": "Zenodo", "record": "https://zenodo.org/records/1234567",
+  "external": [ { "role": "deposit", "service": "Zenodo", "record": "https://zenodo.org/records/1234567",
                   "doi": "10.5281/zenodo.1234567" } ],
   "status": "active"
 }
@@ -424,7 +426,7 @@ The `object.json` of a later version of a document whose arXiv version 2 was fou
   "notices": [ { "documentVersion": 2, "date": "2026-12-01",
                  "text": "Theorem 3 is wrong as stated; corrected in version 3.",
                  "path": "notices/erratum-v2.pdf", "mediaType": "application/pdf" } ],
-  "external": [ { "service": "arXiv", "record": "https://arxiv.org/abs/2303.18112v4",
+  "external": [ { "role": "source", "service": "arXiv", "record": "https://arxiv.org/abs/2303.18112v4",
                   "doi": "10.48550/arXiv.2303.18112", "label": "v4" } ],
   "status": "active"
 }

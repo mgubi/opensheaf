@@ -611,7 +611,7 @@
       <li>
         <p>
           <tt class="verbatim">descriptions</tt> with a <tt class="verbatim">descriptionType</tt>
-          <tt class="verbatim">Abstract</tt>, as plain text;
+          <tt class="verbatim">Abstract</tt>, as plain text with mathematics as below;
         </p>
       </li>
       <li>
@@ -712,6 +712,21 @@
         </p>
       </li>
     </ul>
+    <p>
+      <strong>Mathematics in titles and abstracts.</strong> Titles and
+      abstracts are plain text in which mathematics MAY be written in LaTeX
+      between single dollar signs (<tt class="verbatim">$\Phi^4_3$</tt>); a literal
+      dollar sign is written <tt class="verbatim">\$</tt>. The LaTeX SHOULD use only the
+      mathematical commands of LaTeX with the <tt class="verbatim">amsmath</tt> and <tt
+      class="verbatim">amssymb</tt> packages, which common renderers (MathJax, KaTeX)
+      display without the document's preamble; presentations render it, and
+      readers that do not are left with readable LaTeX. Tools importing titles
+      and abstracts from elsewhere SHOULD replace the authors' own macros
+      (such as <tt class="verbatim">\R</tt> or <tt class="verbatim">\be</tt>) with standard LaTeX
+      when their definitions are known, for instance from the preamble of the
+      imported sources, and otherwise keep them unchanged; they never invent
+      definitions.
+    </p>
     <p>
       Dates MAY be approximate, as DataCite allows (<tt class="verbatim">2019</tt>, <tt
       class="verbatim">2019-03</tt>, a range <tt class="verbatim">2018/2019</tt>), with <tt class="verbatim">dateInformation</tt>
@@ -873,13 +888,16 @@
       </li>
       <li>
         <p>
-          <tt class="verbatim">external</tt>: the external records of this version:
-          deposits of it (appendix A) and the record it was imported from,
-          each with the <tt class="verbatim">service</tt>, the <tt class="verbatim">record</tt> (a
-          URL), the <tt class="verbatim">doi</tt>, the <tt class="verbatim">label</tt> the service
-          gives the version (for instance <tt class="verbatim">v3</tt> on arXiv), and
-          the digests of any file kept there that is not in the content (such
-          as a source archive);
+          <tt class="verbatim">external</tt>: the external records of this version, each
+          with its <tt class="verbatim">role</tt>: <tt class="verbatim">deposit</tt> for a deposit
+          of the version made by the archive (appendix A), <tt class="verbatim">source</tt>
+          for the record it was imported from; the <tt class="verbatim">service</tt>,
+          the <tt class="verbatim">record</tt> (a URL), the <tt class="verbatim">doi</tt>, the <tt
+          class="verbatim">label</tt> the service gives the version (for instance <tt
+          class="verbatim">v3</tt> on arXiv), and the digests of files kept there that
+          are not in the content (for a deposit, such as a source archive
+          uploaded instead of the sources) or of the files received from it
+          (for a source, as they were received before being unpacked);
         </p>
       </li>
       <li>
@@ -1282,9 +1300,10 @@
           file count, the sources are uploaded as one archive <tt class="verbatim">sources.zip</tt>,
           built reproducibly (entries in byte order of their names, fixed
           timestamps, no extra attributes), whose digests are recorded in <tt
-          class="verbatim">object.json</tt> under <tt class="verbatim">external</tt>. Inventories
-          MUST record MD5 digests in <tt class="verbatim">fixity</tt>, so that the
-          checksums reported by Zenodo can be compared directly.
+          class="verbatim">object.json</tt> under <tt class="verbatim">external</tt>, in the entry
+          of the deposit (<tt class="verbatim">role</tt> <tt class="verbatim">deposit</tt>).
+          Inventories MUST record MD5 digests in <tt class="verbatim">fixity</tt>, so
+          that the checksums reported by Zenodo can be compared directly.
         </p>
       </li>
       <li>
@@ -1361,9 +1380,9 @@
       </li>
       <li>
         <p>
-          The abstract in <tt class="verbatim">datacite.json</tt> is the TeXmacs
-          abstract converted to plain text, with mathematics written in LaTeX
-          between dollar signs.
+          The title and abstract in <tt class="verbatim">datacite.json</tt> are
+          converted from the TeXmacs document to plain text, with mathematics
+          in LaTeX as in section 8.
         </p>
       </li>
       <li>
@@ -1515,7 +1534,7 @@
   &quot;toolchain&quot;: [ { &quot;name&quot;: &quot;TeXmacs&quot;, &quot;version&quot;: &quot;2.1.5&quot; } ],
   &quot;stage&quot;: { &quot;scheme&quot;: &quot;NISO-JAV&quot;, &quot;value&quot;: &quot;AO&quot; },
   &quot;agreement&quot;: { &quot;by&quot;: [&quot;P. Duch&quot;, &quot;M. Gubinelli&quot;], &quot;date&quot;: &quot;2026-11-12&quot;, &quot;method&quot;: &quot;by e-mail&quot; },
-  &quot;external&quot;: [ { &quot;service&quot;: &quot;Zenodo&quot;, &quot;record&quot;: &quot;https://zenodo.org/records/1234567&quot;,
+  &quot;external&quot;: [ { &quot;role&quot;: &quot;deposit&quot;, &quot;service&quot;: &quot;Zenodo&quot;, &quot;record&quot;: &quot;https://zenodo.org/records/1234567&quot;,
                   &quot;doi&quot;: &quot;10.5281/zenodo.1234567&quot; } ],
   &quot;status&quot;: &quot;active&quot;
 }</pre>
@@ -1539,7 +1558,7 @@
   &quot;notices&quot;: [ { &quot;documentVersion&quot;: 2, &quot;date&quot;: &quot;2026-12-01&quot;,
                  &quot;text&quot;: &quot;Theorem 3 is wrong as stated; corrected in version 3.&quot;,
                  &quot;path&quot;: &quot;notices/erratum-v2.pdf&quot;, &quot;mediaType&quot;: &quot;application/pdf&quot; } ],
-  &quot;external&quot;: [ { &quot;service&quot;: &quot;arXiv&quot;, &quot;record&quot;: &quot;https://arxiv.org/abs/2303.18112v4&quot;,
+  &quot;external&quot;: [ { &quot;role&quot;: &quot;source&quot;, &quot;service&quot;: &quot;arXiv&quot;, &quot;record&quot;: &quot;https://arxiv.org/abs/2303.18112v4&quot;,
                   &quot;doi&quot;: &quot;10.48550/arXiv.2303.18112&quot;, &quot;label&quot;: &quot;v4&quot; } ],
   &quot;status&quot;: &quot;active&quot;
 }</pre>

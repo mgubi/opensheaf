@@ -218,7 +218,7 @@
   It SHOULD contain:
 
   <\itemize>
-    <item><verbatim|descriptions> with a <verbatim|descriptionType> <verbatim|Abstract>, as plain text;
+    <item><verbatim|descriptions> with a <verbatim|descriptionType> <verbatim|Abstract>, as plain text with mathematics as below;
 
     <item><verbatim|subjects> with a <verbatim|subjectScheme> (any scheme; MSC2020 is common in mathematics);
 
@@ -250,6 +250,8 @@
 
     <item><verbatim|Withdrawn>: the date of a withdrawal, equal to <verbatim|withdrawal.date> in <verbatim|object.json> (section 11.1).
   </itemize>
+
+  <strong|Mathematics in titles and abstracts.> Titles and abstracts are plain text in which mathematics MAY be written in LaTeX between single dollar signs (<verbatim|$\\Phi^4_3$>); a literal dollar sign is written <verbatim|\\$>. The LaTeX SHOULD use only the mathematical commands of LaTeX with the <verbatim|amsmath> and <verbatim|amssymb> packages, which common renderers (MathJax, KaTeX) display without the document's preamble; presentations render it, and readers that do not are left with readable LaTeX. Tools importing titles and abstracts from elsewhere SHOULD replace the authors' own macros (such as <verbatim|\\R> or <verbatim|\\be>) with standard LaTeX when their definitions are known, for instance from the preamble of the imported sources, and otherwise keep them unchanged; they never invent definitions.
 
   Dates MAY be approximate, as DataCite allows (<verbatim|2019>, <verbatim|2019-03>, a range <verbatim|2018/2019>), with <verbatim|dateInformation> explaining them (for instance "from file timestamps"); unknown dates are omitted.
 
@@ -308,7 +310,7 @@
   <\itemize>
     <item><verbatim|agreement>: a minimal record that the authors agreed to the deposit and to the licence: who agreed (names only), when, and how (for instance "by e-mail"). It MUST NOT contain e-mail addresses, correspondence or signatures of persons;
 
-    <item><verbatim|external>: the external records of this version: deposits of it (appendix A) and the record it was imported from, each with the <verbatim|service>, the <verbatim|record> (a URL), the <verbatim|doi>, the <verbatim|label> the service gives the version (for instance <verbatim|v3> on arXiv), and the digests of any file kept there that is not in the content (such as a source archive);
+    <item><verbatim|external>: the external records of this version, each with its <verbatim|role>: <verbatim|deposit> for a deposit of the version made by the archive (appendix A), <verbatim|source> for the record it was imported from; the <verbatim|service>, the <verbatim|record> (a URL), the <verbatim|doi>, the <verbatim|label> the service gives the version (for instance <verbatim|v3> on arXiv), and the digests of files kept there that are not in the content (for a deposit, such as a source archive uploaded instead of the sources) or of the files received from it (for a source, as they were received before being unpacked);
 
     <item><verbatim|withdrawal> (section 11).
   </itemize>
@@ -464,7 +466,7 @@
 
     <item><strong|Versions out of order.> Zenodo orders the versions of a record by publication, and its concept DOI resolves to the latest. A document version deposited out of order (section 7.3) is therefore not deposited as a new version of the record; it MAY be deposited as a separate record, with <verbatim|IsVersionOf> the concept DOI of the document.
 
-    <item><strong|Files.> The record version holds the content files of the object version as deposited. Zenodo records have no folders: if the sources have sub-folders, or the record would exceed Zenodo's file count, the sources are uploaded as one archive <verbatim|sources.zip>, built reproducibly (entries in byte order of their names, fixed timestamps, no extra attributes), whose digests are recorded in <verbatim|object.json> under <verbatim|external>. Inventories MUST record MD5 digests in <verbatim|fixity>, so that the checksums reported by Zenodo can be compared directly.
+    <item><strong|Files.> The record version holds the content files of the object version as deposited. Zenodo records have no folders: if the sources have sub-folders, or the record would exceed Zenodo's file count, the sources are uploaded as one archive <verbatim|sources.zip>, built reproducibly (entries in byte order of their names, fixed timestamps, no extra attributes), whose digests are recorded in <verbatim|object.json> under <verbatim|external>, in the entry of the deposit (<verbatim|role> <verbatim|deposit>). Inventories MUST record MD5 digests in <verbatim|fixity>, so that the checksums reported by Zenodo can be compared directly.
 
     <item><strong|Order of operations.> (1) Create a draft, or a new version of the record (a new version inherits the files of the previous one, which are deleted). (2) Reserve its DOI (Zenodo reserves one with each draft; its sandbox reserves DOIs with the prefix <verbatim|10.5281> but publishes them with the test prefix <verbatim|10.5072>). (3) Write <verbatim|datacite.json> with that DOI and build the object version in a staging area. (4) Upload the files and compare the MD5 checksums reported by Zenodo with the fixity block. (5) Publish. (6) Commit the object version and update the discovery document. If a step fails before publication, the draft is discarded. If publication succeeds and the commit fails, the tool MUST complete the object version from the staging area before any other deposit of that document; it SHOULD hold a lock per document during a deposit, since Zenodo allows one unpublished version per record.
 
@@ -484,7 +486,7 @@
 
     <item>Renditions are produced without regenerating bibliographies or tables of contents, so that the deposited sources, with their stored references, reproduce them even if a bibliography database is not deposited; deposits SHOULD nevertheless include the databases used.
 
-    <item>The abstract in <verbatim|datacite.json> is the TeXmacs abstract converted to plain text, with mathematics written in LaTeX between dollar signs.
+    <item>The title and abstract in <verbatim|datacite.json> are converted from the TeXmacs document to plain text, with mathematics in LaTeX as in section 8.
 
     <item>HTML versions are exported by TeXmacs from a copy of the sources with presentation packages added to its style; the deposited sources are not modified.
 
@@ -594,7 +596,7 @@
 
     \ \ "agreement": { "by": ["P. Duch", "M. Gubinelli"], "date": "2026-11-12", "method": "by e-mail" },
 
-    \ \ "external": [ { "service": "Zenodo", "record": "https://zenodo.org/records/1234567",
+    \ \ "external": [ { "role": "deposit", "service": "Zenodo", "record": "https://zenodo.org/records/1234567",
 
     \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "doi": "10.5281/zenodo.1234567" } ],
 
@@ -626,7 +628,7 @@
 
     \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "path": "notices/erratum-v2.pdf", "mediaType": "application/pdf" } ],
 
-    \ \ "external": [ { "service": "arXiv", "record": "https://arxiv.org/abs/2303.18112v4",
+    \ \ "external": [ { "role": "source", "service": "arXiv", "record": "https://arxiv.org/abs/2303.18112v4",
 
     \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "doi": "10.48550/arXiv.2303.18112", "label": "v4" } ],
 

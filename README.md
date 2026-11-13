@@ -80,11 +80,16 @@ This repository is the place to discuss OpenSheaf and to propose changes:
     (repository [mgubi/papers](https://github.com/mgubi/papers)): the first
     OpenSheaf archive, following version 0.1, with TeXmacs sources, HTML
     versions and PDFs (profile `texmacs`).
-- **Tools:** `tools/papers.py` in [mgubi/papers](https://github.com/mgubi/papers),
-  which deposits documents as OCFL objects with DataCite and OpenSheaf
-  metadata, maintains a collection, writes the discovery document and the
-  index, and verifies an archive (also with the JSON Schemas and the
-  `ocfl-py` validator).
+- **Tools:** [opensheaf-py](https://github.com/opensheaf/opensheaf-py)
+  (Python, the `osheaf` command): deposits documents as OCFL objects with
+  DataCite and OpenSheaf metadata (any source with its PDF, or TeXmacs
+  sources typeset by the archive), keeps document versions, history and
+  collections, writes the discovery document and a website with landing
+  pages, deposits on Zenodo, imports from arXiv, and verifies an archive
+  (also with the JSON Schemas and the `ocfl-py` validator).
+- **Template:** [archive-template](https://github.com/opensheaf/archive-template),
+  a ready repository for your own archive of papers, published with GitHub
+  Pages ("Use this template", then `osheaf init`).
 
 ## Files
 

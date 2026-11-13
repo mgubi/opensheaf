@@ -64,7 +64,9 @@
       <item><hlink|Papers of Massimiliano Gubinelli|https://mgubi.org/papers/> (repository <hlink|mgubi/papers|https://github.com/mgubi/papers>): the first OpenSheaf archive, following version 0.1, with TeXmacs sources, HTML versions and PDFs (profile <verbatim|texmacs>).
     </itemize>
 
-    <item><strong|Tools:> <verbatim|tools/papers.py> in <hlink|mgubi/papers|https://github.com/mgubi/papers>, which deposits documents as OCFL objects with DataCite and OpenSheaf metadata, maintains a collection, writes the discovery document and the index, and verifies an archive (also with the JSON Schemas and the <verbatim|ocfl-py> validator).
+    <item><strong|Tools:> <hlink|opensheaf-py|https://github.com/opensheaf/opensheaf-py> (Python, the <verbatim|osheaf> command): deposits documents as OCFL objects with DataCite and OpenSheaf metadata (any source with its PDF, or TeXmacs sources typeset by the archive), keeps document versions, history and collections, writes the discovery document and a website with landing pages, deposits on Zenodo, imports from arXiv, and verifies an archive (also with the JSON Schemas and the <verbatim|ocfl-py> validator).
+
+    <item><strong|Template:> <hlink|archive-template|https://github.com/opensheaf/archive-template>, a ready repository for your own archive of papers, published with GitHub Pages ("Use this template", then <verbatim|osheaf init>).
   </itemize>
 
   <section*|Files>

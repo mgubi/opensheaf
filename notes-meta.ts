@@ -32,6 +32,35 @@
 
   <assign|notes-header-name|OpenSheaf>
 
+  <\active*>
+    <\src-comment>
+      Reading layout: regular-weight serif headings, an upright abstract,
+      compact paragraphs, and charcoal ink on warm off-white paper.
+    </src-comment>
+  </active*>
+
+  <assign|notes-heading|<macro|body|<with|font-family|rm|font-series|medium|color|#292825|<arg|body>>>>
+
+  <assign|notes-abstract|<macro|body|<with|font-family|rm|font-series|medium|font-shape|right|<arg|body>>>>
+
+  <assign|par-sep|0.5fn>
+
+  <assign|par-line-sep|0.2fn>
+
+  <assign|notes-title-color|#292825>
+
+  <assign|notes-text-color|#292825>
+
+  <assign|notes-background-color|#faf9f6>
+
+  <assign|color|#292825>
+
+  <assign|bg-color|#faf9f6>
+
+  <assign|locus-color|#292825>
+
+  <assign|visited-color|#292825>
+
   <assign|html-title|OpenSheaf>
 
   <assign|html-head-favicon|resources/brand/favicon.svg>

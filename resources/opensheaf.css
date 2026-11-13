@@ -55,3 +55,55 @@ img[src$="opensheaf-logo.svg"] {
 :root[data-theme="dark"] img[src$="opensheaf-logo.svg"] {
     filter: invert(1);
 }
+
+/* Reading layout: a narrower column, regular-weight headings, compact
+   paragraphs, and the theme control after the content. */
+@media screen {
+    html { font-size: 16px; }
+    body { max-width: 800px; }
+}
+body { line-height: 1.55; }
+h1, h2, h3, h4, h5, h6 { font-weight: 400; }
+h2 { margin-top: 2em; margin-bottom: 0.9em; }
+h3 { margin-top: 1.6em; margin-bottom: 0.8em; }
+p { margin-top: 0.5em; margin-bottom: 0.5em; }
+.theme-control { margin-top: 2em; }
+
+/* Soft monochrome palettes: charcoal on warm off-white, muted ivory on
+   charcoal; black on white in print. */
+:root {
+    --color-background: #faf9f6;
+    --color-text: #292825;
+    --color-title: #292825;
+    --color-link: #292825;
+    --color-muted: #292825;
+    --color-secondary: #292825;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --color-background: #1c1c1b;
+        --color-text: #dedcd6;
+        --color-title: #dedcd6;
+        --color-link: #dedcd6;
+        --color-muted: #dedcd6;
+        --color-secondary: #dedcd6;
+    }
+}
+:root[data-theme="dark"] {
+    --color-background: #1c1c1b;
+    --color-text: #dedcd6;
+    --color-title: #dedcd6;
+    --color-link: #dedcd6;
+    --color-muted: #dedcd6;
+    --color-secondary: #dedcd6;
+}
+@media print {
+    :root, :root[data-theme] {
+        --color-background: #fff !important;
+        --color-text: #000 !important;
+        --color-title: #000 !important;
+        --color-link: #000 !important;
+        --color-muted: #000 !important;
+        --color-secondary: #000 !important;
+    }
+}

@@ -10,8 +10,9 @@ Handles the subset of Markdown used by spec.md:
 
 - `# Title` (first line): the page title; the first paragraph, if it is in
   *italics*, becomes the abstract. The first line may instead be an image
-  `![Title](logo.svg)`, or a `<picture>` block (light and dark variants, as
-  GitHub shows them), whose image then stands as the title;
+  `![Title](logo.svg)`, which then stands as the title, or a `<picture>`
+  block (light and dark variants, as GitHub shows them), whose logo is the
+  hero of the page: centred at two fifths of the width, with space around;
 - images `![alt](path)` on a line of their own (centred);
 - `## Section`, `### Subsection`;
 - paragraphs; lists with `- ` and nested lists indented by two spaces;
@@ -85,12 +86,13 @@ def image(path, width):
 def convert(md):
     lines = md.split('\n')
     first = IMAGE_RE.match(lines[0]) if lines else None
+    hero = None
     if lines and lines[0].strip().startswith('<picture'):
         # a <picture> (variants for light and dark themes, as on GitHub):
-        # its <img> stands for the title
+        # its <img> is the hero of the page
         j = next(k for k, ln in enumerate(lines) if '</picture>' in ln)
         src = re.search(r'<img[^>]*\ssrc="([^"]+)"', '\n'.join(lines[:j + 1])).group(1)
-        title_markup = image(src, '0.5par')
+        hero = image(src, '0.4par')
         lines = [''] + lines[j + 1:]
     elif first:
         # a logo standing for the title
@@ -177,8 +179,11 @@ def convert(md):
         blocks.append('  ' + inline(' '.join(para)))
 
     head = ('<TeXmacs|2.1.5>\n\n<style|<tuple|notes|notes-meta>>\n\n<\\body>\n'
-            '  <notes-header>\n\n'
-            f'  <chapter*|{title_markup}>\n\n')
+            '  <notes-header>\n\n')
+    # the hero: centred, with room above and below, which TeXmacs exports as
+    # margins of its paragraph
+    head += (f'  <\\center>\n    <vspace*|4fn>{hero}<vspace|5fn>\n  </center>\n\n' if hero
+             else f'  <chapter*|{title_markup}>\n\n')
     if abstract:
         head += f'  <notes-abstract|{inline(abstract)}>\n\n'
     tail = ('\n</body>\n\n<\\initial>\n  <\\collection>\n'

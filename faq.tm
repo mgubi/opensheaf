@@ -7,7 +7,7 @@
 
   <chapter*|OpenSheaf: frequently asked questions>
 
-  Answers to questions that come up about the design of <hlink|OpenSheaf|https://opensheaf.org>. The specification (<hlink|opensheaf-specification-0.1.md|opensheaf-specification-0.1.tm>) is authoritative; this page explains its choices.
+  <notes-abstract|Answers to questions that come up about the design of <hlink|OpenSheaf|https://opensheaf.org>. The specification (<hlink|opensheaf-specification-0.1.md|opensheaf-specification-0.1.tm>) is authoritative; this page explains its choices.>
 
   <section*|What is OpenSheaf for?>
 

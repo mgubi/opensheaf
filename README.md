@@ -3,11 +3,11 @@
   <img alt="OpenSheaf" src="resources/brand/opensheaf-logo.svg" width="440">
 </picture>
 
-OpenSheaf is an open format for archives of scholarly documents and for
+*OpenSheaf is an open format for archives of scholarly documents and for
 collections of them. Read the
 [specification](opensheaf-specification-0.1.md) (version 0.1) and the
 [FAQ](FAQ.md), which explains its main choices. The site is
-[opensheaf.org](https://opensheaf.org) (also `sheaf.pub`).
+[opensheaf.org](https://opensheaf.org) (also `sheaf.pub`).*
 
 **Status:** version 0.1, a draft. It is experimental and may change in
 incompatible ways before version 1.0.

@@ -1,4 +1,7 @@
-![OpenSheaf](resources/brand/opensheaf-logo.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="resources/brand/opensheaf-logo-dark.svg">
+  <img alt="OpenSheaf" src="resources/brand/opensheaf-logo.svg" width="440">
+</picture>
 
 OpenSheaf is an open format for archives of scholarly documents and for
 collections of them. Read the
@@ -11,6 +14,10 @@ incompatible ways before version 1.0.
 
 **Author:** [Massimiliano Gubinelli](https://mgubi.org/docs/main.html)
 (Mathematical Institute, University of Oxford).
+
+**Source:** the specification and this site are kept in the GitHub repository
+[mgubi/opensheaf](https://github.com/mgubi/opensheaf), which is also the place
+to discuss them (see below).
 
 ## Why
 

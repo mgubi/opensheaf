@@ -10,7 +10,8 @@ Handles the subset of Markdown used by spec.md:
 
 - `# Title` (first line): the page title; the first paragraph, if it is in
   *italics*, becomes the abstract. The first line may instead be an image
-  `![Title](logo.svg)`, which then stands as the title;
+  `![Title](logo.svg)`, or a `<picture>` block (light and dark variants, as
+  GitHub shows them), whose image then stands as the title;
 - images `![alt](path)` on a line of their own (centred);
 - `## Section`, `### Subsection`;
 - paragraphs; lists with `- ` and nested lists indented by two spaces;
@@ -84,7 +85,14 @@ def image(path, width):
 def convert(md):
     lines = md.split('\n')
     first = IMAGE_RE.match(lines[0]) if lines else None
-    if first:
+    if lines and lines[0].strip().startswith('<picture'):
+        # a <picture> (variants for light and dark themes, as on GitHub):
+        # its <img> stands for the title
+        j = next(k for k, ln in enumerate(lines) if '</picture>' in ln)
+        src = re.search(r'<img[^>]*\ssrc="([^"]+)"', '\n'.join(lines[:j + 1])).group(1)
+        title_markup = image(src, '0.5par')
+        lines = [''] + lines[j + 1:]
+    elif first:
         # a logo standing for the title
         title_markup = image(first.group(2), '0.5par')
     elif lines and lines[0].startswith('# '):

@@ -13,6 +13,8 @@
 
   <strong|Author:> <hlink|Massimiliano Gubinelli|https://mgubi.org/docs/main.html> (Mathematical Institute, University of Oxford).
 
+  <strong|Source:> the specification and this site are kept in the GitHub repository <hlink|mgubi/opensheaf|https://github.com/mgubi/opensheaf>, which is also the place to discuss them (see below).
+
   <section*|Why>
 
   Scholarly documents now live in a few central places: preprint servers such as arXiv, publishers' platforms, institutional repositories. They work, but authors depend on them for something that could be much simpler, and what they keep is often only a PDF.

@@ -55,6 +55,23 @@
 
   <assign|visited-color|#476385>
 
+  <\active*>
+    <\src-comment>
+      Alert boxes, from GitHub's alert syntax in the Markdown sources (\<gtr\>
+      [!WARNING], [!NOTE], [!IMPORTANT]): a framed box in TeXmacs, a div of
+      class os-alert (with the kind as a second class) on the web.
+    </src-comment>
+  </active*>
+
+  <assign|os-alert|<macro|kind|label|body|<\surround|<vspace*|0.5fn>|<vspace|0.5fn>>
+    <\padded-framed>
+      <with|font-series|bold|color|#8a4b00|<arg|label>> <arg|body>
+    </padded-framed>
+  </surround>>>
+
+  <assign|tmhtml-os-alert|<macro|kind|label|body|<html-div-class|os-alert
+  os-<arg|kind>|<html-class|os-alert-label|<arg|label>> <arg|body>>>>
+
   <assign|html-title|OpenSheaf>
 
   <assign|html-head-favicon|resources/brand/favicon.svg>

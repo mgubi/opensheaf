@@ -9,8 +9,12 @@ collections of them. Read the
 [FAQ](FAQ.md), which explains its main choices. The site is
 [opensheaf.org](https://opensheaf.org) (also `sheaf.pub`).*
 
-**Status:** version 0.1, a draft. It is experimental and may change in
-incompatible ways before version 1.0.
+> [!WARNING]
+> **Draft.** OpenSheaf 0.1 is a draft specification. Until version 1.0, any
+> revision may change the format in incompatible ways (one already did:
+> `provenance.json` became `object.json`). Archives and collections made now
+> may have to be rebuilt or migrated, and the tools follow the latest draft.
+> Do not rely on it yet for anything you cannot redo.
 
 **Source:** the specification and this site are kept in the GitHub repository
 [opensheaf/opensheaf](https://github.com/opensheaf/opensheaf), which is also the place

@@ -13,7 +13,7 @@
 
   <notes-abstract|OpenSheaf is an open format for archives of scholarly documents and for collections of them. Read the <hlink|specification|opensheaf-specification-0.1.tm> (version 0.1) and the <hlink|FAQ|faq.tm>, which explains its main choices. The site is <hlink|opensheaf.org|https://opensheaf.org> (also <verbatim|sheaf.pub>).>
 
-  <strong|Status:> version 0.1, a draft. It is experimental and may change in incompatible ways before version 1.0.
+  <os-alert|warning|Warning.|<strong|Draft.> OpenSheaf 0.1 is a draft specification. Until version 1.0, any revision may change the format in incompatible ways (one already did: <verbatim|provenance.json> became <verbatim|object.json>). Archives and collections made now may have to be rebuilt or migrated, and the tools follow the latest draft. Do not rely on it yet for anything you cannot redo.>
 
   <strong|Source:> the specification and this site are kept in the GitHub repository <hlink|opensheaf/opensheaf|https://github.com/opensheaf/opensheaf>, which is also the place to discuss them (see below).
 

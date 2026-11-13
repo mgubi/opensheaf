@@ -227,3 +227,19 @@ div.tmweb-code tt.verbatim, pre tt.verbatim { background: transparent; padding: 
     border: 1px solid var(--color-border);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
+
+/* Alert boxes (GitHub's > [!WARNING] in the Markdown sources). */
+div.os-alert {
+  border: 1px solid #e3b55f; border-left: 5px solid #d08a1c;
+  background: #fff7e8; color: #3a2a0f;
+  padding: 0.7em 1em; margin: 1.2em 0; border-radius: 4px;
+}
+div.os-alert.os-note { border-color: #9cc0e8; border-left-color: #2f6db5; background: #eef5fd; color: #1c3554; }
+div.os-alert .os-alert-label { font-weight: bold; color: #8a4b00; }
+div.os-alert.os-note .os-alert-label { color: #1c3554; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) div.os-alert { background: #2d2412; color: #f1e3c4; border-color: #8a6420; border-left-color: #d08a1c; }
+  :root:not([data-theme="light"]) div.os-alert .os-alert-label { color: #f0b45a; }
+}
+:root[data-theme="dark"] div.os-alert { background: #2d2412; color: #f1e3c4; border-color: #8a6420; border-left-color: #d08a1c; }
+:root[data-theme="dark"] div.os-alert .os-alert-label { color: #f0b45a; }

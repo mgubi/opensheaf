@@ -155,6 +155,19 @@ def convert(md):
             blocks.append(f'  <\\with|par-mode|center>\n    {image(m.group(2), "0.6par")}\n  </with>')
             i += 1
             continue
+        m = re.match(r'> \[!(WARNING|NOTE|IMPORTANT|CAUTION|TIP)\]\s*$', l)
+        if m:
+            # GitHub's alert syntax: a box with a label
+            kind = m.group(1).lower()
+            body = []
+            i += 1
+            while i < len(lines) and lines[i].startswith('>'):
+                body.append(lines[i][1:].strip())
+                i += 1
+            label = {'warning': 'Warning.', 'note': 'Note.', 'important': 'Important.',
+                     'caution': 'Caution.', 'tip': 'Tip.'}[kind]
+            blocks.append(f'  <os-alert|{kind}|{label}|{inline(" ".join(body))}>')
+            continue
         if l.startswith('### '):
             blocks.append(f'  <subsection*|{inline(l[4:])}>')
             i += 1
@@ -194,7 +207,7 @@ def convert(md):
             continue
         para = []
         while (i < len(lines) and lines[i].strip()
-               and not re.match(r'(#{1,3} |- |```)', lines[i])):
+               and not re.match(r'(#{1,3} |- |```|> )', lines[i])):
             para.append(lines[i].strip())
             i += 1
         blocks.append('  ' + inline(' '.join(para)))

@@ -41,7 +41,8 @@
     },
     "mainSource": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "^(?!/)(?!(?:.*/)?\\.{1,2}(?:/|$)).+$"
     },
     "sourceFormat": {
       "type": "string",
@@ -60,10 +61,13 @@
         ],
         "properties": {
           "path": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!/)(?!(?:.*/)?\\.{1,2}(?:/|$)).+$"
           },
           "mediaType": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           }
         }
       }
@@ -193,7 +197,8 @@
             "type": "string"
           },
           "record": {
-            "type": "string"
+            "type": "string",
+            "format": "uri"
           },
           "doi": {
             "type": "string"
@@ -263,7 +268,8 @@
         },
         "path": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "^(?!/)(?!(?:.*/)?\\.{1,2}(?:/|$)).+$"
         },
         "mediaType": {
           "type": "string",
@@ -351,17 +357,27 @@
           "anyOf": [
             {
               "required": [
-                "history"
+                "mainSource"
               ]
             },
             {
               "required": [
-                "stage"
+                "sourceFormat"
               ]
             },
             {
               "required": [
-                "notices"
+                "sourcesMissing"
+              ]
+            },
+            {
+              "required": [
+                "renditions"
+              ]
+            },
+            {
+              "required": [
+                "toolchain"
               ]
             },
             {
@@ -371,7 +387,40 @@
             },
             {
               "required": [
-                "sourcesMissing"
+                "stage"
+              ]
+            },
+            {
+              "required": [
+                "history"
+              ]
+            },
+            {
+              "required": [
+                "notices"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "sourcesMissing"
+        ]
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "mainSource"
+              ]
+            },
+            {
+              "required": [
+                "sourceFormat"
               ]
             }
           ]

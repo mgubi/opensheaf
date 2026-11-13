@@ -44,7 +44,8 @@
           },
           "archiveUrl": {
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "pattern": "/$"
           },
           "id": {
             "type": "string",
@@ -63,7 +64,8 @@
             "type": "array",
             "items": {
               "type": "string",
-              "format": "uri"
+              "format": "uri",
+              "pattern": "/$"
             }
           },
           "doi": {

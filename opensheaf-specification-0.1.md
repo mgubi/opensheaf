@@ -26,7 +26,7 @@ Sections marked non-normative, examples, notes and the appendices marked as such
 
 - **Archive:** a set of objects kept by one owner (a person, group or institution), with one storage root and one discovery document, identified by an archive identifier.
 - **Archive identifier:** a URI naming the archive independently of where it is served (section 6).
-- **Base URL:** the URL at which an archive is currently served; its discovery document is at `<base URL>opensheaf.json`.
+- **Base URL:** the URL at which an archive is currently served, ending with `/`; its discovery document is at `<base URL>opensheaf.json`.
 - **Storage root:** an OCFL 1.1 storage root holding the objects of the archive.
 - **Object:** an OCFL object. Its **kind** is `document` or `collection`.
 - **Document:** an object holding one scholarly work (an article, notes, a thesis, a book) with its sources and renditions.
@@ -49,9 +49,9 @@ Sections marked non-normative, examples, notes and the appendices marked as such
 
 This specification defines the following conformance classes. An archive, object or program conforms to a class if it satisfies every MUST and MUST NOT of the sections listed for it.
 
-- **OpenSheaf archive:** sections 5, 6, 7, 8, 9, 11, 12 and 13.
+- **OpenSheaf archive:** sections 5 to 13 and 16 (section 10 for the collections it contains).
 - **OpenSheaf collection:** section 10, in addition to the requirements on objects in sections 7 to 9.
-- **OpenSheaf verifier:** section 14.
+- **OpenSheaf verifier:** sections 12 (as a reader), 14 and 15. Tools that build presentations follow the requirements on presentations in sections 11.1, 15 and appendix C.
 - **Profiles**, optional: an archive MAY additionally conform to the Zenodo binding (appendix A), the TeXmacs profile (appendix B) and the website profile (appendix C). A conforming archive MUST state in its discovery document which profiles it follows.
 
 The JSON files defined here (`opensheaf.json`, `object.json`, `members.json`) MUST validate against the JSON Schemas of appendix D for their declared format version.
@@ -85,9 +85,9 @@ The discovery document is the JSON file `opensheaf.json` at the base URL of the 
 - `storageLayout`: `"0002-flat-direct-storage-layout"`;
 - `objects`: the list of all objects in the storage root, each with `id`, `kind`, `head` (the head object version), `inventorySha512` (the SHA-512 digest of the head inventory, as written in its checksum file) and `status` (`active` or `withdrawn`, section 11).
 
-It SHOULD contain `mainCollection` (the identifier of the collection that lists the archive's own documents), `contact` (a URI), and `profiles` (the list of profiles followed, from `zenodo`, `texmacs`, `website`). It MAY contain `mirrors` (base URLs of complete copies of the archive), `tombstones` (section 11.3), `keys` (section 13.2) and `feed` (the URL of an Atom feed of new object versions).
+It MUST also contain `profiles`, the list of profiles followed, from `zenodo`, `texmacs`, `website` (an empty list if none). It SHOULD contain `mainCollection` (the identifier of the collection that lists the archive's own documents) and `contact` (a URI). It MAY contain `mirrors` (base URLs of complete copies of the archive), `tombstones` (section 11.3), `keys` (section 13.2) and `feed` (the URL of an Atom feed of new object versions).
 
-The discovery document is mutable: it is rewritten whenever an object is added or changed. It is a map, not a witness: everything it states MUST be verifiable from the storage root.
+The discovery document is mutable: it is rewritten whenever an object is added or changed. It is a map, not a witness: what it states about objects (`objects`: kinds, head versions, digests, status) MUST be verifiable from the storage root. Digests are written in lowercase hexadecimal, here and in every file defined by this specification.
 
 ### 6.2 Archive identifiers
 
@@ -101,7 +101,7 @@ An object identifier MUST match `^[a-z0-9]+(-[a-z0-9]+)*$` and MUST be at most 6
 
 To fetch an object version of a member, a client:
 
-- reads the discovery document at the member's archive URL (section 10.2) and fetches `<storageRoot><id>/<version>/inventory.json`;
+- reads the discovery document at the member's archive URL (section 10.1) and fetches `<storageRoot><id>/<version>/inventory.json`;
 - if this fails, tries the mirrors listed in the member, then those listed in the archive's discovery document;
 - if this fails, MAY use external copies: the files of an external record named in the version's `object.json` (a DOI record), or a software archive snapshot (a SWHID).
 
@@ -111,7 +111,7 @@ Any copy whose bytes match the pinned digest is acceptable: integrity comes from
 
 ### 7.1 Common rules
 
-Every object MUST be a valid OCFL 1.1 object. Its inventories MUST use `sha512` as digest algorithm. Every object version MUST contain, in its content, the files `object.json` and `datacite.json` at the top level. Every version directory MUST contain a copy of the inventory as of that version, with its checksum file (OCFL makes this a recommendation; OpenSheaf requires it, so that each version can be pinned and fetched on its own).
+Every object MUST be a valid OCFL 1.1 object. Its inventories MUST use `sha512` as digest algorithm. Every object version MUST contain, in its content, the files `object.json` and `datacite.json` at the top level. Every version directory MUST contain a copy of the inventory as of that version, with its checksum file (OCFL makes this a recommendation; OpenSheaf requires it, so that each version can be pinned and fetched on its own). Version directories MUST NOT be zero-padded (`v1`, `v2`, ..., not `v001`), which OCFL allows. OCFL recommends that object identifiers be URIs; OpenSheaf identifiers are short names (section 6.3), so OCFL validators may warn about them.
 
 Each version in the inventory MUST have a `user` with a `name`, and SHOULD have an `address` (an ORCID iD, a `mailto:` URI or another URI identifying the depositor), and MUST have a `message` describing the change. The inventory is the record of deposits: the `created` date and the `user` of an object version are when and by whom it was deposited, and the deposit of a document version is that of the first object version holding it. They are not repeated in `object.json`.
 
@@ -136,7 +136,7 @@ HTML versions and other presentation files SHOULD NOT be deposited, since they d
 
 **Description-only versions.** A description-only version holds an existing document version, with its files unchanged, and changes only its description (`datacite.json`, such as a DOI, a stage or a link to the published article), the state of the object or its notices. It MAY hold any document version, not only the current one, so that an earlier version can be described after later versions exist; tools otherwise hold the current version. If the object has `history`, its entry for that document version becomes the new object version.
 
-**Completion.** A document version recorded without sources (section 9, `sourcesMissing`) MAY be completed later, keeping its number: the completing object version adds the sources, and MAY add renditions produced from them (for instance a PDF typeset from the added sources, beside the one received), but changes or removes no file of the version; it removes `sourcesMissing` when the sources are complete, after which the version is fixed like any other.
+**Completion.** A document version recorded without sources (section 9, `sourcesMissing`) MAY be completed later, keeping its number: the completing object version adds the sources, and MAY add renditions produced from them (for instance a PDF typeset from the added sources, beside the one received), but changes or removes no file of the version; until the sources are complete it keeps `sourcesMissing` and names no main source; the object version that completes them names the main source and removes `sourcesMissing`, after which the version is fixed like any other.
 
 **Other versions.** A version that was not public at the time, such as the manuscript submitted to a journal, deposited later, is a document version like any other. A version published by someone else, such as the journal's version of record, is not a document version of the author's object: it is linked by a relation (section 8.1).
 
@@ -150,20 +150,20 @@ Dates never order document versions and never decide the current version (sectio
 
 ### 7.4 Collections
 
-A collection version contains `datacite.json`, `object.json` and `members.json` (section 10). Its `object.json` declares `kind` `collection`; its document version counts the changes of the member list, and it has no `history`, `stage` or `notices`.
+A collection version contains `datacite.json`, `object.json` and `members.json` (section 10). Its `object.json` declares `kind` `collection`; its document version counts the changes of the member list, and it has none of the fields specific to documents (`mainSource`, `sourceFormat`, `sourcesMissing`, `renditions`, `toolchain`, `changes`, `stage`, `history`, `notices`).
 
 ## 8. Description: datacite.json
 
 Every object version MUST contain `datacite.json`, a JSON object with the DataCite 4.7 properties in the form of the `attributes` of a DOI in the DataCite REST API. It is the authoritative description of the object version. It MUST contain:
 
-- `titles`, `creators` (with `name`, and `nameType`; personal names SHOULD also have `givenName` and `familyName`), `publicationYear`, `types` (with `resourceTypeGeneral`), `version` (the document version, as a string), and `publisher`.
+- `titles`, `creators` (with `name`, and `nameType`; personal names SHOULD also have `givenName` and `familyName`), `publicationYear`, `types` (with `resourceTypeGeneral`), `version` (the document version, as a decimal string without leading zeros, such as `"3"`), and `publisher`.
 
 It SHOULD contain:
 
 - `descriptions` with a `descriptionType` `Abstract`, as plain text with mathematics as below;
 - `subjects` with a `subjectScheme` (any scheme; MSC2020 is common in mathematics);
 - `dates`, as below;
-- `rightsList`, with an SPDX identifier in lower case and the licence URL; for a licence without an SPDX identifier, its name in `rights` and, REQUIRED, the URL identifying it in `rightsUri` (for arXiv's default licence, `http://arxiv.org/licenses/nonexclusive-distrib/1.0/`), so that archives record the same licence the same way; or a statement such as "All rights reserved";
+- `rightsList`: for a licence with an SPDX identifier, that identifier in lower case and the licence URL; for a licence without one, its name in `rights` and the URL identifying it in `rightsUri` (for arXiv's default licence, `http://arxiv.org/licenses/nonexclusive-distrib/1.0/`), which MUST then be present, so that archives record the same licence the same way; or a statement such as "All rights reserved", without URL;
 - `language`, `formats` (the media types of the sources and renditions) and `sizes`;
 - identifiers of creators (ORCID) and of affiliations (ROR), where they exist;
 - `relatedIdentifiers` (section 8.1).
@@ -176,17 +176,17 @@ It SHOULD contain:
 
 - `Issued`: the first public appearance of the work, anywhere; the same in every version. RECOMMENDED for documents; tools importing works published elsewhere SHOULD set it.
 - `Available`: when this document version first became public, anywhere: for a version imported from another service, its date there; for a version first made public by this archive, the date of its deposit (section 7.1). SHOULD be present.
-- `Updated`: the date of a description-only version.
+- `Updated`: the date of the latest description-only version holding this document version; absent when the document version has had none.
 - `Created` (when a version was written, for a version not public at the time), `Submitted` and `Accepted` (journal milestones), OPTIONAL.
 - `Withdrawn`: the date of a withdrawal, equal to `withdrawal.date` in `object.json` (section 11.1).
 
-**Mathematics in titles and abstracts.** Titles and abstracts are plain text in which mathematics MAY be written in LaTeX between single dollar signs (`$\Phi^4_3$`); a literal dollar sign is written `\$`. The LaTeX SHOULD use only the mathematical commands of LaTeX with the `amsmath` and `amssymb` packages, which common renderers (MathJax, KaTeX) display without the document's preamble; presentations render it, and readers that do not are left with readable LaTeX. Tools importing titles and abstracts from elsewhere SHOULD replace the authors' own macros (such as `\R` or `\be`) with standard LaTeX when their definitions are known, for instance from the preamble of the imported sources, and otherwise keep them unchanged; they never invent definitions.
+**Mathematics in titles and abstracts.** Titles and abstracts are plain text in which mathematics MAY be written in LaTeX between single dollar signs (`$\Phi^4_3$`); a literal dollar sign is written `\$`. The LaTeX SHOULD use only the mathematical commands of LaTeX with the `amsmath` and `amssymb` packages, which common renderers (MathJax, KaTeX) display without the document's preamble; presentations render it, and readers that do not are left with readable LaTeX. Tools importing titles and abstracts from elsewhere SHOULD replace the authors' own macros (such as `\R` or `\be`) with standard LaTeX when their definitions are known, for instance from the preamble of the imported sources, and otherwise keep them unchanged; they MUST NOT invent definitions.
 
 Dates MAY be approximate, as DataCite allows (`2019`, `2019-03`, a range `2018/2019`), with `dateInformation` explaining them (for instance "from file timestamps"); unknown dates are omitted.
 
 ### 8.1 Relations
 
-- A document version with a DOI SHOULD have `IsVersionOf` the concept DOI of the document, and `IsNewVersionOf` the DOI of the document version before it in the history (section 7.3), if that version has a DOI.
+- A document version with a DOI SHOULD have `IsVersionOf` the concept DOI of the document, and `IsNewVersionOf` the DOI of the document version before it in the history (section 7.3), if that version has a DOI. Relations state what was known when a version was described; after a version is deposited out of order, the relation of the version that follows it MAY be corrected by a description-only version.
 - The same work published elsewhere SHOULD be linked with `IsIdenticalTo` (same content, for instance an arXiv version) or `IsVariantFormOf` (different content or form).
 - A preprint SHOULD be linked to its later published article with `IsVersionOf` the article's DOI, as DataCite recommends; consumers distinguish this relation from the concept DOI by its target. It is added by a description-only version.
 - The sources MAY be linked to a software archive snapshot (`relatedIdentifierType` `SWHID`).
@@ -204,7 +204,7 @@ Every object version MUST contain `object.json`, OpenSheaf's record of the objec
 - `documentVersion`: a positive integer, equal to the `version` of `datacite.json`;
 - `status`: `active` or `withdrawn` (section 11).
 
-A document MUST also have `mainSource` (a logical path) and `sourceFormat` (the media type of the main source), and SHOULD have `renditions` (a list of logical paths with media types) and `toolchain` (a list of tools with `name`, `version` and, optionally, `packages`), enough to reproduce the renditions. A document version whose sources are not available instead has `sourcesMissing`, a note (see below) saying why (for instance "arXiv keeps only the PDF of this version"), no `mainSource` and `sourceFormat`, and at least one rendition; a rendition is never presented as a source.
+A document MUST also have `mainSource` (a logical path) and `sourceFormat` (the media type of the main source), and SHOULD have `renditions` (a list of objects with `path`, a logical path, and `mediaType`) and `toolchain` (a list of tools with `name`, `version` and, optionally, `packages`), enough to reproduce the renditions. A document version whose sources are not available instead has `sourcesMissing`, a note (see below) saying why (for instance "arXiv keeps only the PDF of this version"), no `mainSource` and `sourceFormat`, and at least one rendition; a rendition is never presented as a source.
 
 A **note** is an object with `text` (a short plain text), or `path` and `mediaType` (a file of the content of the same object version), or both: the text serves feeds, indexes and external services, the file holds the full statement (with mathematics, or as a PDF). Files of notes are covered by the inventory like every file of the content.
 
@@ -218,8 +218,8 @@ A document MAY contain:
 Any object MAY contain:
 
 - `licence`: a note with the full text or terms of the licence of the content, kept in the package (useful for licences without an SPDX identifier); `rightsList` in `datacite.json` remains the description for readers and services;
-- `agreement`: a minimal record that the authors agreed to the deposit and to the licence: who agreed (names only), when, and how (for instance "by e-mail"). It MUST NOT contain e-mail addresses, correspondence or signatures of persons;
-- `external`: the external records of this version, each with its `role`: `deposit` for a deposit of the version made by the archive (appendix A), `source` for the record it was imported from; the `service`, the `record` (a URL), the `doi`, the `label` the service gives the version (for instance `v3` on arXiv), and the digests of files kept there that are not in the content (for a deposit, such as a source archive uploaded instead of the sources) or of the files received from it (for a source, as they were received before being unpacked);
+- `agreement`: a minimal record that the authors agreed to the deposit and to the licence: `by` (the names of those who agreed, names only), `date`, and `method` (how, for instance "by e-mail"), all three required. It MUST NOT contain e-mail addresses, correspondence or signatures of persons;
+- `external`: the external records of this version, each with its `role` (required): `deposit` for a deposit of the version made by the archive (appendix A), `source` for the record it was imported from; the `service` (required, its name), the `record` (required, the URL of the record), the `doi`, the `label` the service gives the version (for instance `v3` on arXiv), and `files`: the files kept there that are not in the content (for a deposit, such as a source archive uploaded instead of the sources) or the files received from it (for a source, as they were received before being unpacked), each with `name` and `sha512` (required), `md5` and `bytes`;
 - `withdrawal` (section 11).
 
 `object.json` is metadata and is placed under CC0 (section 16).
@@ -231,7 +231,7 @@ Any object MAY contain:
 A collection version MUST contain `members.json` with:
 
 - `format`: `"opensheaf-collection/0.1"`;
-- `members`: a list, in the order in which the members are presented. This order is authoritative.
+- `members`: a list, in the order in which the members are presented. This order is authoritative: presentations MUST present members in it.
 
 It MAY contain `order`, the rule by which tools maintaining the collection place members: `manual` (the default: tools append new members and never reorder), `issued-desc` or `issued-asc` (by the members' `Issued` date, then their `Available` date, members with neither last, ties broken by object identifier, so that the result is reproducible).
 
@@ -268,11 +268,11 @@ A document or collection is withdrawn (for instance retracted by its authors) by
 
 ### 11.2 Takedown
 
-When content must be removed (by law, or for a breach of rights), the object is deleted from the storage root and a tombstone is added to the discovery document.
+When content must be removed (by law, or for a breach of rights), the object is deleted from the storage root and a tombstone MUST be added to the discovery document.
 
 ### 11.3 Tombstones
 
-A tombstone records `id`, `kind`, `lastVersion`, `inventorySha512` of that version, `date` and `reason`. Identifiers of tombstoned objects MUST NOT be reused. Verifiers report a pin to a tombstoned object as "removed", not as a corruption. External copies (DOI records, snapshots) follow the rules of their services.
+A tombstone records `id`, `kind`, `lastVersion`, `inventorySha512` of that version, `date` and `reason` (plain text, since the discovery document has no content files). Identifiers of tombstoned objects MUST NOT be reused. Verifiers report a pin to a tombstoned object as "removed", not as a corruption. External copies (DOI records, snapshots) follow the rules of their services.
 
 Note: OCFL 1.1 has no way to remove files from an object short of deleting and rebuilding it. Physical deletion of files, and the flagging of lost or corrupted files, are accepted as in scope for OCFL version 2, with a tombstone or status recorded in the inventory. When that mechanism is published, a later version of this specification will adopt it for takedowns of single files.
 
@@ -302,7 +302,7 @@ Integrity rests on OCFL digests: every file is fixed by its SHA-512 digest in th
 
 Digests show that files were not changed; they do not show who made them or when. An archive MAY provide, for each object version:
 
-- `<version>.inventory.json.sha512.sig`: a detached signature of the inventory checksum file of that version (`<version>/inventory.json.sha512`), made with a key listed in `keys` of the discovery document (each key with `type`, such as `openpgp` or `ssh`, and a `url` or `fingerprint`);
+- `<version>.inventory.json.sha512.sig`: a detached signature of the inventory checksum file of that version (`<version>/inventory.json.sha512`), made with a key listed in `keys` of the discovery document (each key with a `type`, such as `openpgp` or `ssh`, and a `url` or `fingerprint`);
 - `<version>.inventory.json.sha512.ots`: an OpenTimestamps proof of the same file.
 
 These witness files SHOULD be kept in the object's extension folder `extensions/opensheaf-witnesses/`, so that they travel with the object when it is copied or mirrored. OCFL allows object extension folders, which are not part of any version; the extension name `opensheaf-witnesses` is not yet registered with OCFL, so validators may warn about it. An archive that does not modify object folders after a version is committed MAY instead keep them under `witnesses/<object id>/`, next to the discovery document. Witnesses can be added later, by the owner or by others, and replaced when a proof is upgraded (an OpenTimestamps proof is completed once its attestation is confirmed); they are not covered by the inventory digests, and need not be, since each one is checked directly against the checksum file it names, which the pins fix.
@@ -313,10 +313,10 @@ External deposits (appendix A) and software archive snapshots are further witnes
 
 A verifier checking an archive MUST:
 
-- validate the discovery document, and every `object.json` and `members.json`, against the schemas of their declared versions;
+- validate the discovery document, and every `object.json` and `members.json`, against the schemas of their declared versions, checking formats (dates, URIs) as assertions, which JSON Schema 2020-12 leaves optional;
 - validate the storage root and every object against OCFL 1.1 (with a standard OCFL validator or equivalent checks);
-- check that the discovery document lists exactly the objects of the storage root, with their head versions and inventory digests, and lists every tombstone;
-- check the requirements of sections 7 to 11 on every object version, including that `datacite.json` and `object.json` agree on the document version and on the date of a withdrawal;
+- check that the discovery document lists the objects of the storage root with their kinds, head versions, inventory digests and status as their head versions state them, and that no listed object has the identifier of a tombstone; a verifier reading the archive over HTTP cannot list folders, so it checks the listed objects and reports that completeness was not checked, while a verifier with access to the files also checks that no object is missing;
+- check the requirements of sections 7 to 11 on every object version, including that `datacite.json` and `object.json` agree on the document version and on the date of a withdrawal, and that `Available`, for a version first made public by the archive, is the date of its deposit (section 7.1);
 - check the document versions of each document (section 7.3): object versions with the same document version have the same sources, renditions and change note, except that a version with `sourcesMissing` may be completed by adding files (section 7.3); new numbers follow the rule of new versions, without gaps; `history`, when present, lists distinct document versions, covers all of them, each entry being the last object version holding its document version; no object version after the first one with `history` lacks it; every notice is kept unchanged in every later object version;
 - for each collection version, resolve each member as in section 6.4 and check its pin, reporting each member as verified, mismatch (a copy was found and does not match), unavailable (no copy found) or removed (tombstoned).
 
@@ -324,7 +324,7 @@ A verifier SHOULD check the witnesses it finds, and the requirements of the prof
 
 ## 15. Security considerations
 
-- **Untrusted inventories.** Inventories, logical paths and member lists from other archives are untrusted input. Verifiers MUST reject paths that are absolute or contain `..`, and SHOULD limit the size of the files they fetch.
+- **Untrusted inventories.** Inventories, logical paths and member lists from other archives are untrusted input. Verifiers MUST reject logical paths that break the rules of section 7.1 (absolute, with `.` or `..` segments, not in Unicode normalisation form C), and SHOULD limit the size of the files they fetch.
 - **Archives of sources.** Tools unpacking source archives (appendix A) MUST guard against paths leaving the target folder and against archives that expand to excessive sizes.
 - **Presentation.** A website MUST NOT embed HTML of other archives in its own pages; it links to them. Documents' HTML versions are generated by the archive's own tools.
 - **Subdomains.** A domain that offers subdomains to archives (as `opensheaf.org` does) MUST remove the DNS records of abandoned archives, to prevent takeover by others.
@@ -380,7 +380,7 @@ The schemas (JSON Schema draft 2020-12) are published with this specification an
 - [opensheaf-object-0.1.schema.json](https://opensheaf.org/schemas/opensheaf-object-0.1.schema.json) for `object.json`;
 - [opensheaf-collection-0.1.schema.json](https://opensheaf.org/schemas/opensheaf-collection-0.1.schema.json) for `members.json`.
 
-`datacite.json` is validated against the DataCite 4.7 schema together with the requirements of section 8.
+DataCite publishes its schema as an XML Schema only. `datacite.json` is validated by converting it to DataCite XML (following DataCite's mapping between the REST API's JSON and XML) and validating the result against the DataCite 4.7 XML Schema, together with the requirements of section 8.
 
 ## Appendix E. Examples (non-normative)
 
@@ -430,28 +430,7 @@ An `object.json` of a document version:
 }
 ```
 
-The `object.json` of a later version of a document whose arXiv version 2 was found and deposited after version 4 (document versions 1, 2, 3 for arXiv's v1, v3, v4, then 4 for arXiv's v2, placed between 1 and 2 in the history), with a notice about version 2 (arXiv's v3):
-
-```
-{
-  "format": "opensheaf-object/0.1",
-  ...
-  "documentVersion": 3,
-  "changes": { "text": "Corrected the proof of Lemma 2; 32 pages." },
-  "stage": { "scheme": "NISO-JAV", "value": "AM" },
-  "history": [ "v1", "v4", "v2", "v5" ],
-  "notices": [ { "documentVersion": 2, "date": "2026-12-01",
-                 "text": "Theorem 3 is wrong as stated; corrected in version 3.",
-                 "path": "notices/erratum-v2.pdf", "mediaType": "application/pdf" } ],
-  "external": [ { "role": "source", "service": "arXiv", "record": "https://arxiv.org/abs/2303.18112v4",
-                  "doi": "10.48550/arXiv.2303.18112", "label": "v4" } ],
-  "status": "active"
-}
-```
-
-Object versions `v1` to `v3` deposited document versions 1 to 3; `v4` deposited document version 4 (arXiv's v2) and wrote the history `["v1", "v4", "v2", "v3"]`, so that the current version stayed document version 3 although the head held version 4; `v5`, shown here, is a description-only version adding the notice, which holds the current version again. The current version is document version 3, the last in the history.
-
-A `datacite.json` of the same version:
+The `datacite.json` of the same version:
 
 ```
 {
@@ -478,6 +457,27 @@ A `datacite.json` of the same version:
     { "relatedIdentifier": "10.5281/zenodo.1234566", "relatedIdentifierType": "DOI", "relationType": "IsVersionOf" } ]
 }
 ```
+
+The `object.json` of a later version of a document whose arXiv version 2 was found and deposited after version 4 (document versions 1, 2, 3 for arXiv's v1, v3, v4, then 4 for arXiv's v2, placed between 1 and 2 in the history), with a notice about version 2 (arXiv's v3):
+
+```
+{
+  "format": "opensheaf-object/0.1",
+  ...
+  "documentVersion": 3,
+  "changes": { "text": "Corrected the proof of Lemma 2; 32 pages." },
+  "stage": { "scheme": "NISO-JAV", "value": "AM" },
+  "history": [ "v1", "v4", "v2", "v5" ],
+  "notices": [ { "documentVersion": 2, "date": "2026-12-01",
+                 "text": "Theorem 3 is wrong as stated; corrected in version 3.",
+                 "path": "notices/erratum-v2.pdf", "mediaType": "application/pdf" } ],
+  "external": [ { "role": "source", "service": "arXiv", "record": "https://arxiv.org/abs/2303.18112v4",
+                  "doi": "10.48550/arXiv.2303.18112", "label": "v4" } ],
+  "status": "active"
+}
+```
+
+Object versions `v1` to `v3` deposited document versions 1 to 3; `v4` deposited document version 4 (arXiv's v2) and wrote the history `["v1", "v4", "v2", "v3"]`, so that the current version stayed document version 3 although the head held version 4; `v5`, shown here, is a description-only version adding the notice, which holds the current version again. The current version is document version 3, the last in the history.
 
 A `members.json` of a collection version, with a member from another archive:
 

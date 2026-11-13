@@ -129,8 +129,8 @@
       <li>
         <p>
           <strong>Base URL:</strong> the URL at which an archive is currently
-          served; its discovery document is at <tt class="verbatim">&lt;base
-          URL&gt;opensheaf.json</tt>.
+          served, ending with <tt class="verbatim">/</tt>; its discovery document is at
+          <tt class="verbatim">&lt;base URL&gt;opensheaf.json</tt>.
         </p>
       </li>
       <li>
@@ -251,8 +251,8 @@
     <ul>
       <li>
         <p>
-          <strong>OpenSheaf archive:</strong> sections 5, 6, 7, 8, 9, 11, 12
-          and 13.
+          <strong>OpenSheaf archive:</strong> sections 5 to 13 and 16 (section
+          10 for the collections it contains).
         </p>
       </li>
       <li>
@@ -263,7 +263,9 @@
       </li>
       <li>
         <p>
-          <strong>OpenSheaf verifier:</strong> section 14.
+          <strong>OpenSheaf verifier:</strong> sections 12 (as a reader), 14
+          and 15. Tools that build presentations follow the requirements on
+          presentations in sections 11.1, 15 and appendix C.
         </p>
       </li>
       <li>
@@ -391,19 +393,23 @@
       </li>
     </ul>
     <p>
-      It SHOULD contain <tt class="verbatim">mainCollection</tt> (the identifier of the
-      collection that lists the archive's own documents), <tt class="verbatim">contact</tt>
-      (a URI), and <tt class="verbatim">profiles</tt> (the list of profiles followed,
-      from <tt class="verbatim">zenodo</tt>, <tt class="verbatim">texmacs</tt>, <tt class="verbatim">website</tt>).
-      It MAY contain <tt class="verbatim">mirrors</tt> (base URLs of complete copies of
-      the archive), <tt class="verbatim">tombstones</tt> (section 11.3), <tt class="verbatim">keys</tt>
+      It MUST also contain <tt class="verbatim">profiles</tt>, the list of profiles
+      followed, from <tt class="verbatim">zenodo</tt>, <tt class="verbatim">texmacs</tt>, <tt
+      class="verbatim">website</tt> (an empty list if none). It SHOULD contain <tt
+      class="verbatim">mainCollection</tt> (the identifier of the collection that lists
+      the archive's own documents) and <tt class="verbatim">contact</tt> (a URI). It MAY
+      contain <tt class="verbatim">mirrors</tt> (base URLs of complete copies of the
+      archive), <tt class="verbatim">tombstones</tt> (section 11.3), <tt class="verbatim">keys</tt>
       (section 13.2) and <tt class="verbatim">feed</tt> (the URL of an Atom feed of new
       object versions).
     </p>
     <p>
       The discovery document is mutable: it is rewritten whenever an object is
-      added or changed. It is a map, not a witness: everything it states MUST
-      be verifiable from the storage root.
+      added or changed. It is a map, not a witness: what it states about
+      objects (<tt class="verbatim">objects</tt>: kinds, head versions, digests, status)
+      MUST be verifiable from the storage root. Digests are written in
+      lowercase hexadecimal, here and in every file defined by this
+      specification.
     </p>
     <h3 id="auto-9">6.2 Archive identifiers<span style="margin-left: 1em"></span></h3>
     <p>
@@ -437,7 +443,7 @@
       <li>
         <p>
           reads the discovery document at the member's archive URL (section
-          10.2) and fetches <tt class="verbatim">&lt;storageRoot&gt;&lt;id&gt;/&lt;version&gt;/inventory.json</tt>;
+          10.1) and fetches <tt class="verbatim">&lt;storageRoot&gt;&lt;id&gt;/&lt;version&gt;/inventory.json</tt>;
         </p>
       </li>
       <li>
@@ -467,7 +473,11 @@
       class="verbatim">datacite.json</tt> at the top level. Every version directory MUST
       contain a copy of the inventory as of that version, with its checksum
       file (OCFL makes this a recommendation; OpenSheaf requires it, so that
-      each version can be pinned and fetched on its own).
+      each version can be pinned and fetched on its own). Version directories
+      MUST NOT be zero-padded (<tt class="verbatim">v1</tt>, <tt class="verbatim">v2</tt>,
+      &hellip;, not <tt class="verbatim">v001</tt>), which OCFL allows. OCFL recommends
+      that object identifiers be URIs; OpenSheaf identifiers are short names
+      (section 6.3), so OCFL validators may warn about them.
     </p>
     <p>
       Each version in the inventory MUST have a <tt class="verbatim">user</tt> with a
@@ -560,8 +570,10 @@
       keeping its number: the completing object version adds the sources, and
       MAY add renditions produced from them (for instance a PDF typeset from
       the added sources, beside the one received), but changes or removes no
-      file of the version; it removes <tt class="verbatim">sourcesMissing</tt> when the
-      sources are complete, after which the version is fixed like any other.
+      file of the version; until the sources are complete it keeps <tt class="verbatim">sourcesMissing</tt>
+      and names no main source; the object version that completes them names
+      the main source and removes <tt class="verbatim">sourcesMissing</tt>, after which
+      the version is fixed like any other.
     </p>
     <p>
       <strong>Other versions.</strong> A version that was not public at the
@@ -614,8 +626,11 @@
       A collection version contains <tt class="verbatim">datacite.json</tt>, <tt class="verbatim">object.json</tt>
       and <tt class="verbatim">members.json</tt> (section 10). Its <tt class="verbatim">object.json</tt>
       declares <tt class="verbatim">kind</tt> <tt class="verbatim">collection</tt>; its document
-      version counts the changes of the member list, and it has no <tt class="verbatim">history</tt>,
-      <tt class="verbatim">stage</tt> or <tt class="verbatim">notices</tt>.
+      version counts the changes of the member list, and it has none of the
+      fields specific to documents (<tt class="verbatim">mainSource</tt>, <tt class="verbatim">sourceFormat</tt>,
+      <tt class="verbatim">sourcesMissing</tt>, <tt class="verbatim">renditions</tt>, <tt class="verbatim">toolchain</tt>,
+      <tt class="verbatim">changes</tt>, <tt class="verbatim">stage</tt>, <tt class="verbatim">history</tt>,
+      <tt class="verbatim">notices</tt>).
     </p>
     <h2 id="auto-17">8. Description: datacite.json<span style="margin-left: 1em"></span></h2>
     <p>
@@ -631,8 +646,9 @@
           and <tt class="verbatim">nameType</tt>; personal names SHOULD also have <tt
           class="verbatim">givenName</tt> and <tt class="verbatim">familyName</tt>), <tt class="verbatim">publicationYear</tt>,
           <tt class="verbatim">types</tt> (with <tt class="verbatim">resourceTypeGeneral</tt>),
-          <tt class="verbatim">version</tt> (the document version, as a string), and <tt
-          class="verbatim">publisher</tt>.
+          <tt class="verbatim">version</tt> (the document version, as a decimal string
+          without leading zeros, such as <tt class="verbatim">&quot;3&quot;</tt>), and
+          <tt class="verbatim">publisher</tt>.
         </p>
       </li>
     </ul>
@@ -659,13 +675,14 @@
       </li>
       <li>
         <p>
-          <tt class="verbatim">rightsList</tt>, with an SPDX identifier in lower case
-          and the licence URL; for a licence without an SPDX identifier, its
-          name in <tt class="verbatim">rights</tt> and, REQUIRED, the URL identifying it
-          in <tt class="verbatim">rightsUri</tt> (for arXiv's default licence, <tt
-          class="verbatim">http://arxiv.org/licenses/nonexclusive-distrib/1.0/</tt>), so
-          that archives record the same licence the same way; or a statement
-          such as &quot;All rights reserved&quot;;
+          <tt class="verbatim">rightsList</tt>: for a licence with an SPDX identifier,
+          that identifier in lower case and the licence URL; for a licence
+          without one, its name in <tt class="verbatim">rights</tt> and the URL
+          identifying it in <tt class="verbatim">rightsUri</tt> (for arXiv's default
+          licence, <tt class="verbatim">http://arxiv.org/licenses/nonexclusive-distrib/1.0/</tt>),
+          which MUST then be present, so that archives record the same licence
+          the same way; or a statement such as &quot;All rights
+          reserved&quot;, without URL;
         </p>
       </li>
       <li>
@@ -730,7 +747,9 @@
       </li>
       <li>
         <p>
-          <tt class="verbatim">Updated</tt>: the date of a description-only version.
+          <tt class="verbatim">Updated</tt>: the date of the latest description-only
+          version holding this document version; absent when the document
+          version has had none.
         </p>
       </li>
       <li>
@@ -760,8 +779,8 @@
       and abstracts from elsewhere SHOULD replace the authors' own macros
       (such as <tt class="verbatim">\R</tt> or <tt class="verbatim">\be</tt>) with standard LaTeX
       when their definitions are known, for instance from the preamble of the
-      imported sources, and otherwise keep them unchanged; they never invent
-      definitions.
+      imported sources, and otherwise keep them unchanged; they MUST NOT
+      invent definitions.
     </p>
     <p>
       Dates MAY be approximate, as DataCite allows (<tt class="verbatim">2019</tt>, <tt
@@ -776,7 +795,10 @@
           A document version with a DOI SHOULD have <tt class="verbatim">IsVersionOf</tt>
           the concept DOI of the document, and <tt class="verbatim">IsNewVersionOf</tt>
           the DOI of the document version before it in the history (section
-          7.3), if that version has a DOI.
+          7.3), if that version has a DOI. Relations state what was known when
+          a version was described; after a version is deposited out of order,
+          the relation of the version that follows it MAY be corrected by a
+          description-only version.
         </p>
       </li>
       <li>
@@ -858,12 +880,13 @@
     <p>
       A document MUST also have <tt class="verbatim">mainSource</tt> (a logical path)
       and <tt class="verbatim">sourceFormat</tt> (the media type of the main source),
-      and SHOULD have <tt class="verbatim">renditions</tt> (a list of logical paths with
-      media types) and <tt class="verbatim">toolchain</tt> (a list of tools with <tt
-      class="verbatim">name</tt>, <tt class="verbatim">version</tt> and, optionally, <tt class="verbatim">packages</tt>),
-      enough to reproduce the renditions. A document version whose sources are
-      not available instead has <tt class="verbatim">sourcesMissing</tt>, a note (see
-      below) saying why (for instance &quot;arXiv keeps only the PDF of this
+      and SHOULD have <tt class="verbatim">renditions</tt> (a list of objects with <tt
+      class="verbatim">path</tt>, a logical path, and <tt class="verbatim">mediaType</tt>) and <tt
+      class="verbatim">toolchain</tt> (a list of tools with <tt class="verbatim">name</tt>, <tt
+      class="verbatim">version</tt> and, optionally, <tt class="verbatim">packages</tt>), enough
+      to reproduce the renditions. A document version whose sources are not
+      available instead has <tt class="verbatim">sourcesMissing</tt>, a note (see below)
+      saying why (for instance &quot;arXiv keeps only the PDF of this
       version&quot;), no <tt class="verbatim">mainSource</tt> and <tt class="verbatim">sourceFormat</tt>,
       and at least one rendition; a rendition is never presented as a source.
     </p>
@@ -930,23 +953,28 @@
       <li>
         <p>
           <tt class="verbatim">agreement</tt>: a minimal record that the authors agreed
-          to the deposit and to the licence: who agreed (names only), when,
-          and how (for instance &quot;by e-mail&quot;). It MUST NOT contain
-          e-mail addresses, correspondence or signatures of persons;
+          to the deposit and to the licence: <tt class="verbatim">by</tt> (the names of
+          those who agreed, names only), <tt class="verbatim">date</tt>, and <tt class="verbatim">method</tt>
+          (how, for instance &quot;by e-mail&quot;), all three required. It
+          MUST NOT contain e-mail addresses, correspondence or signatures of
+          persons;
         </p>
       </li>
       <li>
         <p>
           <tt class="verbatim">external</tt>: the external records of this version, each
-          with its <tt class="verbatim">role</tt>: <tt class="verbatim">deposit</tt> for a deposit
-          of the version made by the archive (appendix A), <tt class="verbatim">source</tt>
-          for the record it was imported from; the <tt class="verbatim">service</tt>,
-          the <tt class="verbatim">record</tt> (a URL), the <tt class="verbatim">doi</tt>, the <tt
+          with its <tt class="verbatim">role</tt> (required): <tt class="verbatim">deposit</tt>
+          for a deposit of the version made by the archive (appendix A), <tt
+          class="verbatim">source</tt> for the record it was imported from; the <tt
+          class="verbatim">service</tt> (required, its name), the <tt class="verbatim">record</tt>
+          (required, the URL of the record), the <tt class="verbatim">doi</tt>, the <tt
           class="verbatim">label</tt> the service gives the version (for instance <tt
-          class="verbatim">v3</tt> on arXiv), and the digests of files kept there that
-          are not in the content (for a deposit, such as a source archive
-          uploaded instead of the sources) or of the files received from it
-          (for a source, as they were received before being unpacked);
+          class="verbatim">v3</tt> on arXiv), and <tt class="verbatim">files</tt>: the files kept
+          there that are not in the content (for a deposit, such as a source
+          archive uploaded instead of the sources) or the files received from
+          it (for a source, as they were received before being unpacked), each
+          with <tt class="verbatim">name</tt> and <tt class="verbatim">sha512</tt> (required), <tt
+          class="verbatim">md5</tt> and <tt class="verbatim">bytes</tt>;
         </p>
       </li>
       <li>
@@ -973,7 +1001,8 @@
       <li>
         <p>
           <tt class="verbatim">members</tt>: a list, in the order in which the members
-          are presented. This order is authoritative.
+          are presented. This order is authoritative: presentations MUST
+          present members in it.
         </p>
       </li>
     </ul>
@@ -1082,17 +1111,18 @@
     <h3 id="auto-27">11.2 Takedown<span style="margin-left: 1em"></span></h3>
     <p>
       When content must be removed (by law, or for a breach of rights), the
-      object is deleted from the storage root and a tombstone is added to the
-      discovery document.
+      object is deleted from the storage root and a tombstone MUST be added to
+      the discovery document.
     </p>
     <h3 id="auto-28">11.3 Tombstones<span style="margin-left: 1em"></span></h3>
     <p>
       A tombstone records <tt class="verbatim">id</tt>, <tt class="verbatim">kind</tt>, <tt class="verbatim">lastVersion</tt>,
       <tt class="verbatim">inventorySha512</tt> of that version, <tt class="verbatim">date</tt>
-      and <tt class="verbatim">reason</tt>. Identifiers of tombstoned objects MUST NOT
-      be reused. Verifiers report a pin to a tombstoned object as
-      &quot;removed&quot;, not as a corruption. External copies (DOI records,
-      snapshots) follow the rules of their services.
+      and <tt class="verbatim">reason</tt> (plain text, since the discovery document has
+      no content files). Identifiers of tombstoned objects MUST NOT be reused.
+      Verifiers report a pin to a tombstoned object as &quot;removed&quot;,
+      not as a corruption. External copies (DOI records, snapshots) follow the
+      rules of their services.
     </p>
     <p>
       Note: OCFL 1.1 has no way to remove files from an object short of
@@ -1179,7 +1209,7 @@
           detached signature of the inventory checksum file of that version
           (<tt class="verbatim">&lt;version&gt;/inventory.json.sha512</tt>), made with a
           key listed in <tt class="verbatim">keys</tt> of the discovery document (each
-          key with <tt class="verbatim">type</tt>, such as <tt class="verbatim">openpgp</tt> or
+          key with a <tt class="verbatim">type</tt>, such as <tt class="verbatim">openpgp</tt> or
           <tt class="verbatim">ssh</tt>, and a <tt class="verbatim">url</tt> or <tt class="verbatim">fingerprint</tt>);
         </p>
       </li>
@@ -1220,7 +1250,8 @@
         <p>
           validate the discovery document, and every <tt class="verbatim">object.json</tt>
           and <tt class="verbatim">members.json</tt>, against the schemas of their
-          declared versions;
+          declared versions, checking formats (dates, URIs) as assertions,
+          which JSON Schema 2020-12 leaves optional;
         </p>
       </li>
       <li>
@@ -1231,16 +1262,22 @@
       </li>
       <li>
         <p>
-          check that the discovery document lists exactly the objects of the
-          storage root, with their head versions and inventory digests, and
-          lists every tombstone;
+          check that the discovery document lists the objects of the storage
+          root with their kinds, head versions, inventory digests and status
+          as their head versions state them, and that no listed object has the
+          identifier of a tombstone; a verifier reading the archive over HTTP
+          cannot list folders, so it checks the listed objects and reports
+          that completeness was not checked, while a verifier with access to
+          the files also checks that no object is missing;
         </p>
       </li>
       <li>
         <p>
           check the requirements of sections 7 to 11 on every object version,
           including that <tt class="verbatim">datacite.json</tt> and <tt class="verbatim">object.json</tt>
-          agree on the document version and on the date of a withdrawal;
+          agree on the document version and on the date of a withdrawal, and
+          that <tt class="verbatim">Available</tt>, for a version first made public by
+          the archive, is the date of its deposit (section 7.1);
         </p>
       </li>
       <li>
@@ -1278,8 +1315,10 @@
         <p>
           <strong>Untrusted inventories.</strong> Inventories, logical paths
           and member lists from other archives are untrusted input. Verifiers
-          MUST reject paths that are absolute or contain <tt class="verbatim">..</tt>,
-          and SHOULD limit the size of the files they fetch.
+          MUST reject logical paths that break the rules of section 7.1
+          (absolute, with <tt class="verbatim">.</tt> or <tt class="verbatim">..</tt> segments,
+          not in Unicode normalisation form C), and SHOULD limit the size of
+          the files they fetch.
         </p>
       </li>
       <li>
@@ -1577,8 +1616,11 @@
       </li>
     </ul>
     <p>
-      <tt class="verbatim">datacite.json</tt> is validated against the DataCite 4.7
-      schema together with the requirements of section 8.
+      DataCite publishes its schema as an XML Schema only. <tt class="verbatim">datacite.json</tt>
+      is validated by converting it to DataCite XML (following DataCite's
+      mapping between the REST API's JSON and XML) and validating the result
+      against the DataCite 4.7 XML Schema, together with the requirements of
+      section 8.
     </p>
     <h2 id="auto-41">Appendix E. Examples (non-normative)<span style="margin-left: 1em"></span></h2>
     <p>
@@ -1632,6 +1674,35 @@
 }</pre>
     </div>
     <p>
+      The <tt class="verbatim">datacite.json</tt> of the same version:
+    </p>
+    <div class="tmweb-code">
+      <pre class="verbatim" xml:space="preserve">
+{
+  &quot;doi&quot;: &quot;10.5281/zenodo.1234567&quot;,
+  &quot;url&quot;: &quot;https://mgubi.org/papers/site/fractional-phi42-mass-gap/fractional-phi42-mass-gap.html&quot;,
+  &quot;version&quot;: &quot;1&quot;,
+  &quot;types&quot;: { &quot;resourceTypeGeneral&quot;: &quot;Preprint&quot; },
+  &quot;titles&quot;: [ { &quot;title&quot;: &quot;Mass gap for the fractional Phi^4_2 model&quot; } ],
+  &quot;creators&quot;: [
+    { &quot;name&quot;: &quot;Duch, P.&quot;, &quot;nameType&quot;: &quot;Personal&quot;, &quot;givenName&quot;: &quot;P.&quot;, &quot;familyName&quot;: &quot;Duch&quot;,
+      &quot;affiliation&quot;: [ { &quot;name&quot;: &quot;Institute of Mathematics, Polish Academy of Sciences&quot; } ] },
+    { &quot;name&quot;: &quot;Gubinelli, M.&quot;, &quot;nameType&quot;: &quot;Personal&quot;, &quot;givenName&quot;: &quot;M.&quot;, &quot;familyName&quot;: &quot;Gubinelli&quot;,
+      &quot;affiliation&quot;: [ { &quot;name&quot;: &quot;Mathematical Institute, University of Oxford&quot; } ] } ],
+  &quot;publisher&quot;: { &quot;name&quot;: &quot;Zenodo&quot; },
+  &quot;publicationYear&quot;: 2026,
+  &quot;dates&quot;: [ { &quot;date&quot;: &quot;2026-11-12&quot;, &quot;dateType&quot;: &quot;Issued&quot; },
+             { &quot;date&quot;: &quot;2026-11-12&quot;, &quot;dateType&quot;: &quot;Available&quot; } ],
+  &quot;rightsList&quot;: [ { &quot;rights&quot;: &quot;Creative Commons Attribution 4.0 International&quot;,
+                    &quot;rightsUri&quot;: &quot;https://creativecommons.org/licenses/by/4.0/&quot;,
+                    &quot;rightsIdentifier&quot;: &quot;cc-by-4.0&quot;, &quot;rightsIdentifierScheme&quot;: &quot;SPDX&quot; } ],
+  &quot;descriptions&quot;: [ { &quot;description&quot;: &quot;We present a new, simple &hellip;&quot;, &quot;descriptionType&quot;: &quot;Abstract&quot; } ],
+  &quot;formats&quot;: [ &quot;application/x-texmacs&quot;, &quot;application/pdf&quot; ],
+  &quot;relatedIdentifiers&quot;: [
+    { &quot;relatedIdentifier&quot;: &quot;10.5281/zenodo.1234566&quot;, &quot;relatedIdentifierType&quot;: &quot;DOI&quot;, &quot;relationType&quot;: &quot;IsVersionOf&quot; } ]
+}</pre>
+    </div>
+    <p>
       The <tt class="verbatim">object.json</tt> of a later version of a document whose
       arXiv version 2 was found and deposited after version 4 (document
       versions 1, 2, 3 for arXiv's v1, v3, v4, then 4 for arXiv's v2, placed
@@ -1665,35 +1736,6 @@
       the notice, which holds the current version again. The current version
       is document version 3, the last in the history.
     </p>
-    <p>
-      A <tt class="verbatim">datacite.json</tt> of the same version:
-    </p>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
-{
-  &quot;doi&quot;: &quot;10.5281/zenodo.1234567&quot;,
-  &quot;url&quot;: &quot;https://mgubi.org/papers/site/fractional-phi42-mass-gap/fractional-phi42-mass-gap.html&quot;,
-  &quot;version&quot;: &quot;1&quot;,
-  &quot;types&quot;: { &quot;resourceTypeGeneral&quot;: &quot;Preprint&quot; },
-  &quot;titles&quot;: [ { &quot;title&quot;: &quot;Mass gap for the fractional Phi^4_2 model&quot; } ],
-  &quot;creators&quot;: [
-    { &quot;name&quot;: &quot;Duch, P.&quot;, &quot;nameType&quot;: &quot;Personal&quot;, &quot;givenName&quot;: &quot;P.&quot;, &quot;familyName&quot;: &quot;Duch&quot;,
-      &quot;affiliation&quot;: [ { &quot;name&quot;: &quot;Institute of Mathematics, Polish Academy of Sciences&quot; } ] },
-    { &quot;name&quot;: &quot;Gubinelli, M.&quot;, &quot;nameType&quot;: &quot;Personal&quot;, &quot;givenName&quot;: &quot;M.&quot;, &quot;familyName&quot;: &quot;Gubinelli&quot;,
-      &quot;affiliation&quot;: [ { &quot;name&quot;: &quot;Mathematical Institute, University of Oxford&quot; } ] } ],
-  &quot;publisher&quot;: { &quot;name&quot;: &quot;Zenodo&quot; },
-  &quot;publicationYear&quot;: 2026,
-  &quot;dates&quot;: [ { &quot;date&quot;: &quot;2026-11-12&quot;, &quot;dateType&quot;: &quot;Issued&quot; },
-             { &quot;date&quot;: &quot;2026-11-12&quot;, &quot;dateType&quot;: &quot;Available&quot; } ],
-  &quot;rightsList&quot;: [ { &quot;rights&quot;: &quot;Creative Commons Attribution 4.0 International&quot;,
-                    &quot;rightsUri&quot;: &quot;https://creativecommons.org/licenses/by/4.0/&quot;,
-                    &quot;rightsIdentifier&quot;: &quot;cc-by-4.0&quot;, &quot;rightsIdentifierScheme&quot;: &quot;SPDX&quot; } ],
-  &quot;descriptions&quot;: [ { &quot;description&quot;: &quot;We present a new, simple &hellip;&quot;, &quot;descriptionType&quot;: &quot;Abstract&quot; } ],
-  &quot;formats&quot;: [ &quot;application/x-texmacs&quot;, &quot;application/pdf&quot; ],
-  &quot;relatedIdentifiers&quot;: [
-    { &quot;relatedIdentifier&quot;: &quot;10.5281/zenodo.1234566&quot;, &quot;relatedIdentifierType&quot;: &quot;DOI&quot;, &quot;relationType&quot;: &quot;IsVersionOf&quot; } ]
-}</pre>
-    </div>
     <p>
       A <tt class="verbatim">members.json</tt> of a collection version, with a member
       from another archive:

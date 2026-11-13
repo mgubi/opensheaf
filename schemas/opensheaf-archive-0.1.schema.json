@@ -11,7 +11,8 @@
     "name",
     "storageRoot",
     "storageLayout",
-    "objects"
+    "objects",
+    "profiles"
   ],
   "properties": {
     "format": {
@@ -60,12 +61,13 @@
       "type": "array",
       "items": {
         "type": "string",
-        "format": "uri"
+        "format": "uri",
+        "pattern": "/$"
       }
     },
     "feed": {
       "type": "string",
-      "format": "uri-reference"
+      "format": "uri"
     },
     "objects": {
       "type": "array",
@@ -158,10 +160,8 @@
         ],
         "properties": {
           "type": {
-            "enum": [
-              "openpgp",
-              "ssh"
-            ]
+            "type": "string",
+            "minLength": 1
           },
           "url": {
             "type": "string",

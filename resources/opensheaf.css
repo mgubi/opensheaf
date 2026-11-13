@@ -1,44 +1,95 @@
 /* OpenSheaf site styles, on top of the website's notes-base.css and
    theme.css (whose variables they use). */
 
+/* The look of notes-meta.ts on the web, where the HTML export leaves fonts
+   and colours to the stylesheets: the base stylesheet's column, margins and
+   spacing, headings in the serif of the text in bold (font sizes are
+   those of the base stylesheet), and a quiet,
+   bookish palette: charcoal ink on warm paper, one muted navy accent for
+   links, code on a slightly cooler grey. Every pair meets WCAG AA (text
+   about 13:1, links about 8:1, secondary text at least 5:1). */
+h1, h2, h3, h4, h5, h6 { font-weight: 700; }
+
 :root {
-    --os-verbatim: var(--code-purple);
-    --os-code-bg: #f1ede6;
-    --os-code-border: #d9d2c7;
+    --title-family: var(--main-family);
+    --color-background: #fbfaf7;
+    --color-surface: #f2f1ed;
+    --color-border: #dfdcd4;
+    --color-text: #2a2b2e;
+    --color-title: #22405e;
+    --color-link: #2f5379;
+    --os-visited: #4f4a76;
+    --color-muted: #6a6d73;
+    --color-secondary: #6a6d73;
+    --os-code-bg: #f2f1ed;
+    --os-code-border: #dfdcd4;
+    --os-heading: #22405e;
+    --os-heading-2: #30587d;
+    --os-marker: #a35b33;
+    --os-rule: #b06f45;
+    --os-chip: #efede8;
 }
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-        --os-code-bg: #2c3138;
-        --os-code-border: #454b51;
+        --color-background: #1a1c20;
+        --color-surface: #23262b;
+        --color-border: #363a41;
+        --color-text: #dddbd5;
+        --color-title: #b3c8e2;
+        --color-link: #9bb7d8;
+        --os-visited: #b4acd3;
+        --color-muted: #9b9fa6;
+        --color-secondary: #9b9fa6;
+        --os-code-bg: #23262b;
+        --os-code-border: #363a41;
+        --os-heading: #b3c8e2;
+        --os-heading-2: #9fb9d8;
+        --os-marker: #dd9a72;
+        --os-rule: #b9784f;
+        --os-chip: #272a30;
     }
 }
 :root[data-theme="dark"] {
-    --os-code-bg: #2c3138;
-    --os-code-border: #454b51;
+    --color-background: #1a1c20;
+    --color-surface: #23262b;
+    --color-border: #363a41;
+    --color-text: #dddbd5;
+    --color-title: #b3c8e2;
+    --color-link: #9bb7d8;
+    --os-visited: #b4acd3;
+    --color-muted: #9b9fa6;
+    --color-secondary: #9b9fa6;
+    --os-code-bg: #23262b;
+    --os-code-border: #363a41;
+    --os-heading: #b3c8e2;
+    --os-heading-2: #9fb9d8;
+    --os-marker: #dd9a72;
+    --os-rule: #b9784f;
+    --os-chip: #272a30;
+}
+@media print {
+    :root, :root[data-theme] {
+        --color-background: #fff !important;
+        --color-text: #000 !important;
+        --color-title: #000 !important;
+        --color-link: #000 !important;
+        --os-visited: #000 !important;
+        --color-muted: #333 !important;
+        --color-secondary: #333 !important;
+        --os-code-bg: #fff !important;
+        --os-code-border: #999 !important;
+        --os-heading: #000 !important;
+        --os-heading-2: #000 !important;
+        --os-marker: #000 !important;
+        --os-rule: #666 !important;
+        --os-chip: #fff !important;
+    }
 }
 
-/* Inline verbatim text (file names, JSON fields and values): the theme's
-   code purple, distinct from the text, the titles and the links. */
-tt.verbatim {
-    color: var(--os-verbatim);
-}
-
-/* Code blocks. TeXmacs wraps them in div.tmweb-code, which the site's
-   syntax highlighter (highlight.js) also styles: set the background on the
-   wrapper, with a selector stronger than the highlighter's .hljs. */
-div.tmweb-code, div.tmweb-code.hljs {
-    background: var(--os-code-bg);
-    border: 1px solid var(--os-code-border);
-    border-radius: 4px;
-    padding: 0.6em 0.9em;
-    margin: 0.6em 0;
-    overflow-x: auto;
-}
-div.tmweb-code pre.verbatim {
+/* Code in the ink of the text, without syntax colours. */
+pre, code, .hljs, .hljs * {
+    color: inherit;
     background: transparent;
-    color: var(--color-text);
-    margin: 0;
-    padding: 0;
 }
 
 /* The logo is drawn in black on a transparent background: no image
@@ -54,4 +105,125 @@ img[src$="opensheaf-logo.svg"] {
 }
 :root[data-theme="dark"] img[src$="opensheaf-logo.svg"] {
     filter: invert(1);
+}
+
+/* Links in the accent colour, and underlined (the base stylesheet only
+   underlines them on hover), so that they never rely on colour alone. */
+a:link, a:visited {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.15em;
+    text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+a:visited {
+    color: var(--os-visited);
+}
+a:hover, a:focus {
+    text-decoration-color: currentColor;
+}
+
+/* Code blocks (the specification's JSON examples) stand apart from the
+   text on a slightly cooler paper with a thin rule. TeXmacs wraps them in
+   div.tmweb-code, which highlight.js also styles. */
+div.tmweb-code, div.tmweb-code.hljs {
+    background: var(--os-code-bg);
+    border: 1px solid var(--os-code-border);
+    border-radius: 4px;
+    padding: 0.6em 0.9em;
+    margin: 0.6em 0;
+    overflow-x: auto;
+}
+div.tmweb-code pre.verbatim {
+    margin: 0;
+    padding: 0;
+}
+
+/* A heading present for screen readers and search engines but not shown
+   (the home page's title, whose visible form is the logo). */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* Structure in colour, two quiet accents: deep blue for headings and the
+   run-in bold labels of the specification ("Numbering."), warm terracotta
+   for list bullets and the rule beside the abstract. Links keep their own
+   navy and their underline. */
+h1, h2 { color: var(--os-heading); }
+h3, h4, h5, h6 { color: var(--os-heading-2); }
+strong, b { color: var(--os-heading); font-weight: 600; }
+a strong, a b { color: inherit; }
+li::marker { color: var(--os-marker); }
+.notes-abstract {
+    border-left: 3px solid var(--os-rule);
+    padding-left: 0.9em;
+    margin: 1em 0 1.4em;
+}
+/* Inline verbatim (file names, JSON fields) on a faint chip. */
+tt.verbatim {
+    background: var(--os-chip);
+    border-radius: 3px;
+    padding: 0 0.25em;
+}
+div.tmweb-code tt.verbatim, pre tt.verbatim { background: transparent; padding: 0; }
+
+/* The theme button (resources/theme.js): the half-lit circle of the base
+   theme, as one button that switches between light and dark. */
+.theme-control .theme-toggle {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-muted);
+    cursor: pointer;
+}
+.theme-control .theme-toggle::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+    background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+}
+.theme-control .theme-toggle:hover {
+    color: var(--color-text);
+    background: var(--color-surface);
+}
+.theme-control .theme-toggle:focus-visible {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+}
+
+/* Less room above the page header: the base stylesheet pads the page by
+   3em at the top. */
+@media screen {
+    body { padding-top: 2em; }
+}
+
+/* The theme button floats at the top right corner of the window, above the
+   page, and stays there while scrolling; it takes no room in the page. On
+   the paper of the page, so that it stays legible over the text below. */
+.theme-control {
+    position: fixed;
+    top: 0.6rem;
+    right: 0.8rem;
+    z-index: 10;
+    margin: 0;
+}
+.theme-control .theme-toggle {
+    width: 34px;
+    height: 34px;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }

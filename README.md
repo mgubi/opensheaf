@@ -12,9 +12,6 @@ collections of them. Read the
 **Status:** version 0.1, a draft. It is experimental and may change in
 incompatible ways before version 1.0.
 
-**Author:** [Massimiliano Gubinelli](https://mgubi.org/docs/main.html)
-(Mathematical Institute, University of Oxford).
-
 **Source:** the specification and this site are kept in the GitHub repository
 [opensheaf/opensheaf](https://github.com/opensheaf/opensheaf), which is also the place
 to discuss them (see below).
@@ -123,3 +120,6 @@ versions must be shared under the same licence. The JSON Schemas in
 be embedded in any software. The tools and style files are licensed under the GNU
 General Public License, version 3 or later. The fonts in `resources/fonts/`
 keep their own licence (SIL Open Font License).
+
+**Editor:** [Massimiliano Gubinelli](https://mgubi.org/docs/main.html)
+(Mathematical Institute, University of Oxford).

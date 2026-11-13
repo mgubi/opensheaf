@@ -11,8 +11,6 @@
 
   <strong|Status:> version 0.1, a draft. It is experimental and may change in incompatible ways before version 1.0.
 
-  <strong|Author:> <hlink|Massimiliano Gubinelli|https://mgubi.org/docs/main.html> (Mathematical Institute, University of Oxford).
-
   <strong|Source:> the specification and this site are kept in the GitHub repository <hlink|opensheaf/opensheaf|https://github.com/opensheaf/opensheaf>, which is also the place to discuss them (see below).
 
   <section*|Why>
@@ -90,6 +88,8 @@
   <section*|Licence>
 
   The text of the specification and of the FAQ is licensed under the <hlink|Creative Commons Attribution-ShareAlike 4.0 International licence|https://creativecommons.org/licenses/by-sa/4.0/> (CC BY-SA 4.0): it may be copied and adapted with attribution, and adapted versions must be shared under the same licence. The JSON Schemas in <verbatim|schemas/> are dedicated to the public domain under <hlink|CC0 1.0|https://creativecommons.org/publicdomain/zero/1.0/>, so that they can be embedded in any software. The tools and style files are licensed under the GNU General Public License, version 3 or later. The fonts in <verbatim|resources/fonts/> keep their own licence (SIL Open Font License).
+
+  <strong|Editor:> <hlink|Massimiliano Gubinelli|https://mgubi.org/docs/main.html> (Mathematical Institute, University of Oxford).
 
 </body>
 

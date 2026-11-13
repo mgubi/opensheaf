@@ -27,7 +27,7 @@
 
   Answers to common questions about the design are collected in the <hlink|FAQ|https://github.com/opensheaf/opensheaf/blob/main/FAQ.md>.
 
-  The name: a sheaf is a bundle of papers and, in mathematics, the structure in which local pieces glue into a whole, as archives kept and verified separately compose into collections. The home of the format is <verbatim|https://opensheaf.org/>. The first OpenSheaf archive is <verbatim|https://mgubi.opensheaf.org/>; its values appear in the examples.
+  The name: a sheaf is a bundle of papers and, in mathematics, the structure in which local pieces glue into a whole, as archives kept and verified separately compose into collections. The home of the format is <verbatim|https://opensheaf.org/>. The first OpenSheaf archive is <verbatim|https://mgubi.org/papers/>; its values appear in the examples.
 
   <section*|2. Conventions>
 
@@ -550,7 +550,7 @@
 
     \ \ "doi": "10.5281/zenodo.1234567",
 
-    \ \ "url": "https://mgubi.opensheaf.org/site/fractional-phi42-mass-gap/",
+    \ \ "url": "https://mgubi.org/papers/site/fractional-phi42-mass-gap/fractional-phi42-mass-gap.html",
 
     \ \ "version": "1",
 
@@ -604,7 +604,7 @@
 
     \ \ \ \ \ \ "archive": "tag:opensheaf.org,2026:mgubi",
 
-    \ \ \ \ \ \ "archiveUrl": "https://mgubi.opensheaf.org/",
+    \ \ \ \ \ \ "archiveUrl": "https://mgubi.org/papers/",
 
     \ \ \ \ \ \ "id": "fractional-phi42-mass-gap",
 

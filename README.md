@@ -79,7 +79,7 @@ This repository is the place to discuss OpenSheaf and to propose changes:
 ## Implementations
 
 - **Archives**
-  - [Papers of Massimiliano Gubinelli](https://mgubi.opensheaf.org)
+  - [Papers of Massimiliano Gubinelli](https://mgubi.org/papers/)
     (repository [mgubi/papers](https://github.com/mgubi/papers)): the first
     OpenSheaf archive, following version 0.1, with TeXmacs sources, HTML
     versions and PDFs (profile `texmacs`).

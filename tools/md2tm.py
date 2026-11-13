@@ -8,10 +8,15 @@ their TeXmacs versions (exported to HTML, they become links to the pages).
 
 Handles the subset of Markdown used by spec.md:
 
-- `# Title` (first line): the page title; the first paragraph, if it is in
-  *italics*, becomes the abstract. The first line may instead be an image
-  `![Title](logo.svg)`, or a `<picture>` block (light and dark variants, as
-  GitHub shows them), whose image then stands as the title;
+- a hero (first line, optional): an image `![Title](banner.jpg)`, centred
+  across the column, or a `<picture>` block (light and dark variants, as
+  GitHub shows them), whose logo is centred at two fifths of the width.
+  A first line `<!-- site hero: logo.svg -->`, invisible on GitHub, puts
+  that logo (as a `<picture>` logo) on the page instead of the image or
+  `<picture>` after it;
+- `# Title` (first line, or right after the hero): the page title. A hero
+  without a title stands for it. The first paragraph after them, if it is in
+  *italics*, becomes the abstract;
 - images `![alt](path)` on a line of their own (centred);
 - `## Section`, `### Subsection`;
 - paragraphs; lists with `- ` and nested lists indented by two spaces;
@@ -82,24 +87,44 @@ def image(path, width):
     return f'<image|{esc(path)}|{width}|||>'
 
 
+def hero(path, width):
+    # centred, with room above and below; TeXmacs exports the spaces as
+    # margins of the image's paragraph
+    return f'  <\\center>\n    <vspace*|4fn>{image(path, width)}<vspace|5fn>\n  </center>'
+
+
+SITE_HERO_RE = re.compile(r'^<!--\s*site hero:\s*(\S+)\s*-->\s*$')
+
+
 def convert(md):
     lines = md.split('\n')
+    site_hero = SITE_HERO_RE.match(lines[0]) if lines else None
+    if site_hero:
+        lines = lines[1:]
     first = IMAGE_RE.match(lines[0]) if lines else None
+    hero_markup = title_markup = None
     if lines and lines[0].strip().startswith('<picture'):
         # a <picture> (variants for light and dark themes, as on GitHub):
-        # its <img> stands for the title
+        # its <img> is the hero, a logo at two fifths of the width
         j = next(k for k, ln in enumerate(lines) if '</picture>' in ln)
         src = re.search(r'<img[^>]*\ssrc="([^"]+)"', '\n'.join(lines[:j + 1])).group(1)
-        title_markup = image(src, '0.5par')
+        hero_markup = hero(src, '0.4par')
         lines = [''] + lines[j + 1:]
     elif first:
-        # a logo standing for the title
-        title_markup = image(first.group(2), '0.5par')
-    elif lines and lines[0].startswith('# '):
-        title_markup = inline(lines[0][2:].strip())
-    else:
-        sys.exit('the Markdown file must start with "# Title" or a title image')
-    i = 1
+        # an image: the hero, across the column as on GitHub
+        hero_markup = hero(first.group(2), '1par')
+        lines = [''] + lines[1:]
+    if site_hero:
+        # the page shows this logo instead of the header of the Markdown file
+        hero_markup = hero(site_hero.group(1), '0.4par')
+    i = 0
+    while i < len(lines) and not lines[i].strip():
+        i += 1
+    if i < len(lines) and lines[i].startswith('# '):
+        title_markup = inline(lines[i][2:].strip())
+        i += 1
+    if not (hero_markup or title_markup):
+        sys.exit('the Markdown file must start with "# Title" or a hero image')
     while i < len(lines) and not lines[i].strip():
         i += 1
     abstract = None
@@ -177,8 +202,11 @@ def convert(md):
         blocks.append('  ' + inline(' '.join(para)))
 
     head = ('<TeXmacs|2.1.5>\n\n<style|<tuple|notes|notes-meta>>\n\n<\\body>\n'
-            '  <notes-header>\n\n'
-            f'  <chapter*|{title_markup}>\n\n')
+            '  <notes-header>\n\n')
+    if hero_markup:
+        head += hero_markup + '\n\n'
+    if title_markup:
+        head += f'  <chapter*|{title_markup}>\n\n'
     if abstract:
         head += f'  <notes-abstract|{inline(abstract)}>\n\n'
     tail = ('\n</body>\n\n<\\initial>\n  <\\collection>\n'

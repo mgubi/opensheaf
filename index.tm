@@ -5,9 +5,11 @@
 <\body>
   <notes-header>
 
-  <chapter*|<image|resources/brand/opensheaf-logo.svg|0.5par|||>>
+  <\center>
+    <vspace*|4fn><image|resources/brand/opensheaf-logo.svg|0.4par|||><vspace|5fn>
+  </center>
 
-  OpenSheaf is an open format for archives of scholarly documents and for collections of them. Read the <hlink|specification|opensheaf-specification-0.1.tm> (version 0.1) and the <hlink|FAQ|faq.tm>, which explains its main choices. The site is <hlink|opensheaf.org|https://opensheaf.org> (also <verbatim|sheaf.pub>).
+  <notes-abstract|OpenSheaf is an open format for archives of scholarly documents and for collections of them. Read the <hlink|specification|opensheaf-specification-0.1.tm> (version 0.1) and the <hlink|FAQ|faq.tm>, which explains its main choices. The site is <hlink|opensheaf.org|https://opensheaf.org> (also <verbatim|sheaf.pub>).>
 
   <strong|Status:> version 0.1, a draft. It is experimental and may change in incompatible ways before version 1.0.
 
@@ -80,7 +82,7 @@
 
     <item><verbatim|notes-meta.ts>: the TeXmacs style package of the page; <verbatim|resources/>: its stylesheets, scripts and fonts.
 
-    <item><verbatim|resources/brand/>: the logo (dot mark and lettering), the symbol, the wordmark and the favicon, as self-contained SVG files (with PNG and PDF copies of the logo); see its README. The lettering is outlined from Geist Serif (SIL Open Font License).
+    <item><verbatim|resources/brand/>: the logo (dot mark and lettering), the symbol, the wordmark and the favicon, as self-contained SVG files (with PNG and PDF copies of the logo) and the banner; see its README. The lettering is outlined from Cormorant Garamond (SIL Open Font License).
 
     <item><verbatim|tools/build.py>: converts the Markdown files to TeXmacs (<verbatim|tools/md2tm.py>) and exports them to HTML with TeXmacs. It needs the <verbatim|notes> and <verbatim|max-html> TeXmacs plugins, linked in <verbatim|~/.TeXmacs/plugins>.
 

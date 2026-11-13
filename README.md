@@ -1,13 +1,11 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="resources/brand/opensheaf-logo-dark.svg">
-  <img alt="OpenSheaf" src="resources/brand/opensheaf-logo.svg" width="440">
-</picture>
+<!-- site hero: resources/brand/opensheaf-logo.svg -->
+![OpenSheaf](resources/brand/opensheaf-banner.jpg)
 
-OpenSheaf is an open format for archives of scholarly documents and for
+*OpenSheaf is an open format for archives of scholarly documents and for
 collections of them. Read the
 [specification](opensheaf-specification-0.1.md) (version 0.1) and the
 [FAQ](FAQ.md), which explains its main choices. The site is
-[opensheaf.org](https://opensheaf.org) (also `sheaf.pub`).
+[opensheaf.org](https://opensheaf.org) (also `sheaf.pub`).*
 
 **Status:** version 0.1, a draft. It is experimental and may change in
 incompatible ways before version 1.0.
@@ -105,8 +103,8 @@ This repository is the place to discuss OpenSheaf and to propose changes:
   stylesheets, scripts and fonts.
 - `resources/brand/`: the logo (dot mark and lettering), the symbol, the
   wordmark and the favicon, as self-contained SVG files (with PNG and PDF
-  copies of the logo); see its README. The lettering is outlined from Geist
-  Serif (SIL Open Font License).
+  copies of the logo) and the banner; see its README. The lettering is
+  outlined from Cormorant Garamond (SIL Open Font License).
 - `tools/build.py`: converts the Markdown files to TeXmacs
   (`tools/md2tm.py`) and exports them to HTML with TeXmacs. It needs the
   `notes` and `max-html` TeXmacs plugins, linked in `~/.TeXmacs/plugins`.

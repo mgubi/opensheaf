@@ -34,14 +34,12 @@
 
   <\active*>
     <\src-comment>
-      Reading layout: regular-weight serif headings, an upright abstract,
-      compact paragraphs, and charcoal ink on warm off-white paper.
+      The OpenSheaf look: the serif of the text for the headings, in regular
+      weight, compact paragraphs, and charcoal ink on warm off-white paper.
     </src-comment>
   </active*>
 
   <assign|notes-heading|<macro|body|<with|font-family|rm|font-series|medium|color|#292825|<arg|body>>>>
-
-  <assign|notes-abstract|<macro|body|<with|font-family|rm|font-series|medium|font-shape|right|<arg|body>>>>
 
   <assign|par-sep|0.5fn>
 

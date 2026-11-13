@@ -1,109 +1,68 @@
-/* OpenSheaf site styles, on top of the website's notes-base.css and
-   theme.css (whose variables they use). */
-
-:root {
-    --os-verbatim: var(--code-purple);
-    --os-code-bg: #f1ede6;
-    --os-code-border: #d9d2c7;
-}
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        --os-code-bg: #2c3138;
-        --os-code-border: #454b51;
-    }
-}
-:root[data-theme="dark"] {
-    --os-code-bg: #2c3138;
-    --os-code-border: #454b51;
-}
-
-/* Inline verbatim text (file names, JSON fields and values): the theme's
-   code purple, distinct from the text, the titles and the links. */
-tt.verbatim {
-    color: var(--os-verbatim);
-}
-
-/* Code blocks. TeXmacs wraps them in div.tmweb-code, which the site's
-   syntax highlighter (highlight.js) also styles: set the background on the
-   wrapper, with a selector stronger than the highlighter's .hljs. */
-div.tmweb-code, div.tmweb-code.hljs {
-    background: var(--os-code-bg);
-    border: 1px solid var(--os-code-border);
-    border-radius: 4px;
-    padding: 0.6em 0.9em;
-    margin: 0.6em 0;
-    overflow-x: auto;
-}
-div.tmweb-code pre.verbatim {
-    background: transparent;
-    color: var(--color-text);
-    margin: 0;
-    padding: 0;
-}
-
-/* The logo is drawn in black on a transparent background: no image
-   background (the site gives images a white one on the dark theme), and
-   inverted on the dark theme. */
-img[src$="opensheaf-logo.svg"] {
-    background-color: transparent !important;
-}
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) img[src$="opensheaf-logo.svg"] {
-        filter: invert(1);
-    }
-}
-:root[data-theme="dark"] img[src$="opensheaf-logo.svg"] {
-    filter: invert(1);
-}
-
-/* Reading layout: a narrower column, regular-weight headings, compact
-   paragraphs, and the theme control after the content. */
+/* Keep the shared TeXmacs layout and serif typography with monochrome ink. */
 @media screen {
-    html { font-size: 16px; }
-    body { max-width: 800px; }
+  html { font-size: 16px; }
+  body { max-width: 800px; }
 }
+
 body { line-height: 1.55; }
 h1, h2, h3, h4, h5, h6 { font-weight: 400; }
-h2 { margin-top: 2em; margin-bottom: 0.9em; }
-h3 { margin-top: 1.6em; margin-bottom: 0.8em; }
-p { margin-top: 0.5em; margin-bottom: 0.5em; }
+h2 { margin-top: 2em; margin-bottom: .9em; }
+h3 { margin-top: 1.6em; margin-bottom: .8em; }
+p { margin-top: .5em; margin-bottom: .5em; }
 .theme-control { margin-top: 2em; }
 
-/* Soft monochrome palettes: charcoal on warm off-white, muted ivory on
-   charcoal; black on white in print. */
 :root {
-    --color-background: #faf9f6;
-    --color-text: #292825;
-    --color-title: #292825;
-    --color-link: #292825;
-    --color-muted: #292825;
-    --color-secondary: #292825;
+  --title-family: var(--main-family);
+  --color-background: #faf9f6;
+  --color-text: #292825;
+  --color-title: #292825;
+  --color-link: #292825;
+  --color-muted: #292825;
+  --color-secondary: #292825;
+  --color-border: currentColor;
+  --color-surface: transparent;
+  --image-background: transparent;
+  --brand-filter: none;
 }
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        --color-background: #1c1c1b;
-        --color-text: #dedcd6;
-        --color-title: #dedcd6;
-        --color-link: #dedcd6;
-        --color-muted: #dedcd6;
-        --color-secondary: #dedcd6;
-    }
-}
-:root[data-theme="dark"] {
+  :root:not([data-theme='light']) {
     --color-background: #1c1c1b;
     --color-text: #dedcd6;
     --color-title: #dedcd6;
     --color-link: #dedcd6;
     --color-muted: #dedcd6;
     --color-secondary: #dedcd6;
+    --color-border: currentColor;
+    --color-surface: transparent;
+    --image-background: transparent;
+    --brand-filter: invert(1);
+  }
 }
+:root[data-theme='dark'] {
+  --color-background: #1c1c1b;
+  --color-text: #dedcd6;
+  --color-title: #dedcd6;
+  --color-link: #dedcd6;
+  --color-muted: #dedcd6;
+  --color-secondary: #dedcd6;
+  --color-border: currentColor;
+  --color-surface: transparent;
+  --image-background: transparent;
+  --brand-filter: invert(1);
+}
+img[src*='brand/opensheaf-logo'] { filter: var(--brand-filter); opacity: .86; }
+/* Plain source listings, with the document's own ink and paper. */
+pre, code, .hljs, .hljs * { color: inherit; background: transparent; }
 @media print {
-    :root, :root[data-theme] {
-        --color-background: #fff !important;
-        --color-text: #000 !important;
-        --color-title: #000 !important;
-        --color-link: #000 !important;
-        --color-muted: #000 !important;
-        --color-secondary: #000 !important;
-    }
+  :root, :root[data-theme] {
+    --color-background: #fff !important;
+    --color-text: #000 !important;
+    --color-title: #000 !important;
+    --color-link: #000 !important;
+    --color-muted: #000 !important;
+    --color-secondary: #000 !important;
+    --image-background: transparent !important;
+    --brand-filter: none;
+  }
+  img[src*='brand/opensheaf-logo'] { opacity: 1; }
 }

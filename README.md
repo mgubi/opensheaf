@@ -154,6 +154,8 @@ on GitHub, and archives made with them.
 - [`LICENSE`](https://github.com/opensheaf/opensheaf.github.io/blob/main/LICENSE) and
   [`LICENSES/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/LICENSES): which licence
   covers what, and the texts of the licences.
+- [`TRADEMARKS.md`](https://github.com/opensheaf/opensheaf.github.io/blob/main/TRADEMARKS.md): the use of the
+  name and the logo.
 
 ## Licence
 
@@ -165,7 +167,12 @@ versions must be shared under the same licence. The JSON Schemas in
 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), so that they can
 be embedded in any software. The tools and style files are licensed under the GNU
 General Public License, version 3 or later. The fonts in [`resources/fonts/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/fonts)
-keep their own licence (SIL Open Font License). The file
+keep their own licence (SIL Open Font License). The logo and the symbol in
+[`resources/brand/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/brand) are licensed under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); the use of the name
+OpenSheaf and of the logo as marks is governed by
+[`TRADEMARKS.md`](https://github.com/opensheaf/opensheaf.github.io/blob/main/TRADEMARKS.md): describing
+or pointing to OpenSheaf needs no permission, suggesting endorsement does. The file
 [`LICENSE`](https://github.com/opensheaf/opensheaf.github.io/blob/main/LICENSE) says which licence covers
 what; the texts are in
 [`LICENSES/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/LICENSES).

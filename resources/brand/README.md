@@ -28,6 +28,20 @@ The lettering is outlined from **Geist Serif Regular**, PostScript name
 is -1.5 units; the outlines are scaled to 85%. Official source:
 https://github.com/vercel/geist-font/blob/main/fonts/GeistSerif/ttf/GeistSerif-Regular.ttf
 
+## Licence and use
+
+The logo, the symbol, the wordmark and the favicon in this folder are
+licensed under the
+[Creative Commons Attribution 4.0 International licence](https://creativecommons.org/licenses/by/4.0/)
+(CC BY 4.0, text in `LICENSES/CC-BY-4.0.txt` at the root of the
+repository): the files may be copied and redistributed, with attribution to
+the OpenSheaf project. The licence grants no rights to the name OpenSheaf or
+to the logo as marks: their use is governed by
+[`TRADEMARKS.md`](../../TRADEMARKS.md) (pointing to OpenSheaf with the
+unmodified logo needs no permission; suggesting endorsement, or a modified
+logo, does). The lettering is outlined from Geist Serif, whose licence
+follows.
+
 Copyright 2026 The Geist Project Authors (https://github.com/vercel/geist-font).
 The SIL Open Font License is retained in `GeistSerif-LICENSE.txt`.
 

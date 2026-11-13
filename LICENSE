@@ -9,6 +9,12 @@ The contents of this repository are licensed as follows.
 - The tools and style files (tools/, notes-meta.ts, resources/ except
   resources/fonts/ and resources/brand/): GNU General Public License, version
   3 or later (GPL-3.0-or-later), LICENSES/GPL-3.0-or-later.txt.
+- The logo, the symbol, the wordmark and the favicon (resources/brand/):
+  Creative Commons Attribution 4.0 International (CC BY 4.0),
+  LICENSES/CC-BY-4.0.txt. Their lettering is outlined from Geist Serif
+  (resources/brand/GeistSerif-LICENSE.txt).
 - The fonts (resources/fonts/) keep their own licence, the SIL Open Font
-  License, given with them; the lettering of the logo is outlined from Geist
-  Serif (resources/brand/GeistSerif-LICENSE.txt).
+  License, given with them.
+
+No licence above grants rights to the name OpenSheaf or to the logo as
+marks; their use is governed by TRADEMARKS.md.

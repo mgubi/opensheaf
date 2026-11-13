@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensheaf.org/schemas/opensheaf-archive-0.1.schema.json",
+  "title": "OpenSheaf discovery document (opensheaf.json), format opensheaf-archive/0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "specification",
+    "archiveId",
+    "name",
+    "storageRoot",
+    "storageLayout",
+    "objects"
+  ],
+  "properties": {
+    "format": {
+      "const": "opensheaf-archive/0.1"
+    },
+    "specification": {
+      "const": "0.1"
+    },
+    "archiveId": {
+      "type": "string",
+      "format": "uri"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contact": {
+      "type": "string",
+      "format": "uri"
+    },
+    "storageRoot": {
+      "type": "string",
+      "format": "uri-reference",
+      "pattern": "/$"
+    },
+    "storageLayout": {
+      "const": "0002-flat-direct-storage-layout"
+    },
+    "mainCollection": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "zenodo",
+          "texmacs",
+          "website"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "mirrors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+    "feed": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "head",
+          "inventorySha512",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "maxLength": 64
+          },
+          "kind": {
+            "enum": [
+              "document",
+              "collection"
+            ]
+          },
+          "head": {
+            "type": "string",
+            "pattern": "^v[1-9][0-9]*$"
+          },
+          "inventorySha512": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{128}$"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "withdrawn"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "tombstones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "lastVersion",
+          "inventorySha512",
+          "date",
+          "reason"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "maxLength": 64
+          },
+          "kind": {
+            "enum": [
+              "document",
+              "collection"
+            ]
+          },
+          "lastVersion": {
+            "type": "string",
+            "pattern": "^v[1-9][0-9]*$"
+          },
+          "inventorySha512": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{128}$"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "keys": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "openpgp",
+              "ssh"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "fingerprint": {
+            "type": "string"
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "url"
+            ]
+          },
+          {
+            "required": [
+              "fingerprint"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

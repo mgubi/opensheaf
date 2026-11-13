@@ -27,6 +27,7 @@
   </active*>
 
   <assign|notes-header-links|<macro|[<hlink|OpenSheaf|index.tm>]
+  [<hlink|specification|opensheaf-specification-0.1.tm>] [<hlink|FAQ|faq.tm>]
   [<hlink|first archive|https://mgubi.opensheaf.org>]>>
 
   <assign|notes-header-name|OpenSheaf>
@@ -38,6 +39,8 @@
   <assign|html-head-javascript-src|<tuple|resources/theme.js>>
 
   <assign|html-css|resources/notes-base.css>
+
+  <assign|html-extra-css|<tuple|resources/opensheaf.css>>
 
   <assign|html-extra-javascript-src|<tuple|resources/highlight.pack.js|resources/notes-base.js>>
 </body>

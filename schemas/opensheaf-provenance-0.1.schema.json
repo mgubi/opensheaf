@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensheaf.org/schemas/opensheaf-provenance-0.1.schema.json",
+  "title": "OpenSheaf provenance (provenance.json), format opensheaf-provenance/0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "specification",
+    "kind",
+    "archiveId",
+    "objectId",
+    "documentVersion",
+    "deposit",
+    "status"
+  ],
+  "properties": {
+    "format": {
+      "const": "opensheaf-provenance/0.1"
+    },
+    "specification": {
+      "const": "0.1"
+    },
+    "kind": {
+      "enum": [
+        "document",
+        "collection"
+      ]
+    },
+    "archiveId": {
+      "type": "string",
+      "format": "uri"
+    },
+    "objectId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "documentVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "mainSource": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceFormat": {
+      "type": "string",
+      "minLength": 1
+    },
+    "renditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "mediaType"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "toolchain": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "version"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "packages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "deposit": {
+      "type": "object",
+      "required": [
+        "date",
+        "agent"
+      ],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "agent": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "uri": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    },
+    "agreement": {
+      "type": "object",
+      "required": [
+        "by",
+        "date",
+        "method"
+      ],
+      "properties": {
+        "by": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "method": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "external": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "service",
+          "record"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "record": {
+            "type": "string"
+          },
+          "doi": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "sha512"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "sha512": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{128}$"
+                },
+                "md5": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{32}$"
+                },
+                "bytes": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "active",
+        "withdrawn"
+      ]
+    },
+    "withdrawal": {
+      "type": "object",
+      "required": [
+        "date",
+        "reason"
+      ],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "document"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "mainSource",
+          "sourceFormat"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "withdrawn"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "withdrawal"
+        ]
+      }
+    }
+  ]
+}

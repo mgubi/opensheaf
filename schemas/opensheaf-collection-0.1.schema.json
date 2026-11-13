@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensheaf.org/schemas/opensheaf-collection-0.1.schema.json",
+  "title": "OpenSheaf member list (members.json), format opensheaf-collection/0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "members"
+  ],
+  "properties": {
+    "format": {
+      "const": "opensheaf-collection/0.1"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "archive",
+          "archiveUrl",
+          "id",
+          "version",
+          "inventorySha512"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "document",
+              "collection"
+            ]
+          },
+          "archive": {
+            "type": "string",
+            "format": "uri"
+          },
+          "archiveUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "maxLength": 64
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^v[1-9][0-9]*$"
+          },
+          "inventorySha512": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{128}$"
+          },
+          "mirrors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "doi": {
+            "type": "string"
+          },
+          "conceptDoi": {
+            "type": "string"
+          },
+          "follow": {
+            "const": "latest"
+          },
+          "cite": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "creators": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "year": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

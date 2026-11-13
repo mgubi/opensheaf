@@ -1,0 +1,42 @@
+/* OpenSheaf site styles, on top of the website's notes-base.css and
+   theme.css (whose variables they use). */
+
+:root {
+    --os-verbatim: var(--code-purple);
+    --os-code-bg: #f1ede6;
+    --os-code-border: #d9d2c7;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --os-code-bg: #2c3138;
+        --os-code-border: #454b51;
+    }
+}
+:root[data-theme="dark"] {
+    --os-code-bg: #2c3138;
+    --os-code-border: #454b51;
+}
+
+/* Inline verbatim text (file names, JSON fields and values): the theme's
+   code purple, distinct from the text, the titles and the links. */
+tt.verbatim {
+    color: var(--os-verbatim);
+}
+
+/* Code blocks. TeXmacs wraps them in div.tmweb-code, which the site's
+   syntax highlighter (highlight.js) also styles: set the background on the
+   wrapper, with a selector stronger than the highlighter's .hljs. */
+div.tmweb-code, div.tmweb-code.hljs {
+    background: var(--os-code-bg);
+    border: 1px solid var(--os-code-border);
+    border-radius: 4px;
+    padding: 0.6em 0.9em;
+    margin: 0.6em 0;
+    overflow-x: auto;
+}
+div.tmweb-code pre.verbatim {
+    background: transparent;
+    color: var(--color-text);
+    margin: 0;
+    padding: 0;
+}

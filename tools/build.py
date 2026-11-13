@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-"""Export the OpenSheaf pages (index.tm, the specification) to HTML.
+"""Build the OpenSheaf pages from their Markdown sources.
+
+README.md becomes the home page (index.tm, index.html), the specification
+opensheaf-specification-0.1.md its own page, and FAQ.md the page faq.html.
+tools/md2tm.py converts each Markdown file to TeXmacs, with links between the
+Markdown files turned into links between the pages, and TeXmacs exports each
+document to HTML. The .tm and .html files are generated: edit the Markdown
+files only.
 
 Runs TeXmacs headless with a private profile in texmacs_home/ (not
 committed), whose plugins are those linked in ~/.TeXmacs/plugins: the
 `notes` and `max-html` plugins of the author's website repository.
 
-    tools/build.py            export index.tm to index.html
+    tools/build.py            Markdown -> TeXmacs -> HTML, for every page
     tools/build.py --pdf F    also write a PDF of the specification to F
 """
 
@@ -21,7 +28,14 @@ ROOT = Path(__file__).resolve().parents[1]
 TM_HOME = ROOT / "texmacs_home"
 USER_PLUGINS = Path(os.environ.get("TEXMACS_PLUGINS", Path.home() / ".TeXmacs/plugins"))
 TM = os.environ.get("TEXMACS_BIN", "/Applications/TeXmacs.app/Contents/MacOS/TeXmacs")
-DOCS = ["index.tm"]
+# Markdown sources and the TeXmacs documents generated from them; TeXmacs
+# exports each document to HTML next to it.
+PAGES = {
+    "README.md": "index.tm",                                        # home page
+    "opensheaf-specification-0.1.md": "opensheaf-specification-0.1.tm",
+    "FAQ.md": "faq.tm",
+}
+SPEC = "opensheaf-specification-0.1.md"
 
 
 def run_texmacs(calls):
@@ -56,11 +70,18 @@ def main():
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--pdf")
     args = p.parse_args()
+    maps = []
+    for md, tm in PAGES.items():
+        maps += ["--map", f"{md}={tm}"]
+    for md, tm in PAGES.items():
+        subprocess.run([sys.executable, str(ROOT / "tools" / "md2tm.py"), *maps,
+                        str(ROOT / md), str(ROOT / tm)], check=True)
     scratch = Path(tempfile.mkdtemp())
     calls = []
-    for name in DOCS:
+    for name in PAGES.values():
         doc = ROOT / name
-        pdf = Path(args.pdf).resolve() if args.pdf and name == "index.tm" else scratch / "x.pdf"
+        pdf = (Path(args.pdf).resolve() if args.pdf and name == PAGES[SPEC]
+               else scratch / (doc.stem + ".pdf"))
         # a PDF export typesets the document first (references, links)
         calls.append(f'(let ((u (string->url "{doc}"))) (load-buffer u) (switch-to-buffer u)'
                      f' (export-buffer-main u (string->url "{pdf}") "pdf" (list :overwrite))'
@@ -68,7 +89,7 @@ def main():
                      f' "html" (list :overwrite)))')
     run_texmacs(" ".join(calls))
     shutil.rmtree(scratch, ignore_errors=True)
-    print("exported: " + ", ".join(d.replace(".tm", ".html") for d in DOCS))
+    print("exported: " + ", ".join(t.replace(".tm", ".html") for t in PAGES.values()))
 
 
 if __name__ == "__main__":

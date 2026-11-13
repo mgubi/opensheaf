@@ -1,0 +1,14 @@
+The contents of this repository are licensed as follows.
+
+- The text of the specification (opensheaf-specification-0.1.md), the FAQ
+  (FAQ.md), the use cases (USE-CASES.md), this README and the pages of the
+  site generated from them: Creative Commons Attribution-ShareAlike 4.0
+  International (CC BY-SA 4.0), LICENSES/CC-BY-SA-4.0.txt.
+- The JSON Schemas (schemas/): CC0 1.0 Universal, dedicated to the public
+  domain, LICENSES/CC0-1.0.txt.
+- The tools and style files (tools/, notes-meta.ts, resources/ except
+  resources/fonts/ and resources/brand/): GNU General Public License, version
+  3 or later (GPL-3.0-or-later), LICENSES/GPL-3.0-or-later.txt.
+- The fonts (resources/fonts/) keep their own licence, the SIL Open Font
+  License, given with them; the lettering of the logo is outlined from Geist
+  Serif (resources/brand/GeistSerif-LICENSE.txt).

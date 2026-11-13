@@ -76,7 +76,9 @@
         <p>
           <strong>Sources, not only PDFs.</strong> Each deposit keeps the
           sources of a document together with its PDF, so that the work can be
-          read, checked and reused in the form in which it was written.
+          read, checked and reused in the form in which it was written; when
+          the sources are lost, the deposit says so, and they can be added
+          later.
         </p>
       </li>
       <li>
@@ -97,13 +99,14 @@
       </li>
       <li>
         <p>
-          <strong>Collections that compose.</strong> Archives keep documents
-          whole, every version, impartially; selections (a journal, a digest,
-          a review journal, a reading list) vet particular versions, and
-          change only by an act of their curator. Both are versioned objects
-          pinning their members by digest, also across archives, and compose
-          without copying, as local pieces glue into a sheaf. The <a href="use-cases.html">use
-          cases</a> show how authors, archives and selections use them.
+          <strong>Collections that compose.</strong> Archive collections keep
+          documents whole, every version, impartially; selections (a journal,
+          a digest, a review journal, a reading list) vet particular versions,
+          and change only by an act of their curator. Both are versioned
+          objects pinning their members by digest, also across archives, and
+          compose without copying, as local pieces glue into a sheaf. The <a
+          href="use-cases.html">use cases</a> show how authors, archives and selections use
+          them.
         </p>
       </li>
       <li>
@@ -186,7 +189,9 @@
           program</a> that explains it along the specification): deposits
           documents as OCFL objects with DataCite and OpenSheaf metadata (any
           source with its PDF, or TeXmacs sources typeset by the archive),
-          keeps document versions, history and collections, writes the
+          keeps document versions and their history, notices and withdrawals,
+          keeps archive collections and selections across archives, mirrors
+          objects and keeps accepted copies of vetted versions, writes the
           discovery document and a website with landing pages, deposits on
           Zenodo, imports from arXiv, and verifies an archive (also with the
           JSON Schemas and the <tt class="verbatim">ocfl-py</tt> validator).
@@ -196,7 +201,8 @@
         <p>
           <strong>Templates:</strong> <a href="https://github.com/opensheaf/archive-template">archive-template</a>, a ready
           repository for your own archive of papers, and <a href="https://github.com/opensheaf/collection-template">collection-template</a>,
-          for a curated collection of papers from any archive; both are
+          for a curated collection of papers from any archive (a reading list,
+          written as a selection, or an archive collection); both are
           published with GitHub Pages (&quot;Use this template&quot;, then <tt
           class="verbatim">osheaf init</tt>), and both are testing grounds that run
           every workflow of the tools on every push.
@@ -227,6 +233,12 @@
       </li>
       <li>
         <p>
+          <a href="use-cases.html"><tt class="verbatim">USE-CASES.md</tt></a>: how the specification
+          adapts to authors, archives and selections (non-normative).
+        </p>
+      </li>
+      <li>
+        <p>
           <a href="https://github.com/opensheaf/opensheaf.github.io/blob/main/README.md"><tt class="verbatim">README.md</tt></a>: this text, also the home
           page of the site.
         </p>
@@ -246,8 +258,10 @@
           <a href="https://github.com/opensheaf/opensheaf.github.io/blob/main/index.tm"><tt class="verbatim">index.tm</tt></a>/<a href="https://github.com/opensheaf/opensheaf.github.io/blob/main/index.html"><tt class="verbatim">index.html</tt></a>,
           <a href="https://github.com/opensheaf/opensheaf.github.io/blob/main/opensheaf-specification-0.1.tm"><tt class="verbatim">opensheaf-specification-0.1.tm</tt></a>/<a href="https://github.com/opensheaf/opensheaf.github.io/blob/main/opensheaf-specification-0.1.html"><tt
           class="verbatim">.html</tt></a>, <a href="https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.tm"><tt class="verbatim">faq.tm</tt></a>/<a href="https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.html"><tt
-          class="verbatim">faq.html</tt></a>: the pages of the site, generated from the
-          Markdown files (for TeXmacs and for the web); do not edit them.
+          class="verbatim">faq.html</tt></a>, <a href="https://github.com/opensheaf/opensheaf.github.io/blob/main/use-cases.tm"><tt class="verbatim">use-cases.tm</tt></a>/<a
+          href="https://github.com/opensheaf/opensheaf.github.io/blob/main/use-cases.html"><tt class="verbatim">use-cases.html</tt></a>: the pages of the site,
+          generated from the Markdown files (for TeXmacs and for the web); do
+          not edit them.
         </p>
       </li>
       <li>
@@ -286,19 +300,26 @@
           <tt class="verbatim">opensheaf.org</tt>.
         </p>
       </li>
+      <li>
+        <p>
+          <a href="https://github.com/opensheaf/opensheaf.github.io/blob/main/LICENSE"><tt class="verbatim">LICENSE</tt></a> and <a href="https://github.com/opensheaf/opensheaf.github.io/tree/main/LICENSES"><tt class="verbatim">LICENSES/</tt></a>:
+          which licence covers what, and the texts of the licences.
+        </p>
+      </li>
     </ul>
     <h2 id="auto-6">Licence<span style="margin-left: 1em"></span></h2>
     <p>
-      The text of the specification and of the FAQ is licensed under the <a
-      href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International
-      licence</a> (CC BY-SA 4.0): it may be copied and adapted with
-      attribution, and adapted versions must be shared under the same licence.
-      The JSON Schemas in <a href="https://github.com/opensheaf/opensheaf.github.io/tree/main/schemas"><tt class="verbatim">schemas/</tt></a> are dedicated
-      to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>, so that they can be
-      embedded in any software. The tools and style files are licensed under
-      the GNU General Public License, version 3 or later. The fonts in <a
-      href="https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/fonts"><tt class="verbatim">resources/fonts/</tt></a> keep their own licence (SIL
-      Open Font License).
+      The text of the specification, of the FAQ and of the use cases is
+      licensed under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0
+      International licence</a> (CC BY-SA 4.0): it may be copied and adapted
+      with attribution, and adapted versions must be shared under the same
+      licence. The JSON Schemas in <a href="https://github.com/opensheaf/opensheaf.github.io/tree/main/schemas"><tt class="verbatim">schemas/</tt></a> are
+      dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>, so that they
+      can be embedded in any software. The tools and style files are licensed
+      under the GNU General Public License, version 3 or later. The fonts in
+      <a href="https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/fonts"><tt class="verbatim">resources/fonts/</tt></a> keep their own licence
+      (SIL Open Font License). The file <a href="https://github.com/opensheaf/opensheaf.github.io/blob/main/LICENSE"><tt class="verbatim">LICENSE</tt></a>
+      says which licence covers what; the texts are in <a href="https://github.com/opensheaf/opensheaf.github.io/tree/main/LICENSES"><tt class="verbatim">LICENSES/</tt></a>.
     </p>
     <p>
       <strong>Editor:</strong> <a href="https://mgubi.org/docs/main.html">Massimiliano Gubinelli</a>

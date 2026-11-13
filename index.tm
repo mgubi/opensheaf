@@ -26,13 +26,13 @@
   <\itemize>
     <item><strong|Archives kept by their authors.> Anyone (a person, a group, an institution) can keep an archive of their documents as plain files on a static website. No server software, no central service, no permission needed.
 
-    <item><strong|Sources, not only PDFs.> Each deposit keeps the sources of a document together with its PDF, so that the work can be read, checked and reused in the form in which it was written.
+    <item><strong|Sources, not only PDFs.> Each deposit keeps the sources of a document together with its PDF, so that the work can be read, checked and reused in the form in which it was written; when the sources are lost, the deposit says so, and they can be added later.
 
     <item><strong|Fixed, verifiable versions.> Every version of every document is fixed by content hashes and never changes once deposited. Corrections are new versions, and anyone can check the whole history from the files alone.
 
     <item><strong|Standards, not inventions.> Storage follows the Oxford Common File Layout (OCFL), used by research libraries for long-term preservation; description follows the DataCite metadata of DOIs. OpenSheaf only adds what these leave open.
 
-    <item><strong|Collections that compose.> Archives keep documents whole, every version, impartially; selections (a journal, a digest, a review journal, a reading list) vet particular versions, and change only by an act of their curator. Both are versioned objects pinning their members by digest, also across archives, and compose without copying, as local pieces glue into a sheaf. The <hlink|use cases|use-cases.tm> show how authors, archives and selections use them.
+    <item><strong|Collections that compose.> Archive collections keep documents whole, every version, impartially; selections (a journal, a digest, a review journal, a reading list) vet particular versions, and change only by an act of their curator. Both are versioned objects pinning their members by digest, also across archives, and compose without copying, as local pieces glue into a sheaf. The <hlink|use cases|use-cases.tm> show how authors, archives and selections use them.
 
     <item><strong|Compatible with existing infrastructure.> Documents can also be on arXiv, get DOIs and be archived on Zenodo, and be found by Google Scholar; none of these is required.
   </itemize>
@@ -66,9 +66,9 @@
       <item><hlink|Papers of Massimiliano Gubinelli|https://mgubi.org/papers/> (repository <hlink|mgubi/papers|https://github.com/mgubi/papers>): the first OpenSheaf archive, following version 0.1, with TeXmacs sources, HTML versions and PDFs (profile <verbatim|texmacs>).
     </itemize>
 
-    <item><strong|Tools:> <hlink|opensheaf-py|https://github.com/opensheaf/opensheaf-py> (Python, the <verbatim|osheaf> command, written as a <hlink|literate program|https://opensheaf.org/opensheaf-py/> that explains it along the specification): deposits documents as OCFL objects with DataCite and OpenSheaf metadata (any source with its PDF, or TeXmacs sources typeset by the archive), keeps document versions, history and collections, writes the discovery document and a website with landing pages, deposits on Zenodo, imports from arXiv, and verifies an archive (also with the JSON Schemas and the <verbatim|ocfl-py> validator).
+    <item><strong|Tools:> <hlink|opensheaf-py|https://github.com/opensheaf/opensheaf-py> (Python, the <verbatim|osheaf> command, written as a <hlink|literate program|https://opensheaf.org/opensheaf-py/> that explains it along the specification): deposits documents as OCFL objects with DataCite and OpenSheaf metadata (any source with its PDF, or TeXmacs sources typeset by the archive), keeps document versions and their history, notices and withdrawals, keeps archive collections and selections across archives, mirrors objects and keeps accepted copies of vetted versions, writes the discovery document and a website with landing pages, deposits on Zenodo, imports from arXiv, and verifies an archive (also with the JSON Schemas and the <verbatim|ocfl-py> validator).
 
-    <item><strong|Templates:> <hlink|archive-template|https://github.com/opensheaf/archive-template>, a ready repository for your own archive of papers, and <hlink|collection-template|https://github.com/opensheaf/collection-template>, for a curated collection of papers from any archive; both are published with GitHub Pages ("Use this template", then <verbatim|osheaf init>), and both are testing grounds that run every workflow of the tools on every push.
+    <item><strong|Templates:> <hlink|archive-template|https://github.com/opensheaf/archive-template>, a ready repository for your own archive of papers, and <hlink|collection-template|https://github.com/opensheaf/collection-template>, for a curated collection of papers from any archive (a reading list, written as a selection, or an archive collection); both are published with GitHub Pages ("Use this template", then <verbatim|osheaf init>), and both are testing grounds that run every workflow of the tools on every push.
 
     <item><strong|Test data:> <hlink|example-papers|https://github.com/opensheaf/example-papers>, papers to deposit (invented ones, TeXmacs papers and slides, real openly licensed preprints from arXiv and slides from Zenodo) with their metadata.
   </itemize>
@@ -80,11 +80,13 @@
 
     <item><hlink|<verbatim|FAQ.md>|faq.tm>: answers to common questions about the design.
 
+    <item><hlink|<verbatim|USE-CASES.md>|use-cases.tm>: how the specification adapts to authors, archives and selections (non-normative).
+
     <item><hlink|<verbatim|README.md>|https://github.com/opensheaf/opensheaf.github.io/blob/main/README.md>: this text, also the home page of the site.
 
     <item><hlink|<verbatim|schemas/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/schemas>: the JSON Schemas of the files defined by the specification, also published at <verbatim|https://opensheaf.org/schemas/>: <hlink|<verbatim|opensheaf-archive-0.1.schema.json>|https://opensheaf.org/schemas/opensheaf-archive-0.1.schema.json> for <verbatim|opensheaf.json>, <hlink|<verbatim|opensheaf-object-0.1.schema.json>|https://opensheaf.org/schemas/opensheaf-object-0.1.schema.json> for <verbatim|object.json> and <hlink|<verbatim|opensheaf-collection-0.1.schema.json>|https://opensheaf.org/schemas/opensheaf-collection-0.1.schema.json> for <verbatim|members.json>.
 
-    <item><hlink|<verbatim|index.tm>|https://github.com/opensheaf/opensheaf.github.io/blob/main/index.tm>/<hlink|<verbatim|index.html>|https://github.com/opensheaf/opensheaf.github.io/blob/main/index.html>, <hlink|<verbatim|opensheaf-specification-0.1.tm>|https://github.com/opensheaf/opensheaf.github.io/blob/main/opensheaf-specification-0.1.tm>/<hlink|<verbatim|.html>|https://github.com/opensheaf/opensheaf.github.io/blob/main/opensheaf-specification-0.1.html>, <hlink|<verbatim|faq.tm>|https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.tm>/<hlink|<verbatim|faq.html>|https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.html>: the pages of the site, generated from the Markdown files (for TeXmacs and for the web); do not edit them.
+    <item><hlink|<verbatim|index.tm>|https://github.com/opensheaf/opensheaf.github.io/blob/main/index.tm>/<hlink|<verbatim|index.html>|https://github.com/opensheaf/opensheaf.github.io/blob/main/index.html>, <hlink|<verbatim|opensheaf-specification-0.1.tm>|https://github.com/opensheaf/opensheaf.github.io/blob/main/opensheaf-specification-0.1.tm>/<hlink|<verbatim|.html>|https://github.com/opensheaf/opensheaf.github.io/blob/main/opensheaf-specification-0.1.html>, <hlink|<verbatim|faq.tm>|https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.tm>/<hlink|<verbatim|faq.html>|https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.html>, <hlink|<verbatim|use-cases.tm>|https://github.com/opensheaf/opensheaf.github.io/blob/main/use-cases.tm>/<hlink|<verbatim|use-cases.html>|https://github.com/opensheaf/opensheaf.github.io/blob/main/use-cases.html>: the pages of the site, generated from the Markdown files (for TeXmacs and for the web); do not edit them.
 
     <item><hlink|<verbatim|notes-meta.ts>|https://github.com/opensheaf/opensheaf.github.io/blob/main/notes-meta.ts>: the TeXmacs style package of the page; <hlink|<verbatim|resources/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/resources>: its stylesheets, scripts and fonts.
 
@@ -95,11 +97,13 @@
     <item><hlink|<verbatim|.agents/skills/opensheaf-style/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/.agents/skills/opensheaf-style>: the conventions of the site's style and build, for people and agents.
 
     <item><hlink|<verbatim|CNAME>|https://github.com/opensheaf/opensheaf.github.io/blob/main/CNAME>: the GitHub Pages custom domain, <verbatim|opensheaf.org>.
+
+    <item><hlink|<verbatim|LICENSE>|https://github.com/opensheaf/opensheaf.github.io/blob/main/LICENSE> and <hlink|<verbatim|LICENSES/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/LICENSES>: which licence covers what, and the texts of the licences.
   </itemize>
 
   <section*|Licence>
 
-  The text of the specification and of the FAQ is licensed under the <hlink|Creative Commons Attribution-ShareAlike 4.0 International licence|https://creativecommons.org/licenses/by-sa/4.0/> (CC BY-SA 4.0): it may be copied and adapted with attribution, and adapted versions must be shared under the same licence. The JSON Schemas in <hlink|<verbatim|schemas/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/schemas> are dedicated to the public domain under <hlink|CC0 1.0|https://creativecommons.org/publicdomain/zero/1.0/>, so that they can be embedded in any software. The tools and style files are licensed under the GNU General Public License, version 3 or later. The fonts in <hlink|<verbatim|resources/fonts/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/fonts> keep their own licence (SIL Open Font License).
+  The text of the specification, of the FAQ and of the use cases is licensed under the <hlink|Creative Commons Attribution-ShareAlike 4.0 International licence|https://creativecommons.org/licenses/by-sa/4.0/> (CC BY-SA 4.0): it may be copied and adapted with attribution, and adapted versions must be shared under the same licence. The JSON Schemas in <hlink|<verbatim|schemas/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/schemas> are dedicated to the public domain under <hlink|CC0 1.0|https://creativecommons.org/publicdomain/zero/1.0/>, so that they can be embedded in any software. The tools and style files are licensed under the GNU General Public License, version 3 or later. The fonts in <hlink|<verbatim|resources/fonts/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/fonts> keep their own licence (SIL Open Font License). The file <hlink|<verbatim|LICENSE>|https://github.com/opensheaf/opensheaf.github.io/blob/main/LICENSE> says which licence covers what; the texts are in <hlink|<verbatim|LICENSES/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/LICENSES>.
 
   <strong|Editor:> <hlink|Massimiliano Gubinelli|https://mgubi.org/docs/main.html> (Mathematical Institute, University of Oxford).
 

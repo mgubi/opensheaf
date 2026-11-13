@@ -37,7 +37,8 @@ OpenSheaf proposes a lean common format instead:
   needed.
 - **Sources, not only PDFs.** Each deposit keeps the sources of a document
   together with its PDF, so that the work can be read, checked and reused
-  in the form in which it was written.
+  in the form in which it was written; when the sources are lost, the
+  deposit says so, and they can be added later.
 - **Fixed, verifiable versions.** Every version of every document is fixed by
   content hashes and never changes once deposited. Corrections are new
   versions, and anyone can check the whole history from the files alone.
@@ -45,11 +46,11 @@ OpenSheaf proposes a lean common format instead:
   Layout (OCFL), used by research libraries for long-term preservation;
   description follows the DataCite metadata of DOIs. OpenSheaf only adds what
   these leave open.
-- **Collections that compose.** Archives keep documents whole, every
-  version, impartially; selections (a journal, a digest, a review journal, a
-  reading list) vet particular versions, and change only by an act of their
-  curator. Both are versioned objects pinning their members by digest, also
-  across archives, and compose without copying, as local pieces glue into a
+- **Collections that compose.** Archive collections keep documents whole,
+  every version, impartially; selections (a journal, a digest, a review
+  journal, a reading list) vet particular versions, and change only by an act
+  of their curator. Both are versioned objects pinning their members by
+  digest, also across archives, and compose without copying, as local pieces glue into a
   sheaf. The [use cases](USE-CASES.md) show how authors, archives and
   selections use them.
 - **Compatible with existing infrastructure.** Documents can also be on
@@ -97,14 +98,17 @@ on GitHub, and archives made with them.
   [literate program](https://opensheaf.org/opensheaf-py/) that explains it
   along the specification): deposits documents as OCFL objects with
   DataCite and OpenSheaf metadata (any source with its PDF, or TeXmacs
-  sources typeset by the archive), keeps document versions, history and
-  collections, writes the discovery document and a website with landing
-  pages, deposits on Zenodo, imports from arXiv, and verifies an archive
-  (also with the JSON Schemas and the `ocfl-py` validator).
+  sources typeset by the archive), keeps document versions and their
+  history, notices and withdrawals, keeps archive collections and selections
+  across archives, mirrors objects and keeps accepted copies of vetted
+  versions, writes the discovery document and a website with landing pages,
+  deposits on Zenodo, imports from arXiv, and verifies an archive (also with
+  the JSON Schemas and the `ocfl-py` validator).
 - **Templates:** [archive-template](https://github.com/opensheaf/archive-template),
   a ready repository for your own archive of papers, and
   [collection-template](https://github.com/opensheaf/collection-template), for
-  a curated collection of papers from any archive; both are published with
+  a curated collection of papers from any archive (a reading list, written as
+  a selection, or an archive collection); both are published with
   GitHub Pages ("Use this template", then `osheaf init`), and both are testing
   grounds that run every workflow of the tools on every push.
 - **Test data:** [example-papers](https://github.com/opensheaf/example-papers),
@@ -116,6 +120,8 @@ on GitHub, and archives made with them.
 - [`opensheaf-specification-0.1.md`](opensheaf-specification-0.1.md): the
   specification, in Markdown, its only source.
 - [`FAQ.md`](FAQ.md): answers to common questions about the design.
+- [`USE-CASES.md`](USE-CASES.md): how the specification adapts to authors,
+  archives and selections (non-normative).
 - [`README.md`](https://github.com/opensheaf/opensheaf.github.io/blob/main/README.md): this text, also the home page of the site.
 - [`schemas/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/schemas): the JSON Schemas of the files defined by the
   specification, also published at `https://opensheaf.org/schemas/`:
@@ -127,7 +133,8 @@ on GitHub, and archives made with them.
   for `members.json`.
 - [`index.tm`](https://github.com/opensheaf/opensheaf.github.io/blob/main/index.tm)/[`index.html`](https://github.com/opensheaf/opensheaf.github.io/blob/main/index.html),
   [`opensheaf-specification-0.1.tm`](https://github.com/opensheaf/opensheaf.github.io/blob/main/opensheaf-specification-0.1.tm)/[`.html`](https://github.com/opensheaf/opensheaf.github.io/blob/main/opensheaf-specification-0.1.html),
-  [`faq.tm`](https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.tm)/[`faq.html`](https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.html): the pages of the site,
+  [`faq.tm`](https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.tm)/[`faq.html`](https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.html),
+  [`use-cases.tm`](https://github.com/opensheaf/opensheaf.github.io/blob/main/use-cases.tm)/[`use-cases.html`](https://github.com/opensheaf/opensheaf.github.io/blob/main/use-cases.html): the pages of the site,
   generated from the Markdown files (for TeXmacs and for the web); do not
   edit them.
 - [`notes-meta.ts`](https://github.com/opensheaf/opensheaf.github.io/blob/main/notes-meta.ts): the TeXmacs style package of the
@@ -144,10 +151,13 @@ on GitHub, and archives made with them.
 - [`.agents/skills/opensheaf-style/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/.agents/skills/opensheaf-style):
   the conventions of the site's style and build, for people and agents.
 - [`CNAME`](https://github.com/opensheaf/opensheaf.github.io/blob/main/CNAME): the GitHub Pages custom domain, `opensheaf.org`.
+- [`LICENSE`](https://github.com/opensheaf/opensheaf.github.io/blob/main/LICENSE) and
+  [`LICENSES/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/LICENSES): which licence
+  covers what, and the texts of the licences.
 
 ## Licence
 
-The text of the specification and of the FAQ is licensed under the
+The text of the specification, of the FAQ and of the use cases is licensed under the
 [Creative Commons Attribution-ShareAlike 4.0 International licence](https://creativecommons.org/licenses/by-sa/4.0/)
 (CC BY-SA 4.0): it may be copied and adapted with attribution, and adapted
 versions must be shared under the same licence. The JSON Schemas in
@@ -155,7 +165,10 @@ versions must be shared under the same licence. The JSON Schemas in
 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), so that they can
 be embedded in any software. The tools and style files are licensed under the GNU
 General Public License, version 3 or later. The fonts in [`resources/fonts/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/fonts)
-keep their own licence (SIL Open Font License).
+keep their own licence (SIL Open Font License). The file
+[`LICENSE`](https://github.com/opensheaf/opensheaf.github.io/blob/main/LICENSE) says which licence covers
+what; the texts are in
+[`LICENSES/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/LICENSES).
 
 **Editor:** [Massimiliano Gubinelli](https://mgubi.org/docs/main.html)
 (Mathematical Institute, University of Oxford).

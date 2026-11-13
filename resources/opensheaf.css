@@ -4,68 +4,68 @@
 /* The look of notes-meta.ts on the web, where the HTML export leaves fonts
    and colours to the stylesheets: the base stylesheet's column, margins and
    spacing, headings in the serif of the text in bold (font sizes are
-   those of the base stylesheet), and a quiet,
-   bookish palette: charcoal ink on warm paper, one muted navy accent for
-   links, code on a slightly cooler grey. Every pair meets WCAG AA (text
+   those of the base stylesheet), and a palette
+   on a single hue (blue, 213 degrees): shades from a lightly tinted paper to
+   deep ink, for text, headings, links, bullets and code. Every pair meets WCAG AA (text
    about 13:1, links about 8:1, secondary text at least 5:1). */
 h1, h2, h3, h4, h5, h6 { font-weight: 700; }
 
 :root {
     --title-family: var(--main-family);
-    --color-background: #fbfaf7;
-    --color-surface: #f2f1ed;
-    --color-border: #dfdcd4;
-    --color-text: #2a2b2e;
-    --color-title: #22405e;
-    --color-link: #2f5379;
-    --os-visited: #4f4a76;
-    --color-muted: #6a6d73;
-    --color-secondary: #6a6d73;
-    --os-code-bg: #f2f1ed;
-    --os-code-border: #dfdcd4;
-    --os-heading: #22405e;
-    --os-heading-2: #30587d;
-    --os-marker: #a35b33;
-    --os-rule: #b06f45;
-    --os-chip: #efede8;
+    --color-background: #f8fafc;
+    --color-surface: #edf1f5;
+    --color-border: #cfd8e2;
+    --color-text: #212a36;
+    --color-title: #1c3554;
+    --color-link: #265082;
+    --os-visited: #476385;
+    --color-muted: #5e6a78;
+    --color-secondary: #5e6a78;
+    --os-code-bg: #eef2f6;
+    --os-code-border: #cfd8e2;
+    --os-heading: #1c3554;
+    --os-heading-2: #2d4e76;
+    --os-marker: #4375b1;
+    --os-rule: #5e88ba;
+    --os-chip: #e9eef3;
 }
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-        --color-background: #1a1c20;
-        --color-surface: #23262b;
-        --color-border: #363a41;
-        --color-text: #dddbd5;
-        --color-title: #b3c8e2;
-        --color-link: #9bb7d8;
-        --os-visited: #b4acd3;
-        --color-muted: #9b9fa6;
-        --color-secondary: #9b9fa6;
-        --os-code-bg: #23262b;
-        --os-code-border: #363a41;
-        --os-heading: #b3c8e2;
-        --os-heading-2: #9fb9d8;
-        --os-marker: #dd9a72;
-        --os-rule: #b9784f;
-        --os-chip: #272a30;
+        --color-background: #151b23;
+        --color-surface: #1f2730;
+        --color-border: #343f4b;
+        --color-text: #d4dbe2;
+        --color-title: #b8cfea;
+        --color-link: #96bbe9;
+        --os-visited: #9fb5d1;
+        --color-muted: #929daa;
+        --color-secondary: #929daa;
+        --os-code-bg: #1e252f;
+        --os-code-border: #343f4b;
+        --os-heading: #b8cfea;
+        --os-heading-2: #a3bcdc;
+        --os-marker: #79a4d8;
+        --os-rule: #5480b6;
+        --os-chip: #212933;
     }
 }
 :root[data-theme="dark"] {
-    --color-background: #1a1c20;
-    --color-surface: #23262b;
-    --color-border: #363a41;
-    --color-text: #dddbd5;
-    --color-title: #b3c8e2;
-    --color-link: #9bb7d8;
-    --os-visited: #b4acd3;
-    --color-muted: #9b9fa6;
-    --color-secondary: #9b9fa6;
-    --os-code-bg: #23262b;
-    --os-code-border: #363a41;
-    --os-heading: #b3c8e2;
-    --os-heading-2: #9fb9d8;
-    --os-marker: #dd9a72;
-    --os-rule: #b9784f;
-    --os-chip: #272a30;
+    --color-background: #151b23;
+    --color-surface: #1f2730;
+    --color-border: #343f4b;
+    --color-text: #d4dbe2;
+    --color-title: #b8cfea;
+    --color-link: #96bbe9;
+    --os-visited: #9fb5d1;
+    --color-muted: #929daa;
+    --color-secondary: #929daa;
+    --os-code-bg: #1e252f;
+    --os-code-border: #343f4b;
+    --os-heading: #b8cfea;
+    --os-heading-2: #a3bcdc;
+    --os-marker: #79a4d8;
+    --os-rule: #5480b6;
+    --os-chip: #212933;
 }
 @media print {
     :root, :root[data-theme] {
@@ -151,9 +151,9 @@ div.tmweb-code pre.verbatim {
     white-space: nowrap;
 }
 
-/* Structure in colour, two quiet accents: deep blue for headings and the
-   run-in bold labels of the specification ("Numbering."), warm terracotta
-   for list bullets and the rule beside the abstract. Links keep their own
+/* Structure in shades of the same blue: deep for headings and the run-in
+   bold labels of the specification ("Numbering."), medium for list bullets
+   and the rule beside the abstract. Links keep their own
    navy and their underline. */
 h1, h2 { color: var(--os-heading); }
 h3, h4, h5, h6 { color: var(--os-heading-2); }

@@ -23,19 +23,16 @@ description: The look and brand of the OpenSheaf site and documents. Use before 
 ## The look
 
 - Serif throughout; headings in the serif of the text, bold.
-- A quiet, bookish palette, every pair meeting WCAG AA: charcoal text
-  `#2a2b2e` and headings `#1f2023` on warm paper `#fbfaf7`; one accent, a
-  muted navy `#2f5379` for links (visited `#4f4a76`), always underlined;
-  secondary text `#6a6d73`; code on `#f2f1ed` with a `#dfdcd4` rule.
-  Structure in two accents: headings and bold run-in labels deep blue
-  `#22405e` (smaller headings `#30587d`); list bullets terracotta `#a35b33`
-  and the abstract's left rule `#b06f45`; inline verbatim on a faint chip
-  `#efede8`. Dark
-  theme: ivory `#dddbd5` and `#ebe9e3` on `#1a1c20`, links `#9bb7d8`
-  (visited `#b4acd3`), secondary `#9b9fa6`, code on `#23262b` with a
-  `#363a41` rule, headings `#b3c8e2` / `#9fb9d8`, bullets `#dd9a72`, rule
-  `#b9784f`, chip `#272a30`. Print: black on white. No other colours; code has no
-  syntax colours.
+- A palette on a single hue (blue, 213°), every pair meeting WCAG AA: text
+  `#212a36` on tinted paper `#f8fafc`; headings and bold run-in labels
+  `#1c3554` (smaller headings `#2d4e76`); links `#265082`, always underlined
+  (visited `#476385`); secondary text `#5e6a78`; list bullets `#4375b1` and
+  the abstract's left rule `#5e88ba`; code on `#eef2f6` with a `#cfd8e2` rule;
+  inline verbatim on a chip `#e9eef3`. Dark theme: text `#d4dbe2` on
+  `#151b23`, headings `#b8cfea` / `#a3bcdc`, links `#96bbe9` (visited
+  `#9fb5d1`), secondary `#929daa`, bullets `#79a4d8`, rule `#5480b6`, code on
+  `#1e252f` with a `#343f4b` rule, chip `#212933`. Print: black on white. No
+  other hues; code has no syntax colours.
 - The base stylesheet's column, margins, spacing and font sizes (18px root).
 - The theme control, one button (a half-lit circle) floating at the top right
   corner of the window, switches

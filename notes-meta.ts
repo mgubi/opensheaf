@@ -34,26 +34,26 @@
 
   <\active*>
     <\src-comment>
-      The OpenSheaf look: the serif of the text for the headings, in bold, charcoal ink on warm paper, and a muted navy
-      for links.
+      The OpenSheaf look: the serif of the text for the headings, in bold, and a palette on a single hue: shades of
+      blue from a tinted paper to deep ink.
     </src-comment>
   </active*>
 
-  <assign|notes-heading|<macro|body|<with|font-family|rm|font-series|bold|color|#22405e|<arg|body>>>>
+  <assign|notes-heading|<macro|body|<with|font-family|rm|font-series|bold|color|#1c3554|<arg|body>>>>
 
-  <assign|notes-title-color|#22405e>
+  <assign|notes-title-color|#1c3554>
 
-  <assign|notes-text-color|#2a2b2e>
+  <assign|notes-text-color|#212a36>
 
-  <assign|notes-background-color|#fbfaf7>
+  <assign|notes-background-color|#f8fafc>
 
-  <assign|color|#2a2b2e>
+  <assign|color|#212a36>
 
-  <assign|bg-color|#fbfaf7>
+  <assign|bg-color|#f8fafc>
 
-  <assign|locus-color|#2f5379>
+  <assign|locus-color|#265082>
 
-  <assign|visited-color|#4f4a76>
+  <assign|visited-color|#476385>
 
   <assign|html-title|OpenSheaf>
 

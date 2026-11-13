@@ -181,8 +181,9 @@
       <li>
         <p>
           <strong>Description-only version:</strong> an object version that
-          keeps the document version: it changes only the description, the
-          state or the notices of the object.
+          holds an existing document version with its files unchanged,
+          changing only the description, the state or the notices of the
+          object (section 7.3).
         </p>
       </li>
       <li>
@@ -537,21 +538,37 @@
     <p>
       <strong>New versions.</strong> A new document version number is assigned
       exactly when files of the document's own (sources, renditions, change
-      note) that were not deposited before are added. An object version
-      holding the same sources, renditions and change note as an earlier
-      document version keeps its number. A description-only version keeps the
-      document version. A document version recorded without sources (section
-      9, <tt class="verbatim">sourcesMissing</tt>) MAY be completed later, keeping its
-      number: the completing object version adds the sources, and MAY add
-      renditions produced from them (for instance a PDF typeset from the added
-      sources, beside the one received), but changes or removes no file of the
-      version; it removes <tt class="verbatim">sourcesMissing</tt> when the sources are
-      complete, after which the version is fixed like any other. A version
-      that was not public at the time, such as the manuscript submitted to a
-      journal, deposited later, is a document version like any other. A
-      version published by someone else, such as the journal's version of
-      record, is not a document version of the author's object: it is linked
-      by a relation (section 8.1).
+      note) that were not deposited before are added, except when a version
+      without sources is completed (below). An object version holding the same
+      sources, renditions and change note as an earlier document version keeps
+      its number.
+    </p>
+    <p>
+      <strong>Description-only versions.</strong> A description-only version
+      holds an existing document version, with its files unchanged, and
+      changes only its description (<tt class="verbatim">datacite.json</tt>, such as a
+      DOI, a stage or a link to the published article), the state of the
+      object or its notices. It MAY hold any document version, not only the
+      current one, so that an earlier version can be described after later
+      versions exist; tools otherwise hold the current version. If the object
+      has <tt class="verbatim">history</tt>, its entry for that document version becomes
+      the new object version.
+    </p>
+    <p>
+      <strong>Completion.</strong> A document version recorded without sources
+      (section 9, <tt class="verbatim">sourcesMissing</tt>) MAY be completed later,
+      keeping its number: the completing object version adds the sources, and
+      MAY add renditions produced from them (for instance a PDF typeset from
+      the added sources, beside the one received), but changes or removes no
+      file of the version; it removes <tt class="verbatim">sourcesMissing</tt> when the
+      sources are complete, after which the version is fixed like any other.
+    </p>
+    <p>
+      <strong>Other versions.</strong> A version that was not public at the
+      time, such as the manuscript submitted to a journal, deposited later, is
+      a document version like any other. A version published by someone else,
+      such as the journal's version of record, is not a document version of
+      the author's object: it is linked by a relation (section 8.1).
     </p>
     <p>
       <strong>History.</strong> The order of the document versions in the
@@ -572,11 +589,11 @@
     <p>
       <strong>Current version.</strong> The current version of a document is
       the last entry of the history of its head version (without <tt class="verbatim">history</tt>:
-      the highest document version, which is then held by the head). After an
-      earlier version is deposited out of order, the head holds that earlier
-      version while the current version stays where it was. Landing pages,
-      indexes, citations and the following of members (section 10.3) use the
-      current version, not the head.
+      the highest document version). The head may hold another document
+      version, after an earlier version is deposited out of order or described
+      by a description-only version; the current version stays where it was.
+      Landing pages, indexes, citations and the following of members (section
+      10.3) use the current version, not the head.
     </p>
     <p>
       <strong>Notices.</strong> A notice about a document version (for

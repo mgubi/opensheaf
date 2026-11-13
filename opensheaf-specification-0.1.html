@@ -40,11 +40,10 @@
     <div class="os-alert os-warning">
       <font class="os-alert-label">Warning.</font> <strong>Draft.</strong> This version is a
       draft. Until version 1.0, any revision may change the format in
-      incompatible ways (one already did: <tt class="verbatim">provenance.json</tt>
-      became <tt class="verbatim">object.json</tt>), and archives and collections made
-      now may have to be rebuilt or migrated. Do not rely on it yet for
-      anything you cannot redo. Changes are listed in the changelog (section
-      17) and discussed in the <a href="https://github.com/opensheaf/opensheaf/issues">issues</a>.
+      incompatible ways, and archives and collections made now may have to be
+      rebuilt or migrated. Do not rely on it yet for anything you cannot redo.
+      Changes are listed in the changelog (section 17) and discussed in the <a
+      href="https://github.com/opensheaf/opensheaf/issues">issues</a>.
     </div>
     <h2 id="auto-2">1. Introduction (non-normative)<span style="margin-left: 1em"></span></h2>
     <p>
@@ -1827,8 +1826,9 @@
     <p>
       A discovery document:
     </p>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
+    <div class="language-json">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
 {
   &quot;format&quot;: &quot;opensheaf-archive/0.1&quot;,
   &quot;specification&quot;: &quot;0.1&quot;,
@@ -1846,12 +1846,14 @@
       &quot;inventorySha512&quot;: &quot;51be&hellip;&quot;, &quot;status&quot;: &quot;active&quot; }
   ]
 }</pre>
+      </div>
     </div>
     <p>
       An <tt class="verbatim">object.json</tt> of a document version:
     </p>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
+    <div class="language-json">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
 {
   &quot;format&quot;: &quot;opensheaf-object/0.1&quot;,
   &quot;specification&quot;: &quot;0.1&quot;,
@@ -1869,12 +1871,14 @@
                   &quot;doi&quot;: &quot;10.5281/zenodo.1234567&quot; } ],
   &quot;status&quot;: &quot;active&quot;
 }</pre>
+      </div>
     </div>
     <p>
       The <tt class="verbatim">datacite.json</tt> of the same version:
     </p>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
+    <div class="language-json">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
 {
   &quot;doi&quot;: &quot;10.5281/zenodo.1234567&quot;,
   &quot;url&quot;: &quot;https://mgubi.org/papers/site/fractional-phi42-mass-gap/fractional-phi42-mass-gap.html&quot;,
@@ -1898,6 +1902,7 @@
   &quot;relatedIdentifiers&quot;: [
     { &quot;relatedIdentifier&quot;: &quot;10.5281/zenodo.1234566&quot;, &quot;relatedIdentifierType&quot;: &quot;DOI&quot;, &quot;relationType&quot;: &quot;IsVersionOf&quot; } ]
 }</pre>
+      </div>
     </div>
     <p>
       The <tt class="verbatim">object.json</tt> of a later version of a document whose
@@ -1906,8 +1911,9 @@
       between 1 and 2 in the history), with a notice about version 2 (arXiv's
       v3):
     </p>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
+    <div class="language-json">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
 {
   &quot;format&quot;: &quot;opensheaf-object/0.1&quot;,
   &hellip;
@@ -1922,6 +1928,7 @@
                   &quot;doi&quot;: &quot;10.48550/arXiv.2303.18112&quot;, &quot;label&quot;: &quot;v4&quot; } ],
   &quot;status&quot;: &quot;active&quot;
 }</pre>
+      </div>
     </div>
     <p>
       Object versions <tt class="verbatim">v1</tt> to <tt class="verbatim">v3</tt> deposited
@@ -1937,8 +1944,9 @@
       A <tt class="verbatim">members.json</tt> of an archive collection: the main
       collection of an archive, following its documents whole:
     </p>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
+    <div class="language-json">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
 {
   &quot;format&quot;: &quot;opensheaf-collection/0.1&quot;,
   &quot;type&quot;: &quot;archive&quot;,
@@ -1955,6 +1963,7 @@
                 &quot;creators&quot;: [&quot;P. Duch&quot;, &quot;M. Gubinelli&quot;], &quot;year&quot;: 2026, &quot;issued&quot;: &quot;2026-11-12&quot; } }
   ]
 }</pre>
+      </div>
     </div>
     <p>
       A <tt class="verbatim">members.json</tt> of a selection: an issue of a journal,
@@ -1962,8 +1971,9 @@
       the editors, its version 3; an accepted copy kept by the journal; and a
       member that is itself a collection, vetted in one version:
     </p>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
+    <div class="language-json">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
 {
   &quot;format&quot;: &quot;opensheaf-collection/0.1&quot;,
   &quot;type&quot;: &quot;selection&quot;,
@@ -1984,13 +1994,15 @@
       &quot;revisions&quot;: [ { &quot;documentVersion&quot;: 3, &quot;version&quot;: &quot;v3&quot;, &quot;inventorySha512&quot;: &quot;7d21&hellip;&quot; } ] }
   ]
 }</pre>
+      </div>
     </div>
     <p>
       The <tt class="verbatim">object.json</tt> of the journal's accepted copy of the
       first member's version 2:
     </p>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
+    <div class="language-json">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
 {
   &quot;format&quot;: &quot;opensheaf-object/0.1&quot;,
   &quot;specification&quot;: &quot;0.1&quot;,
@@ -2008,6 +2020,7 @@
                   &quot;files&quot;: [ { &quot;name&quot;: &quot;inventory.json&quot;, &quot;sha512&quot;: &quot;4f1e&hellip;&quot; } ] } ],
   &quot;status&quot;: &quot;active&quot;
 }</pre>
+      </div>
     </div>
     <h2 id="auto-44">Appendix F. Rationale (non-normative)<span style="margin-left: 1em"></span></h2>
     <ul>

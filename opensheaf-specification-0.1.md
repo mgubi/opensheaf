@@ -3,7 +3,7 @@
 *Specification, version 0.1 (draft), 13 November 2026. OpenSheaf is a common, open format for archives of scholarly documents and for collections of them, built on the Oxford Common File Layout (OCFL 1.1) and the DataCite Metadata Schema (4.7). This version is experimental and may change in incompatible ways before version 1.0. The text is licensed under CC BY-SA 4.0; the JSON Schemas are dedicated to the public domain under CC0 1.0.*
 
 > [!WARNING]
-> **Draft.** This version is a draft. Until version 1.0, any revision may change the format in incompatible ways (one already did: `provenance.json` became `object.json`), and archives and collections made now may have to be rebuilt or migrated. Do not rely on it yet for anything you cannot redo. Changes are listed in the changelog (section 17) and discussed in the [issues](https://github.com/opensheaf/opensheaf/issues).
+> **Draft.** This version is a draft. Until version 1.0, any revision may change the format in incompatible ways, and archives and collections made now may have to be rebuilt or migrated. Do not rely on it yet for anything you cannot redo. Changes are listed in the changelog (section 17) and discussed in the [issues](https://github.com/opensheaf/opensheaf/issues).
 
 ## 1. Introduction (non-normative)
 
@@ -421,7 +421,7 @@ The values below come from the first archive. Digests are shortened, and the DOI
 
 A discovery document:
 
-```
+```json
 {
   "format": "opensheaf-archive/0.1",
   "specification": "0.1",
@@ -443,7 +443,7 @@ A discovery document:
 
 An `object.json` of a document version:
 
-```
+```json
 {
   "format": "opensheaf-object/0.1",
   "specification": "0.1",
@@ -465,7 +465,7 @@ An `object.json` of a document version:
 
 The `datacite.json` of the same version:
 
-```
+```json
 {
   "doi": "10.5281/zenodo.1234567",
   "url": "https://mgubi.org/papers/site/fractional-phi42-mass-gap/fractional-phi42-mass-gap.html",
@@ -493,7 +493,7 @@ The `datacite.json` of the same version:
 
 The `object.json` of a later version of a document whose arXiv version 2 was found and deposited after version 4 (document versions 1, 2, 3 for arXiv's v1, v3, v4, then 4 for arXiv's v2, placed between 1 and 2 in the history), with a notice about version 2 (arXiv's v3):
 
-```
+```json
 {
   "format": "opensheaf-object/0.1",
   ...
@@ -514,7 +514,7 @@ Object versions `v1` to `v3` deposited document versions 1 to 3; `v4` deposited 
 
 A `members.json` of an archive collection: the main collection of an archive, following its documents whole:
 
-```
+```json
 {
   "format": "opensheaf-collection/0.1",
   "type": "archive",
@@ -535,7 +535,7 @@ A `members.json` of an archive collection: the main collection of an archive, fo
 
 A `members.json` of a selection: an issue of a journal, with a paper vetted in its version 2 and, after a correction accepted by the editors, its version 3; an accepted copy kept by the journal; and a member that is itself a collection, vetted in one version:
 
-```
+```json
 {
   "format": "opensheaf-collection/0.1",
   "type": "selection",
@@ -560,7 +560,7 @@ A `members.json` of a selection: an issue of a journal, with a paper vetted in i
 
 The `object.json` of the journal's accepted copy of the first member's version 2:
 
-```
+```json
 {
   "format": "opensheaf-object/0.1",
   "specification": "0.1",

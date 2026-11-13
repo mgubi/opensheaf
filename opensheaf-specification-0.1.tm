@@ -9,7 +9,7 @@
 
   <notes-abstract|Specification, version 0.1 (draft), 13 November 2026. OpenSheaf is a common, open format for archives of scholarly documents and for collections of them, built on the Oxford Common File Layout (OCFL 1.1) and the DataCite Metadata Schema (4.7). This version is experimental and may change in incompatible ways before version 1.0. The text is licensed under CC BY-SA 4.0; the JSON Schemas are dedicated to the public domain under CC0 1.0.>
 
-  <os-alert|warning|Warning.|<strong|Draft.> This version is a draft. Until version 1.0, any revision may change the format in incompatible ways (one already did: <verbatim|provenance.json> became <verbatim|object.json>), and archives and collections made now may have to be rebuilt or migrated. Do not rely on it yet for anything you cannot redo. Changes are listed in the changelog (section 17) and discussed in the <hlink|issues|https://github.com/opensheaf/opensheaf/issues>.>
+  <os-alert|warning|Warning.|<strong|Draft.> This version is a draft. Until version 1.0, any revision may change the format in incompatible ways, and archives and collections made now may have to be rebuilt or migrated. Do not rely on it yet for anything you cannot redo. Changes are listed in the changelog (section 17) and discussed in the <hlink|issues|https://github.com/opensheaf/opensheaf/issues>.>
 
   <section*|1. Introduction (non-normative)>
 
@@ -595,6 +595,7 @@
 
   A discovery document:
 
+  <\html-div-class|language-json>
   <\verbatim-code>
     {
 
@@ -630,9 +631,11 @@
 
     }
   </verbatim-code>
+  </html-div-class>
 
   An <verbatim|object.json> of a document version:
 
+  <\html-div-class|language-json>
   <\verbatim-code>
     {
 
@@ -668,9 +671,11 @@
 
     }
   </verbatim-code>
+  </html-div-class>
 
   The <verbatim|datacite.json> of the same version:
 
+  <\html-div-class|language-json>
   <\verbatim-code>
     {
 
@@ -718,9 +723,11 @@
 
     }
   </verbatim-code>
+  </html-div-class>
 
   The <verbatim|object.json> of a later version of a document whose arXiv version 2 was found and deposited after version 4 (document versions 1, 2, 3 for arXiv's v1, v3, v4, then 4 for arXiv's v2, placed between 1 and 2 in the history), with a notice about version 2 (arXiv's v3):
 
+  <\html-div-class|language-json>
   <\verbatim-code>
     {
 
@@ -750,11 +757,13 @@
 
     }
   </verbatim-code>
+  </html-div-class>
 
   Object versions <verbatim|v1> to <verbatim|v3> deposited document versions 1 to 3; <verbatim|v4> deposited document version 4 (arXiv's v2) and wrote the history <verbatim|["v1", "v4", "v2", "v3"]>, so that the current version stayed document version 3 although the head held version 4; <verbatim|v5>, shown here, is a description-only version adding the notice, which holds the current version again. The current version is document version 3, the last in the history.
 
   A <verbatim|members.json> of an archive collection: the main collection of an archive, following its documents whole:
 
+  <\html-div-class|language-json>
   <\verbatim-code>
     {
 
@@ -788,9 +797,11 @@
 
     }
   </verbatim-code>
+  </html-div-class>
 
   A <verbatim|members.json> of a selection: an issue of a journal, with a paper vetted in its version 2 and, after a correction accepted by the editors, its version 3; an accepted copy kept by the journal; and a member that is itself a collection, vetted in one version:
 
+  <\html-div-class|language-json>
   <\verbatim-code>
     {
 
@@ -832,9 +843,11 @@
 
     }
   </verbatim-code>
+  </html-div-class>
 
   The <verbatim|object.json> of the journal's accepted copy of the first member's version 2:
 
+  <\html-div-class|language-json>
   <\verbatim-code>
     {
 
@@ -870,6 +883,7 @@
 
     }
   </verbatim-code>
+  </html-div-class>
 
   <section*|Appendix F. Rationale (non-normative)>
 

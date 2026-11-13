@@ -12,7 +12,7 @@ Handles the subset of Markdown used by spec.md:
   *italics*, becomes the abstract. The first line may instead be an image
   `![Title](logo.svg)`, which then stands as the title, or a `<picture>`
   block (light and dark variants, as GitHub shows them), whose logo is the
-  hero of the page: centred at seven tenths of the width, with space around.
+  hero of the page: centred at about two thirds of the width (0.65), with space around.
   A first line `<!-- site hero: logo.svg -->`, hidden on GitHub, makes that
   logo the hero instead of the image on the next line;
 - images `![alt](path)` on a line of their own (centred);
@@ -95,7 +95,7 @@ def convert(md):
     if site:
         # this logo is the hero, in place of the image (or <picture>) heading
         # the file on GitHub, which is skipped
-        hero = image(site.group(1), '0.7par')
+        hero = image(site.group(1), '0.65par')
         k = 1
         if k < len(lines) and lines[k].strip().startswith('<picture'):
             k = next(m for m in range(k, len(lines)) if '</picture>' in lines[m])
@@ -113,7 +113,7 @@ def convert(md):
         alt = re.search(r'<img[^>]*\salt="([^"]*)"', block)
         if alt and alt.group(1):
             hero_alt = alt.group(1)
-        hero = image(src, '0.7par')
+        hero = image(src, '0.65par')
         lines = [''] + lines[j + 1:]
     elif first:
         # a logo standing for the title

@@ -47,8 +47,8 @@ description: The look and brand of the OpenSheaf site and documents. Use before 
 ## Hero
 
 - Home page: the opening `<picture>` block in `README.md` provides light and
-  dark logo variants on GitHub. Its `img` source becomes the site hero at seven
-  tenths of the column (`0.7par`), with `vspace` 4fn above and 5fn below.
+  dark logo variants on GitHub. Its `img` source becomes the site hero at 65%
+  of the column (`0.65par`), with `vspace` 4fn above and 5fn below.
 - A first-line `<!-- site hero: path -->` comment can instead select a site
   hero that differs from an image on the following line.
 - Other pages open with their `# Title`; no images above it.

@@ -95,7 +95,7 @@ An archive identifier is a URI that does not change when the archive moves. It S
 
 ### 6.3 Object identifiers
 
-An object identifier MUST match `^[a-z0-9]+(-[a-z0-9]+)*$` and MUST be at most 64 characters long. It is the OCFL `id` of the object and the name of its folder in the storage root. It MUST be unique in the archive and MUST NOT be reused, also after a takedown. The kind of an object is given by its `object.json`, never by its identifier. Outside the archive, an object is named by the pair (archive identifier, object identifier).
+An object identifier MUST match `^[a-z0-9]+(-[a-z0-9]+)*$` and MUST be at most 64 characters long. It is the OCFL `id` of the object and the name of its folder in the storage root. It MUST be unique in the archive and MUST NOT be reused, also after a takedown. Since it is permanent and appears in every URL of the object, it SHOULD be short (at most 32 characters), readable and chosen by the depositor, and SHOULD NOT be derived mechanically from the title, which may change between versions while the identifier cannot; tools importing documents propose identifiers and the depositor decides. The kind of an object is given by its `object.json`, never by its identifier. Outside the archive, an object is named by the pair (archive identifier, object identifier).
 
 ### 6.4 Resolution
 
@@ -121,7 +121,7 @@ Logical paths MUST be encoded in UTF-8 in Unicode normalisation form C, MUST NOT
 
 A document version contains, at the top level of its content unless a profile says otherwise:
 
-- the **sources**: the main source and every file needed to produce the renditions that is not part of the toolchain (images, bibliography databases, local style files). The main source is named in `object.json`. Sources SHOULD be flat (no sub-folders) when possible;
+- the **sources**: the main source and every file needed to produce the renditions that is not part of the toolchain (images, bibliography databases, local style files). The main source is named in `object.json`. Sources SHOULD be flat (no sub-folders) when possible. When the sources of a version are not available (for instance a version imported from a service that keeps only its PDF), the version has none, and `object.json` says so (section 9);
 - the **renditions**, OPTIONAL but RECOMMENDED: at least a PDF for documents meant to be read and cited, named in `object.json`;
 - the files of notes, if any (the change note, notices, a withdrawal; section 9), named in `object.json`;
 - `datacite.json` (section 8) and `object.json` (section 9).
@@ -132,7 +132,7 @@ HTML versions and other presentation files SHOULD NOT be deposited, since they d
 
 **Numbering.** Document versions are numbered by the archive, from 1, without gaps, independently of any external numbering: a work whose versions 1, 3 and 4 are available on arXiv has document versions 1, 2 and 3. External labels (arXiv's `v3`) are recorded in `external` (section 9), and presentations SHOULD show them with the document version.
 
-**New versions.** A new document version number is assigned exactly when files of the document's own (sources, renditions, change note) that were not deposited before are added. An object version holding the same sources, renditions and change note as an earlier document version keeps its number. A description-only version keeps the document version. A version that was not public at the time, such as the manuscript submitted to a journal, deposited later, is a document version like any other. A version published by someone else, such as the journal's version of record, is not a document version of the author's object: it is linked by a relation (section 8.1).
+**New versions.** A new document version number is assigned exactly when files of the document's own (sources, renditions, change note) that were not deposited before are added. An object version holding the same sources, renditions and change note as an earlier document version keeps its number. A description-only version keeps the document version. A document version recorded without sources (section 9, `sourcesMissing`) MAY be completed later, keeping its number: the completing object version adds the sources, and MAY add renditions produced from them (for instance a PDF typeset from the added sources, beside the one received), but changes or removes no file of the version; it removes `sourcesMissing` when the sources are complete, after which the version is fixed like any other. A version that was not public at the time, such as the manuscript submitted to a journal, deposited later, is a document version like any other. A version published by someone else, such as the journal's version of record, is not a document version of the author's object: it is linked by a relation (section 8.1).
 
 **History.** The order of the document versions in the history of the work is the order of their numbers, unless `object.json` has `history` (section 9): the list, in the order of the work, of the last object version holding each document version. The last object version is used because it carries the most complete description of that document version (a DOI added later, a corrected stage). An object version that deposits a document version out of order (an earlier version found later) MUST write `history`, and once an object version has `history`, every later object version MUST have it. A version whose place in the history is unknown goes just before the current version, and its `object.json` SHOULD say so in its change note. The history is read from the head version; earlier object versions keep the history as it was known when they were made.
 
@@ -157,7 +157,7 @@ It SHOULD contain:
 - `descriptions` with a `descriptionType` `Abstract`, as plain text with mathematics as below;
 - `subjects` with a `subjectScheme` (any scheme; MSC2020 is common in mathematics);
 - `dates`, as below;
-- `rightsList`, with an SPDX identifier in lower case and the licence URL, or a statement such as "All rights reserved";
+- `rightsList`, with an SPDX identifier in lower case and the licence URL; for a licence without an SPDX identifier, its name in `rights` and, REQUIRED, the URL identifying it in `rightsUri` (for arXiv's default licence, `http://arxiv.org/licenses/nonexclusive-distrib/1.0/`), so that archives record the same licence the same way; or a statement such as "All rights reserved";
 - `language`, `formats` (the media types of the sources and renditions) and `sizes`;
 - identifiers of creators (ORCID) and of affiliations (ROR), where they exist;
 - `relatedIdentifiers` (section 8.1).
@@ -198,7 +198,7 @@ Every object version MUST contain `object.json`, OpenSheaf's record of the objec
 - `documentVersion`: a positive integer, equal to the `version` of `datacite.json`;
 - `status`: `active` or `withdrawn` (section 11).
 
-A document MUST also have `mainSource` (a logical path) and `sourceFormat` (the media type of the main source), and SHOULD have `renditions` (a list of logical paths with media types) and `toolchain` (a list of tools with `name`, `version` and, optionally, `packages`), enough to reproduce the renditions.
+A document MUST also have `mainSource` (a logical path) and `sourceFormat` (the media type of the main source), and SHOULD have `renditions` (a list of logical paths with media types) and `toolchain` (a list of tools with `name`, `version` and, optionally, `packages`), enough to reproduce the renditions. A document version whose sources are not available instead has `sourcesMissing`, a note (see below) saying why (for instance "arXiv keeps only the PDF of this version"), no `mainSource` and `sourceFormat`, and at least one rendition; a rendition is never presented as a source.
 
 A **note** is an object with `text` (a short plain text), or `path` and `mediaType` (a file of the content of the same object version), or both: the text serves feeds, indexes and external services, the file holds the full statement (with mathematics, or as a PDF). Files of notes are covered by the inventory like every file of the content.
 
@@ -211,6 +211,7 @@ A document MAY contain:
 
 Any object MAY contain:
 
+- `licence`: a note with the full text or terms of the licence of the content, kept in the package (useful for licences without an SPDX identifier); `rightsList` in `datacite.json` remains the description for readers and services;
 - `agreement`: a minimal record that the authors agreed to the deposit and to the licence: who agreed (names only), when, and how (for instance "by e-mail"). It MUST NOT contain e-mail addresses, correspondence or signatures of persons;
 - `external`: the external records of this version, each with its `role`: `deposit` for a deposit of the version made by the archive (appendix A), `source` for the record it was imported from; the `service`, the `record` (a URL), the `doi`, the `label` the service gives the version (for instance `v3` on arXiv), and the digests of files kept there that are not in the content (for a deposit, such as a source archive uploaded instead of the sources) or of the files received from it (for a source, as they were received before being unpacked);
 - `withdrawal` (section 11).
@@ -300,7 +301,7 @@ A verifier checking an archive MUST:
 - validate the storage root and every object against OCFL 1.1 (with a standard OCFL validator or equivalent checks);
 - check that the discovery document lists exactly the objects of the storage root, with their head versions and inventory digests, and lists every tombstone;
 - check the requirements of sections 7 to 11 on every object version, including that `datacite.json` and `object.json` agree on the document version and on the date of a withdrawal;
-- check the document versions of each document (section 7.3): object versions with the same document version have the same sources, renditions and change note; new numbers follow the rule of new versions, without gaps; `history`, when present, lists distinct document versions, covers all of them, each entry being the last object version holding its document version; no object version after the first one with `history` lacks it; every notice is kept unchanged in every later object version;
+- check the document versions of each document (section 7.3): object versions with the same document version have the same sources, renditions and change note, except that a version with `sourcesMissing` may be completed by adding files (section 7.3); new numbers follow the rule of new versions, without gaps; `history`, when present, lists distinct document versions, covers all of them, each entry being the last object version holding its document version; no object version after the first one with `history` lacks it; every notice is kept unchanged in every later object version;
 - for each collection version, resolve each member as in section 6.4 and check its pin, reporting each member as verified, mismatch (a copy was found and does not match), unavailable (no copy found) or removed (tombstoned).
 
 A verifier SHOULD check the witnesses it finds, and the requirements of the profiles the archive declares. It MUST NOT treat the presentation as authoritative. It SHOULD limit the depth and size of the collections it follows, and report when it stops.

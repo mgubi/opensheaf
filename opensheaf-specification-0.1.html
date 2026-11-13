@@ -418,10 +418,15 @@
       An object identifier MUST match <tt class="verbatim">^[a-z0-9]+(-[a-z0-9]+)*$</tt>
       and MUST be at most 64 characters long. It is the OCFL <tt class="verbatim">id</tt>
       of the object and the name of its folder in the storage root. It MUST be
-      unique in the archive and MUST NOT be reused, also after a takedown. The
-      kind of an object is given by its <tt class="verbatim">object.json</tt>, never by
-      its identifier. Outside the archive, an object is named by the pair
-      (archive identifier, object identifier).
+      unique in the archive and MUST NOT be reused, also after a takedown.
+      Since it is permanent and appears in every URL of the object, it SHOULD
+      be short (at most 32 characters), readable and chosen by the depositor,
+      and SHOULD NOT be derived mechanically from the title, which may change
+      between versions while the identifier cannot; tools importing documents
+      propose identifiers and the depositor decides. The kind of an object is
+      given by its <tt class="verbatim">object.json</tt>, never by its identifier.
+      Outside the archive, an object is named by the pair (archive identifier,
+      object identifier).
     </p>
     <h3 id="auto-11">6.4 Resolution<span style="margin-left: 1em"></span></h3>
     <p>
@@ -490,7 +495,10 @@
           to produce the renditions that is not part of the toolchain (images,
           bibliography databases, local style files). The main source is named
           in <tt class="verbatim">object.json</tt>. Sources SHOULD be flat (no
-          sub-folders) when possible;
+          sub-folders) when possible. When the sources of a version are not
+          available (for instance a version imported from a service that keeps
+          only its PDF), the version has none, and <tt class="verbatim">object.json</tt>
+          says so (section 9);
         </p>
       </li>
       <li>
@@ -532,11 +540,18 @@
       note) that were not deposited before are added. An object version
       holding the same sources, renditions and change note as an earlier
       document version keeps its number. A description-only version keeps the
-      document version. A version that was not public at the time, such as the
-      manuscript submitted to a journal, deposited later, is a document
-      version like any other. A version published by someone else, such as the
-      journal's version of record, is not a document version of the author's
-      object: it is linked by a relation (section 8.1).
+      document version. A document version recorded without sources (section
+      9, <tt class="verbatim">sourcesMissing</tt>) MAY be completed later, keeping its
+      number: the completing object version adds the sources, and MAY add
+      renditions produced from them (for instance a PDF typeset from the added
+      sources, beside the one received), but changes or removes no file of the
+      version; it removes <tt class="verbatim">sourcesMissing</tt> when the sources are
+      complete, after which the version is fixed like any other. A version
+      that was not public at the time, such as the manuscript submitted to a
+      journal, deposited later, is a document version like any other. A
+      version published by someone else, such as the journal's version of
+      record, is not a document version of the author's object: it is linked
+      by a relation (section 8.1).
     </p>
     <p>
       <strong>History.</strong> The order of the document versions in the
@@ -628,8 +643,12 @@
       <li>
         <p>
           <tt class="verbatim">rightsList</tt>, with an SPDX identifier in lower case
-          and the licence URL, or a statement such as &quot;All rights
-          reserved&quot;;
+          and the licence URL; for a licence without an SPDX identifier, its
+          name in <tt class="verbatim">rights</tt> and, REQUIRED, the URL identifying it
+          in <tt class="verbatim">rightsUri</tt> (for arXiv's default licence, <tt
+          class="verbatim">http://arxiv.org/licenses/nonexclusive-distrib/1.0/</tt>), so
+          that archives record the same licence the same way; or a statement
+          such as &quot;All rights reserved&quot;;
         </p>
       </li>
       <li>
@@ -825,7 +844,11 @@
       and SHOULD have <tt class="verbatim">renditions</tt> (a list of logical paths with
       media types) and <tt class="verbatim">toolchain</tt> (a list of tools with <tt
       class="verbatim">name</tt>, <tt class="verbatim">version</tt> and, optionally, <tt class="verbatim">packages</tt>),
-      enough to reproduce the renditions.
+      enough to reproduce the renditions. A document version whose sources are
+      not available instead has <tt class="verbatim">sourcesMissing</tt>, a note (see
+      below) saying why (for instance &quot;arXiv keeps only the PDF of this
+      version&quot;), no <tt class="verbatim">mainSource</tt> and <tt class="verbatim">sourceFormat</tt>,
+      and at least one rendition; a rendition is never presented as a source.
     </p>
     <p>
       A <strong>note</strong> is an object with <tt class="verbatim">text</tt> (a short
@@ -878,6 +901,15 @@
       Any object MAY contain:
     </p>
     <ul>
+      <li>
+        <p>
+          <tt class="verbatim">licence</tt>: a note with the full text or terms of the
+          licence of the content, kept in the package (useful for licences
+          without an SPDX identifier); <tt class="verbatim">rightsList</tt> in <tt
+          class="verbatim">datacite.json</tt> remains the description for readers and
+          services;
+        </p>
+      </li>
       <li>
         <p>
           <tt class="verbatim">agreement</tt>: a minimal record that the authors agreed
@@ -1157,12 +1189,14 @@
         <p>
           check the document versions of each document (section 7.3): object
           versions with the same document version have the same sources,
-          renditions and change note; new numbers follow the rule of new
-          versions, without gaps; <tt class="verbatim">history</tt>, when present, lists
-          distinct document versions, covers all of them, each entry being the
-          last object version holding its document version; no object version
-          after the first one with <tt class="verbatim">history</tt> lacks it; every
-          notice is kept unchanged in every later object version;
+          renditions and change note, except that a version with <tt class="verbatim">sourcesMissing</tt>
+          may be completed by adding files (section 7.3); new numbers follow
+          the rule of new versions, without gaps; <tt class="verbatim">history</tt>,
+          when present, lists distinct document versions, covers all of them,
+          each entry being the last object version holding its document
+          version; no object version after the first one with <tt class="verbatim">history</tt>
+          lacks it; every notice is kept unchanged in every later object
+          version;
         </p>
       </li>
       <li>

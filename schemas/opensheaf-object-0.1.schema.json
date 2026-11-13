@@ -47,6 +47,9 @@
       "type": "string",
       "minLength": 1
     },
+    "sourcesMissing": {
+      "$ref": "#/$defs/note"
+    },
     "renditions": {
       "type": "array",
       "items": {
@@ -144,6 +147,9 @@
           }
         ]
       }
+    },
+    "licence": {
+      "$ref": "#/$defs/note"
     },
     "agreement": {
       "type": "object",
@@ -299,9 +305,24 @@
         }
       },
       "then": {
-        "required": [
-          "mainSource",
-          "sourceFormat"
+        "anyOf": [
+          {
+            "required": [
+              "mainSource",
+              "sourceFormat"
+            ]
+          },
+          {
+            "required": [
+              "sourcesMissing",
+              "renditions"
+            ],
+            "properties": {
+              "renditions": {
+                "minItems": 1
+              }
+            }
+          }
         ]
       }
     },
@@ -348,6 +369,11 @@
             {
               "required": [
                 "changes"
+              ]
+            },
+            {
+              "required": [
+                "sourcesMissing"
               ]
             }
           ]

@@ -1,9 +1,9 @@
 # OpenSheaf: frequently asked questions
 
-Answers to questions that come up about the design of
+*Answers to questions that come up about the design of
 [OpenSheaf](https://opensheaf.org). The specification
 ([opensheaf-specification-0.1.md](opensheaf-specification-0.1.md)) is
-authoritative; this page explains its choices.
+authoritative; this page explains its choices.*
 
 ## What is OpenSheaf for?
 

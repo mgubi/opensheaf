@@ -5,9 +5,11 @@
 <\body>
   <notes-header>
 
-  <chapter*|<image|resources/brand/opensheaf-logo.svg|0.5par|||>>
+  <\center>
+    <vspace*|4fn><image|resources/brand/opensheaf-logo.svg|0.4par|||><vspace|5fn>
+  </center>
 
-  OpenSheaf is an open format for archives of scholarly documents and for collections of them. Read the <hlink|specification|opensheaf-specification-0.1.tm> (version 0.1) and the <hlink|FAQ|faq.tm>, which explains its main choices. The site is <hlink|opensheaf.org|https://opensheaf.org> (also <verbatim|sheaf.pub>).
+  <notes-abstract|OpenSheaf is an open format for archives of scholarly documents and for collections of them. Read the <hlink|specification|opensheaf-specification-0.1.tm> (version 0.1) and the <hlink|FAQ|faq.tm>, which explains its main choices. The site is <hlink|opensheaf.org|https://opensheaf.org> (also <verbatim|sheaf.pub>).>
 
   <strong|Status:> version 0.1, a draft. It is experimental and may change in incompatible ways before version 1.0.
 

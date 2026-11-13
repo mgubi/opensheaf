@@ -43,6 +43,6 @@
     });
     control.appendChild(label);
     control.appendChild(select);
-    document.body.insertBefore(control, document.body.firstChild);
+    document.body.appendChild(control);
   });
 }());

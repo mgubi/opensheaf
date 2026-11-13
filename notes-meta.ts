@@ -32,6 +32,33 @@
 
   <assign|notes-header-name|OpenSheaf>
 
+  <\active*>
+    <\src-comment>
+      The OpenSheaf look: the serif of the text for the headings, in regular
+      weight, compact paragraphs, and charcoal ink on warm off-white paper.
+    </src-comment>
+  </active*>
+
+  <assign|notes-heading|<macro|body|<with|font-family|rm|font-series|medium|color|#292825|<arg|body>>>>
+
+  <assign|par-sep|0.5fn>
+
+  <assign|par-line-sep|0.2fn>
+
+  <assign|notes-title-color|#292825>
+
+  <assign|notes-text-color|#292825>
+
+  <assign|notes-background-color|#faf9f6>
+
+  <assign|color|#292825>
+
+  <assign|bg-color|#faf9f6>
+
+  <assign|locus-color|#292825>
+
+  <assign|visited-color|#292825>
+
   <assign|html-title|OpenSheaf>
 
   <assign|html-head-favicon|resources/brand/favicon.svg>

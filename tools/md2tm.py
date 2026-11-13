@@ -12,7 +12,7 @@ Handles the subset of Markdown used by spec.md:
   *italics*, becomes the abstract. The first line may instead be an image
   `![Title](logo.svg)`, which then stands as the title, or a `<picture>`
   block (light and dark variants, as GitHub shows them), whose logo is the
-  hero of the page: centred at two fifths of the width, with space around.
+  hero of the page: centred at seven tenths of the width, with space around.
   A first line `<!-- site hero: logo.svg -->`, hidden on GitHub, makes that
   logo the hero instead of the image on the next line;
 - images `![alt](path)` on a line of their own (centred);
@@ -90,17 +90,30 @@ def convert(md):
     lines = md.split('\n')
     first = IMAGE_RE.match(lines[0]) if lines else None
     hero = None
+    hero_alt = 'OpenSheaf'
     site = SITE_HERO_RE.match(lines[0]) if lines else None
     if site:
-        # this logo is the hero, in place of the image heading the file on GitHub
-        hero = image(site.group(1), '0.4par')
-        lines = [''] + lines[2:]
+        # this logo is the hero, in place of the image (or <picture>) heading
+        # the file on GitHub, which is skipped
+        hero = image(site.group(1), '0.7par')
+        k = 1
+        if k < len(lines) and lines[k].strip().startswith('<picture'):
+            k = next(m for m in range(k, len(lines)) if '</picture>' in lines[m])
+        alt = re.search(r'alt="([^"]*)"', lines[k]) if k < len(lines) else None
+        alt = alt or (IMAGE_RE.match(lines[k]) if k < len(lines) else None)
+        if alt and alt.group(1):
+            hero_alt = alt.group(1)
+        lines = [''] + lines[k + 1:]
     elif lines and lines[0].strip().startswith('<picture'):
         # a <picture> (variants for light and dark themes, as on GitHub):
         # its <img> is the hero of the page
         j = next(k for k, ln in enumerate(lines) if '</picture>' in ln)
-        src = re.search(r'<img[^>]*\ssrc="([^"]+)"', '\n'.join(lines[:j + 1])).group(1)
-        hero = image(src, '0.4par')
+        block = '\n'.join(lines[:j + 1])
+        src = re.search(r'<img[^>]*\ssrc="([^"]+)"', block).group(1)
+        alt = re.search(r'<img[^>]*\salt="([^"]*)"', block)
+        if alt and alt.group(1):
+            hero_alt = alt.group(1)
+        hero = image(src, '0.7par')
         lines = [''] + lines[j + 1:]
     elif first:
         # a logo standing for the title
@@ -189,9 +202,16 @@ def convert(md):
     head = ('<TeXmacs|2.1.5>\n\n<style|<tuple|notes|notes-meta>>\n\n<\\body>\n'
             '  <notes-header>\n\n')
     # the hero: centred, with room above and below, which TeXmacs exports as
-    # margins of its paragraph
-    head += (f'  <\\center>\n    <vspace*|4fn>{hero}<vspace|5fn>\n  </center>\n\n' if hero
-             else f'  <chapter*|{title_markup}>\n\n')
+    # margins of its paragraph. On the web the page keeps a heading: an <h1>
+    # with the hero's text, hidden visually, and the image gets that text as
+    # its alternative, for screen readers and search engines.
+    if hero:
+        t = esc(hero_alt)
+        head += (f'  <specific|html*|<html-class|visually-hidden|<html-tag|h:h1|{t}>>>\n\n'
+                 f'  <\\center>\n    <vspace*|4fn><html-attr|alt|{t}|{hero}><vspace|5fn>\n'
+                 '  </center>\n\n')
+    else:
+        head += f'  <chapter*|{title_markup}>\n\n'
     if abstract:
         head += f'  <notes-abstract|{inline(abstract)}>\n\n'
     tail = ('\n</body>\n\n<\\initial>\n  <\\collection>\n'

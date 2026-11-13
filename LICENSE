@@ -1,7 +1,8 @@
 The contents of this repository are licensed as follows.
 
 - The text of the specification (opensheaf-specification-0.1.md), the FAQ
-  (FAQ.md), the use cases (USE-CASES.md), this README and the pages of the
+  (FAQ.md), the use cases (USE-CASES.md), the policy on the name and the
+  logo (TRADEMARKS.md), the README and the pages of the
   site generated from them: Creative Commons Attribution-ShareAlike 4.0
   International (CC BY-SA 4.0), LICENSES/CC-BY-SA-4.0.txt.
 - The JSON Schemas (schemas/): CC0 1.0 Universal, dedicated to the public

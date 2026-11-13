@@ -39,15 +39,49 @@
     <item>DOIs come from the Zenodo binding (appendix A), one per document version.
   </itemize>
 
+  <\html-div-class|language-bash>
   <\verbatim-code>
-    osheaf deposit kpz-uniqueness paper.tex --pdf paper.pdf --title ... --author ... --rights cc-by-4.0
+    # deposit a new paper: its LaTeX source and the PDF made from it
 
-    osheaf arxiv import downloads --update \ \ \ \ \ # the new arXiv versions
+    osheaf deposit kpz-uniqueness paper.tex \\
 
-    osheaf notice kpz-uniqueness --about 2 --text "Lemma 3 is wrong as stated; corrected in version 3."
+    \ \ --pdf paper.pdf \\
 
-    osheaf collect && osheaf index && osheaf verify
+    \ \ --title "Uniqueness of the KPZ fixed point" \\
+
+    \ \ --author "Doe, Jane\|University of Example" \\
+
+    \ \ --rights cc-by-4.0 \\
+
+    \ \ --stage AO
+
+
+
+    # import the new arXiv versions of papers already in the archive
+
+    osheaf arxiv import downloads --update
+
+
+
+    # an erratum about version 2, without changing version 2
+
+    osheaf notice kpz-uniqueness \\
+
+    \ \ --about 2 \\
+
+    \ \ --text "Lemma 3 is wrong as stated; corrected in version 3."
+
+
+
+    # update the main collection and the website, then check everything
+
+    osheaf collect
+
+    osheaf index
+
+    osheaf verify
   </verbatim-code>
+  </html-div-class>
 
   <subsection*|Co-authors in different archives>
 
@@ -83,11 +117,21 @@
     <item>Zenodo deposits (appendix A) and timestamps (section 13.2) are further witnesses that a version existed, with these bytes, at a date.
   </itemize>
 
+  <\html-div-class|language-bash>
   <\verbatim-code>
+    # copy an object of another archive, byte for byte, with all its versions
+
     osheaf mirror https://example.org/papers/ kpz-uniqueness
 
-    osheaf verify --remote \ \ \ \ \ # checks members on their mirrors when an archive fails
+
+
+    # check the archive; members of other archives are checked too,
+
+    # on their mirrors when their own archive does not answer
+
+    osheaf verify --remote
   </verbatim-code>
+  </html-div-class>
 
   <subsection*|An archive that moves>
 
@@ -107,13 +151,27 @@
     <item>To make sure what it vetted stays available, the journal keeps an <strong|accepted copy> of each vetted revision, as a document of its own archive: exactly the files of that version, byte for byte, with the source and its pin recorded. Only the copied revision needs a licence allowing redistribution; a paper whose first preprint was under a restrictive licence can be accepted in a later, openly licensed version. Later versions of the accepted copy (corrections, notices, a withdrawal) are the editors' acts; the authors' archive cannot change them.
   </itemize>
 
+  <\html-div-class|language-bash>
   <\verbatim-code>
-    osheaf accept https://authors.example.org/ network-discrimination --version v2 --stage VoR \\
+    # keep an accepted copy of the version the editors vetted
+
+    osheaf accept https://authors.example.org/ network-discrimination \\
+
+    \ \ --version v2 \\
+
+    \ \ --stage VoR \\
 
     \ \ --agreement "the journal's publication terms"
 
-    osheaf collection sync --from issue-7.yaml \ \ \ \ \ \ \ # type: selection, the vetted revisions
+
+
+    # build the issue, a selection, from the file listing the vetted
+
+    # revisions (issue-7.yaml, with "type: selection")
+
+    osheaf collection sync --from issue-7.yaml
   </verbatim-code>
+  </html-div-class>
 
   <subsection*|A journal that publishes its own version>
 

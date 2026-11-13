@@ -46,4 +46,19 @@
     control.appendChild(button);
     document.body.insertBefore(control, document.body.firstChild);
   });
+
+  /* Syntax highlighting: the pages are converted from Markdown, where a code
+     block's language (```sh, ```json) becomes a wrapper with the class
+     language-<name>; the site's highlighter (notes-base.js, highlight.js)
+     reads the class on the code block itself, so it is copied there. Blocks
+     without a language are not highlighted, rather than guessed. This
+     listener is registered before the highlighter's, so it runs first. */
+  document.addEventListener('DOMContentLoaded', function () {
+    var blocks = document.querySelectorAll('.tmweb-code');
+    Array.prototype.forEach.call(blocks, function (block) {
+      var wrap = block.parentElement;
+      var lang = wrap && /(?:^|\s)(language-[\w-]+)/.exec(wrap.className || '');
+      block.classList.add(lang ? lang[1] : 'nohighlight');
+    });
+  });
 }());

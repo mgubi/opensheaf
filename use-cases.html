@@ -111,12 +111,27 @@
         </p>
       </li>
     </ul>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
-osheaf deposit kpz-uniqueness paper.tex --pdf paper.pdf --title &hellip; --author &hellip; --rights cc-by-4.0
-osheaf arxiv import downloads --update      # the new arXiv versions
-osheaf notice kpz-uniqueness --about 2 --text &quot;Lemma 3 is wrong as stated; corrected in version 3.&quot;
-osheaf collect &amp;&amp; osheaf index &amp;&amp; osheaf verify</pre>
+    <div class="language-bash">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
+# deposit a new paper: its LaTeX source and the PDF made from it
+osheaf deposit kpz-uniqueness paper.tex \
+  --pdf paper.pdf \
+  --title &quot;Uniqueness of the KPZ fixed point&quot; \
+  --author &quot;Doe, Jane|University of Example&quot; \
+  --rights cc-by-4.0 \
+  --stage AO
+# import the new arXiv versions of papers already in the archive
+osheaf arxiv import downloads --update
+# an erratum about version 2, without changing version 2
+osheaf notice kpz-uniqueness \
+  --about 2 \
+  --text &quot;Lemma 3 is wrong as stated; corrected in version 3.&quot;
+# update the main collection and the website, then check everything
+osheaf collect
+osheaf index
+osheaf verify</pre>
+      </div>
     </div>
     <h3 id="auto-4">Co-authors in different archives<span style="margin-left: 1em"></span></h3>
     <p>
@@ -202,10 +217,15 @@ osheaf collect &amp;&amp; osheaf index &amp;&amp; osheaf verify</pre>
         </p>
       </li>
     </ul>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
+    <div class="language-bash">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
+# copy an object of another archive, byte for byte, with all its versions
 osheaf mirror https://example.org/papers/ kpz-uniqueness
-osheaf verify --remote      # checks members on their mirrors when an archive fails</pre>
+# check the archive; members of other archives are checked too,
+# on their mirrors when their own archive does not answer
+osheaf verify --remote</pre>
+      </div>
     </div>
     <h3 id="auto-9">An archive that moves<span style="margin-left: 1em"></span></h3>
     <p>
@@ -249,11 +269,18 @@ osheaf verify --remote      # checks members on their mirrors when an archive fa
         </p>
       </li>
     </ul>
-    <div class="tmweb-code">
-      <pre class="verbatim" xml:space="preserve">
-osheaf accept https://authors.example.org/ network-discrimination --version v2 --stage VoR \
+    <div class="language-bash">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
+# keep an accepted copy of the version the editors vetted
+osheaf accept https://authors.example.org/ network-discrimination \
+  --version v2 \
+  --stage VoR \
   --agreement &quot;the journal's publication terms&quot;
-osheaf collection sync --from issue-7.yaml        # type: selection, the vetted revisions</pre>
+# build the issue, a selection, from the file listing the vetted
+# revisions (issue-7.yaml, with &quot;type: selection&quot;)
+osheaf collection sync --from issue-7.yaml</pre>
+      </div>
     </div>
     <h3 id="auto-12">A journal that publishes its own version<span style="margin-left: 1em"></span></h3>
     <p>

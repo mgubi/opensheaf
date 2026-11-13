@@ -19,7 +19,8 @@ Handles the subset of Markdown used by spec.md:
 - `## Section`, `### Subsection`;
 - paragraphs; lists with `- ` and nested lists indented by two spaces;
   a paragraph after a nested list is indented by two spaces;
-- fenced code blocks (three backticks);
+- fenced code blocks (three backticks), with an optional language after
+  them (```sh, ```json), used for syntax highlighting on the web;
 - inline `code`, **bold**, *italic* and [text](target) links.
 
 The output uses the `notes` style of the author's website with the package
@@ -77,6 +78,11 @@ def code_line(c):
                   esc(c.lstrip(' ')))
     return '    ' + '\\ ' * n + rest
 
+
+# languages of fenced code blocks, as named by highlight.js on the web pages
+LANGUAGES = {'sh': 'bash', 'shell': 'bash', 'bash': 'bash', 'console': 'bash',
+             'json': 'json', 'yaml': 'yaml', 'yml': 'yaml', 'python': 'python',
+             'py': 'python', 'xml': 'xml', 'latex': 'latex', 'tex': 'latex'}
 
 SITE_HERO_RE = re.compile(r'^<!--\s*site hero:\s*(\S+)\s*-->\s*$')
 IMAGE_RE = re.compile(r'^!\[([^\]]*)\]\(([^)\s]+)\)\s*$')
@@ -141,13 +147,20 @@ def convert(md):
             i += 1
             continue
         if l.startswith('```'):
+            # the language after the backticks (```sh, ```json) is passed to
+            # the web page as a class of highlight.js (language-bash, ...)
+            lang = LANGUAGES.get(l[3:].strip().lower())
             j = i + 1
             code = []
             while j < len(lines) and not lines[j].startswith('```'):
                 code.append(lines[j])
                 j += 1
             body = '\n\n'.join(code_line(c) for c in code)
-            blocks.append('  <\\verbatim-code>\n' + body + '\n  </verbatim-code>')
+            block = '  <\\verbatim-code>\n' + body + '\n  </verbatim-code>'
+            if lang:
+                block = (f'  <\\html-div-class|language-{lang}>\n' + block
+                         + '\n  </html-div-class>')
+            blocks.append(block)
             i = j + 1
             continue
         m = IMAGE_RE.match(l)

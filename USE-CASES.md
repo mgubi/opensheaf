@@ -41,11 +41,27 @@ archive, [mgubi.org/papers](https://mgubi.org/papers/), is one).
   documents, following them: the index shows the current version of each.
 - DOIs come from the Zenodo binding (appendix A), one per document version.
 
-```
-osheaf deposit kpz-uniqueness paper.tex --pdf paper.pdf --title ... --author ... --rights cc-by-4.0
-osheaf arxiv import downloads --update      # the new arXiv versions
-osheaf notice kpz-uniqueness --about 2 --text "Lemma 3 is wrong as stated; corrected in version 3."
-osheaf collect && osheaf index && osheaf verify
+```sh
+# deposit a new paper: its LaTeX source and the PDF made from it
+osheaf deposit kpz-uniqueness paper.tex \
+  --pdf paper.pdf \
+  --title "Uniqueness of the KPZ fixed point" \
+  --author "Doe, Jane|University of Example" \
+  --rights cc-by-4.0 \
+  --stage AO
+
+# import the new arXiv versions of papers already in the archive
+osheaf arxiv import downloads --update
+
+# an erratum about version 2, without changing version 2
+osheaf notice kpz-uniqueness \
+  --about 2 \
+  --text "Lemma 3 is wrong as stated; corrected in version 3."
+
+# update the main collection and the website, then check everything
+osheaf collect
+osheaf index
+osheaf verify
 ```
 
 ### Co-authors in different archives
@@ -100,9 +116,13 @@ Heritage) keeps copies of archives so that they survive their owners' servers.
 - Zenodo deposits (appendix A) and timestamps (section 13.2) are further
   witnesses that a version existed, with these bytes, at a date.
 
-```
+```sh
+# copy an object of another archive, byte for byte, with all its versions
 osheaf mirror https://example.org/papers/ kpz-uniqueness
-osheaf verify --remote      # checks members on their mirrors when an archive fails
+
+# check the archive; members of other archives are checked too,
+# on their mirrors when their own archive does not answer
+osheaf verify --remote
 ```
 
 ### An archive that moves
@@ -134,10 +154,16 @@ archives) accepts, after review, a particular version of each paper.
   of the accepted copy (corrections, notices, a withdrawal) are the editors'
   acts; the authors' archive cannot change them.
 
-```
-osheaf accept https://authors.example.org/ network-discrimination --version v2 --stage VoR \
+```sh
+# keep an accepted copy of the version the editors vetted
+osheaf accept https://authors.example.org/ network-discrimination \
+  --version v2 \
+  --stage VoR \
   --agreement "the journal's publication terms"
-osheaf collection sync --from issue-7.yaml        # type: selection, the vetted revisions
+
+# build the issue, a selection, from the file listing the vetted
+# revisions (issue-7.yaml, with "type: selection")
+osheaf collection sync --from issue-7.yaml
 ```
 
 ### A journal that publishes its own version

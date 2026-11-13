@@ -86,10 +86,67 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; }
     }
 }
 
-/* Code in the ink of the text, without syntax colours. */
-pre, code, .hljs, .hljs * {
+/* Code in the ink of the text; syntax colours (highlight.js, for blocks
+   with a language) in shades of the same blue, every token at least 4.5:1
+   on the code background: commands and keywords deep and bold, keys and
+   names medium, strings lighter, numbers and literals lighter still,
+   comments grey and italic. */
+pre, code, .hljs {
     color: inherit;
     background: transparent;
+}
+:root {
+    --os-hl-command: #1c3554;
+    --os-hl-key: #2d4e76;
+    --os-hl-string: #2f5f95;
+    --os-hl-number: #3c6aa3;
+    --os-hl-comment: #5e6a78;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --os-hl-command: #b8cfea;
+        --os-hl-key: #a3bcdc;
+        --os-hl-string: #96bbe9;
+        --os-hl-number: #79a4d8;
+        --os-hl-comment: #929daa;
+    }
+}
+:root[data-theme="dark"] {
+    --os-hl-command: #b8cfea;
+    --os-hl-key: #a3bcdc;
+    --os-hl-string: #96bbe9;
+    --os-hl-number: #79a4d8;
+    --os-hl-comment: #929daa;
+}
+@media print {
+    :root, :root[data-theme] {
+        --os-hl-command: #000 !important;
+        --os-hl-key: #000 !important;
+        --os-hl-string: #000 !important;
+        --os-hl-number: #000 !important;
+        --os-hl-comment: #444 !important;
+    }
+}
+.hljs * { color: inherit; background: transparent; }
+.hljs .hljs-built_in, .hljs .hljs-keyword, .hljs .hljs-selector-tag,
+.hljs .hljs-section, .hljs .hljs-title {
+    color: var(--os-hl-command);
+    font-weight: 600;
+}
+.hljs .hljs-attr, .hljs .hljs-name, .hljs .hljs-variable,
+.hljs .hljs-template-variable, .hljs .hljs-params {
+    color: var(--os-hl-key);
+}
+.hljs .hljs-string, .hljs .hljs-subst, .hljs .hljs-regexp {
+    color: var(--os-hl-string);
+}
+.hljs .hljs-number, .hljs .hljs-literal, .hljs .hljs-symbol,
+.hljs .hljs-bullet, .hljs .hljs-meta {
+    color: var(--os-hl-number);
+}
+.hljs .hljs-comment, .hljs .hljs-quote {
+    color: var(--os-hl-comment);
+    font-style: italic;
 }
 
 /* The logo is drawn in black on a transparent background: no image

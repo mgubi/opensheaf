@@ -58,7 +58,7 @@
 
     <item><strong|Document version:> the version of the work, a positive integer numbered by the archive, in <verbatim|object.json> and <verbatim|datacite.json>. It changes exactly when the document's own files change (section 7.3).
 
-    <item><strong|Description-only version:> an object version that keeps the document version: it changes only the description, the state or the notices of the object.
+    <item><strong|Description-only version:> an object version that holds an existing document version with its files unchanged, changing only the description, the state or the notices of the object (section 7.3).
 
     <item><strong|History:> the order of a document's versions in the history of the work (section 7.3).
 
@@ -193,11 +193,17 @@
 
   <strong|Numbering.> Document versions are numbered by the archive, from 1, without gaps, independently of any external numbering: a work whose versions 1, 3 and 4 are available on arXiv has document versions 1, 2 and 3. External labels (arXiv's <verbatim|v3>) are recorded in <verbatim|external> (section 9), and presentations SHOULD show them with the document version.
 
-  <strong|New versions.> A new document version number is assigned exactly when files of the document's own (sources, renditions, change note) that were not deposited before are added. An object version holding the same sources, renditions and change note as an earlier document version keeps its number. A description-only version keeps the document version. A document version recorded without sources (section 9, <verbatim|sourcesMissing>) MAY be completed later, keeping its number: the completing object version adds the sources, and MAY add renditions produced from them (for instance a PDF typeset from the added sources, beside the one received), but changes or removes no file of the version; it removes <verbatim|sourcesMissing> when the sources are complete, after which the version is fixed like any other. A version that was not public at the time, such as the manuscript submitted to a journal, deposited later, is a document version like any other. A version published by someone else, such as the journal's version of record, is not a document version of the author's object: it is linked by a relation (section 8.1).
+  <strong|New versions.> A new document version number is assigned exactly when files of the document's own (sources, renditions, change note) that were not deposited before are added, except when a version without sources is completed (below). An object version holding the same sources, renditions and change note as an earlier document version keeps its number.
+
+  <strong|Description-only versions.> A description-only version holds an existing document version, with its files unchanged, and changes only its description (<verbatim|datacite.json>, such as a DOI, a stage or a link to the published article), the state of the object or its notices. It MAY hold any document version, not only the current one, so that an earlier version can be described after later versions exist; tools otherwise hold the current version. If the object has <verbatim|history>, its entry for that document version becomes the new object version.
+
+  <strong|Completion.> A document version recorded without sources (section 9, <verbatim|sourcesMissing>) MAY be completed later, keeping its number: the completing object version adds the sources, and MAY add renditions produced from them (for instance a PDF typeset from the added sources, beside the one received), but changes or removes no file of the version; it removes <verbatim|sourcesMissing> when the sources are complete, after which the version is fixed like any other.
+
+  <strong|Other versions.> A version that was not public at the time, such as the manuscript submitted to a journal, deposited later, is a document version like any other. A version published by someone else, such as the journal's version of record, is not a document version of the author's object: it is linked by a relation (section 8.1).
 
   <strong|History.> The order of the document versions in the history of the work is the order of their numbers, unless <verbatim|object.json> has <verbatim|history> (section 9): the list, in the order of the work, of the last object version holding each document version. The last object version is used because it carries the most complete description of that document version (a DOI added later, a corrected stage). An object version that deposits a document version out of order (an earlier version found later) MUST write <verbatim|history>, and once an object version has <verbatim|history>, every later object version MUST have it. A version whose place in the history is unknown goes just before the current version, and its <verbatim|object.json> SHOULD say so in its change note. The history is read from the head version; earlier object versions keep the history as it was known when they were made.
 
-  <strong|Current version.> The current version of a document is the last entry of the history of its head version (without <verbatim|history>: the highest document version, which is then held by the head). After an earlier version is deposited out of order, the head holds that earlier version while the current version stays where it was. Landing pages, indexes, citations and the following of members (section 10.3) use the current version, not the head.
+  <strong|Current version.> The current version of a document is the last entry of the history of its head version (without <verbatim|history>: the highest document version). The head may hold another document version, after an earlier version is deposited out of order or described by a description-only version; the current version stays where it was. Landing pages, indexes, citations and the following of members (section 10.3) use the current version, not the head.
 
   <strong|Notices.> A notice about a document version (for instance that a theorem of version 2 is wrong as stated, and is corrected in version 3) is written after that version, which cannot change. Notices are added to <verbatim|notices> in <verbatim|object.json> (section 9) by description-only versions. A notice present in an object version is present, unchanged, in every later object version; a notice is corrected or withdrawn by a later notice that says so. Presentations showing a document version SHOULD show the current notices about it.
 
@@ -383,9 +389,23 @@
 
   <section*|12. Versioning of this specification>
 
-  Every JSON file defined here declares its format version, and the discovery document and every <verbatim|object.json> declare the version of this specification. Before version 1.0, any change of the minor version (0.1, 0.2, ...) may be incompatible; a reader that finds a version it does not know SHOULD report it and MUST NOT silently treat the files as valid. From version 1.0, minor versions will be backward compatible.
+  This specification is versioned MAJOR.MINOR.PATCH, a form of semantic versioning adapted to a format:
 
-  The text of each version is published at <verbatim|https://opensheaf.org/opensheaf-specification-\<less\>version\<gtr\>.md> and is not changed after the version is final.
+  <\itemize>
+    <item>a <strong|major> version (1.0, 2.0) may make incompatible changes;
+
+    <item>a <strong|minor> version (1.1, 1.2) only adds: every file valid under 1.x remains valid under 1.y for y \<gtr\> x, with the same meaning;
+
+    <item>a <strong|patch> version (1.1.1) corrects or clarifies the text without changing any requirement.
+  </itemize>
+
+  Before version 1.0, any change of the minor version (0.1, 0.2, ...) may be incompatible, as semantic versioning allows for initial development.
+
+  Every JSON file defined here declares its format version, and the discovery document and every <verbatim|object.json> declare the version of this specification, both as MAJOR.MINOR only (for instance <verbatim|"opensheaf-object/0.1"> and <verbatim|"0.1">): a patch version never changes what is valid, so files do not record it.
+
+  A reader that finds a major version it does not know (or, before 1.0, a minor version it does not know) SHOULD report it and MUST NOT silently treat the files as valid. A reader that finds a later minor version of a major version it knows (from 1.0) reads the files as that major version, ignoring properties it does not know, and SHOULD report the version. For this to work, readers MUST ignore unknown properties in files of a major version they know, and the schemas of this specification do not forbid additional properties.
+
+  While a version is a draft, successive drafts are identified by the date in the heading and by the changelog (section 17). The text of each version is published at <verbatim|https://opensheaf.org/opensheaf-specification-\<less\>MAJOR.MINOR\<gtr\>.md> and is not changed after the version is final, except by patch versions, which are listed in its changelog.
 
   <section*|13. Integrity and authenticity>
 

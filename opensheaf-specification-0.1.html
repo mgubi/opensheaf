@@ -181,8 +181,9 @@
       <li>
         <p>
           <strong>Description-only version:</strong> an object version that
-          keeps the document version: it changes only the description, the
-          state or the notices of the object.
+          holds an existing document version with its files unchanged,
+          changing only the description, the state or the notices of the
+          object (section 7.3).
         </p>
       </li>
       <li>
@@ -537,21 +538,37 @@
     <p>
       <strong>New versions.</strong> A new document version number is assigned
       exactly when files of the document's own (sources, renditions, change
-      note) that were not deposited before are added. An object version
-      holding the same sources, renditions and change note as an earlier
-      document version keeps its number. A description-only version keeps the
-      document version. A document version recorded without sources (section
-      9, <tt class="verbatim">sourcesMissing</tt>) MAY be completed later, keeping its
-      number: the completing object version adds the sources, and MAY add
-      renditions produced from them (for instance a PDF typeset from the added
-      sources, beside the one received), but changes or removes no file of the
-      version; it removes <tt class="verbatim">sourcesMissing</tt> when the sources are
-      complete, after which the version is fixed like any other. A version
-      that was not public at the time, such as the manuscript submitted to a
-      journal, deposited later, is a document version like any other. A
-      version published by someone else, such as the journal's version of
-      record, is not a document version of the author's object: it is linked
-      by a relation (section 8.1).
+      note) that were not deposited before are added, except when a version
+      without sources is completed (below). An object version holding the same
+      sources, renditions and change note as an earlier document version keeps
+      its number.
+    </p>
+    <p>
+      <strong>Description-only versions.</strong> A description-only version
+      holds an existing document version, with its files unchanged, and
+      changes only its description (<tt class="verbatim">datacite.json</tt>, such as a
+      DOI, a stage or a link to the published article), the state of the
+      object or its notices. It MAY hold any document version, not only the
+      current one, so that an earlier version can be described after later
+      versions exist; tools otherwise hold the current version. If the object
+      has <tt class="verbatim">history</tt>, its entry for that document version becomes
+      the new object version.
+    </p>
+    <p>
+      <strong>Completion.</strong> A document version recorded without sources
+      (section 9, <tt class="verbatim">sourcesMissing</tt>) MAY be completed later,
+      keeping its number: the completing object version adds the sources, and
+      MAY add renditions produced from them (for instance a PDF typeset from
+      the added sources, beside the one received), but changes or removes no
+      file of the version; it removes <tt class="verbatim">sourcesMissing</tt> when the
+      sources are complete, after which the version is fixed like any other.
+    </p>
+    <p>
+      <strong>Other versions.</strong> A version that was not public at the
+      time, such as the manuscript submitted to a journal, deposited later, is
+      a document version like any other. A version published by someone else,
+      such as the journal's version of record, is not a document version of
+      the author's object: it is linked by a relation (section 8.1).
     </p>
     <p>
       <strong>History.</strong> The order of the document versions in the
@@ -572,11 +589,11 @@
     <p>
       <strong>Current version.</strong> The current version of a document is
       the last entry of the history of its head version (without <tt class="verbatim">history</tt>:
-      the highest document version, which is then held by the head). After an
-      earlier version is deposited out of order, the head holds that earlier
-      version while the current version stays where it was. Landing pages,
-      indexes, citations and the following of members (section 10.3) use the
-      current version, not the head.
+      the highest document version). The head may hold another document
+      version, after an earlier version is deposited out of order or described
+      by a description-only version; the current version stays where it was.
+      Landing pages, indexes, citations and the following of members (section
+      10.3) use the current version, not the head.
     </p>
     <p>
       <strong>Notices.</strong> A notice about a document version (for
@@ -1087,17 +1104,58 @@
     </p>
     <h2 id="auto-29">12. Versioning of this specification<span style="margin-left: 1em"></span></h2>
     <p>
-      Every JSON file defined here declares its format version, and the
-      discovery document and every <tt class="verbatim">object.json</tt> declare the
-      version of this specification. Before version 1.0, any change of the
-      minor version (0.1, 0.2, &hellip;) may be incompatible; a reader that
-      finds a version it does not know SHOULD report it and MUST NOT silently
-      treat the files as valid. From version 1.0, minor versions will be
-      backward compatible.
+      This specification is versioned MAJOR.MINOR.PATCH, a form of semantic
+      versioning adapted to a format:
+    </p>
+    <ul>
+      <li>
+        <p>
+          a <strong>major</strong> version (1.0, 2.0) may make incompatible
+          changes;
+        </p>
+      </li>
+      <li>
+        <p>
+          a <strong>minor</strong> version (1.1, 1.2) only adds: every file
+          valid under 1.x remains valid under 1.y for y &gt; x, with the same
+          meaning;
+        </p>
+      </li>
+      <li>
+        <p>
+          a <strong>patch</strong> version (1.1.1) corrects or clarifies the
+          text without changing any requirement.
+        </p>
+      </li>
+    </ul>
+    <p>
+      Before version 1.0, any change of the minor version (0.1, 0.2, &hellip;)
+      may be incompatible, as semantic versioning allows for initial
+      development.
     </p>
     <p>
-      The text of each version is published at <tt class="verbatim">https://opensheaf.org/opensheaf-specification-&lt;version&gt;.md</tt>
-      and is not changed after the version is final.
+      Every JSON file defined here declares its format version, and the
+      discovery document and every <tt class="verbatim">object.json</tt> declare the
+      version of this specification, both as MAJOR.MINOR only (for instance
+      <tt class="verbatim">&quot;opensheaf-object/0.1&quot;</tt> and <tt class="verbatim">&quot;0.1&quot;</tt>):
+      a patch version never changes what is valid, so files do not record it.
+    </p>
+    <p>
+      A reader that finds a major version it does not know (or, before 1.0, a
+      minor version it does not know) SHOULD report it and MUST NOT silently
+      treat the files as valid. A reader that finds a later minor version of a
+      major version it knows (from 1.0) reads the files as that major version,
+      ignoring properties it does not know, and SHOULD report the version. For
+      this to work, readers MUST ignore unknown properties in files of a major
+      version they know, and the schemas of this specification do not forbid
+      additional properties.
+    </p>
+    <p>
+      While a version is a draft, successive drafts are identified by the date
+      in the heading and by the changelog (section 17). The text of each
+      version is published at <tt class="verbatim">https://opensheaf.org/opensheaf-specification-&lt;MAJOR.MINOR&gt;.md</tt>
+      and is not changed after the version is final, except by patch versions,
+      which are listed in its changelog.
     </p>
     <h2 id="auto-30">13. Integrity and authenticity<span style="margin-left: 1em"></span></h2>
     <h3 id="auto-31">13.1 Integrity<span style="margin-left: 1em"></span></h3>

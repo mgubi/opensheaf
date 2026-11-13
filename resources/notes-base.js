@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded',
 (function () {
   'use strict';
   var config = {
-    repo: 'opensheaf/opensheaf',
+    repo: 'opensheaf/opensheaf.github.io',
     repoId: 'R_kgDOVsclpA',
     category: 'Announcements',
     categoryId: 'DIC_kwDOVsclpM4DLAO-'

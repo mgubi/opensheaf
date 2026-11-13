@@ -3,7 +3,7 @@
 *Specification, version 0.1 (draft), 13 November 2026. OpenSheaf is a common, open format for archives of scholarly documents and for collections of them, built on the Oxford Common File Layout (OCFL 1.1) and the DataCite Metadata Schema (4.7). This version is experimental and may change in incompatible ways before version 1.0. The text is licensed under CC BY-SA 4.0; the JSON Schemas are dedicated to the public domain under CC0 1.0.*
 
 > [!WARNING]
-> **Draft.** This version is a draft. Until version 1.0, any revision may change the format in incompatible ways, and archives and collections made now may have to be rebuilt or migrated. Do not rely on it yet for anything you cannot redo. Changes are listed in the changelog (section 17) and discussed in the [issues](https://github.com/opensheaf/opensheaf/issues).
+> **Draft.** This version is a draft. Until version 1.0, any revision may change the format in incompatible ways, and archives and collections made now may have to be rebuilt or migrated. Do not rely on it yet for anything you cannot redo. Changes are listed in the changelog (section 17) and discussed in the [issues](https://github.com/opensheaf/opensheaf.github.io/issues).
 
 ## 1. Introduction (non-normative)
 
@@ -15,7 +15,7 @@ OpenSheaf is meant as a lean alternative to arXiv and to the usual publication i
 - **Composable collections.** A collection is itself a versioned object. It can include documents and collections of other archives, pinned by digest, so that selections (by a seminar, an editorial board, a reading list) compose without copying.
 - **External services are optional.** Archives may deposit their documents with a DOI service such as Zenodo, publish them as a website, and keep their files in git; none of this is required by the core of the format.
 
-Answers to common questions about the design are collected in the [FAQ](https://github.com/opensheaf/opensheaf/blob/main/FAQ.md).
+Answers to common questions about the design are collected in the [FAQ](https://github.com/opensheaf/opensheaf.github.io/blob/main/FAQ.md).
 
 The name: a sheaf is a bundle of papers and, in mathematics, the structure in which local pieces glue into a whole, as archives kept and verified separately compose into collections. The home of the format is `https://opensheaf.org/`. The first OpenSheaf archive is `https://mgubi.org/papers/`; its values appear in the examples.
 

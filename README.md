@@ -16,7 +16,7 @@ collections of them. Read the
 > Do not rely on it yet for anything you cannot redo.
 
 **Source:** the specification and this site are kept in the GitHub repository
-[opensheaf/opensheaf](https://github.com/opensheaf/opensheaf), which is also the place
+[opensheaf/opensheaf.github.io](https://github.com/opensheaf/opensheaf.github.io), which is also the place
 to discuss them (see below).
 
 ## Why
@@ -67,11 +67,11 @@ copying, while every piece stays checkable on its own.
 This repository is the place to discuss OpenSheaf and to propose changes:
 
 - **Questions and problems:** open an
-  [issue](https://github.com/opensheaf/opensheaf/issues), for instance when
+  [issue](https://github.com/opensheaf/opensheaf.github.io/issues), for instance when
   something in the specification is unclear, contradictory or hard to
   implement.
 - **Ideas and open-ended discussion:** use the
-  [Discussions](https://github.com/opensheaf/opensheaf/discussions).
+  [Discussions](https://github.com/opensheaf/opensheaf.github.io/discussions).
 - **Amendments:** propose changes to the text as pull requests on
   [opensheaf-specification-0.1.md](opensheaf-specification-0.1.md), with an
   explanation of the motivation; larger changes are best discussed in an
@@ -87,7 +87,9 @@ This repository is the place to discuss OpenSheaf and to propose changes:
     OpenSheaf archive, following version 0.1, with TeXmacs sources, HTML
     versions and PDFs (profile `texmacs`).
 - **Tools:** [opensheaf-py](https://github.com/opensheaf/opensheaf-py)
-  (Python, the `osheaf` command): deposits documents as OCFL objects with
+  (Python, the `osheaf` command, written as a
+  [literate program](https://opensheaf.org/opensheaf-py/) that explains it
+  along the specification): deposits documents as OCFL objects with
   DataCite and OpenSheaf metadata (any source with its PDF, or TeXmacs
   sources typeset by the archive), keeps document versions, history and
   collections, writes the discovery document and a website with landing
@@ -108,8 +110,8 @@ This repository is the place to discuss OpenSheaf and to propose changes:
 - [`opensheaf-specification-0.1.md`](opensheaf-specification-0.1.md): the
   specification, in Markdown, its only source.
 - [`FAQ.md`](FAQ.md): answers to common questions about the design.
-- [`README.md`](https://github.com/opensheaf/opensheaf/blob/main/README.md): this text, also the home page of the site.
-- [`schemas/`](https://github.com/opensheaf/opensheaf/tree/main/schemas): the JSON Schemas of the files defined by the
+- [`README.md`](https://github.com/opensheaf/opensheaf.github.io/blob/main/README.md): this text, also the home page of the site.
+- [`schemas/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/schemas): the JSON Schemas of the files defined by the
   specification, also published at `https://opensheaf.org/schemas/`:
   [`opensheaf-archive-0.1.schema.json`](https://opensheaf.org/schemas/opensheaf-archive-0.1.schema.json)
   for `opensheaf.json`,
@@ -117,25 +119,25 @@ This repository is the place to discuss OpenSheaf and to propose changes:
   for `object.json` and
   [`opensheaf-collection-0.1.schema.json`](https://opensheaf.org/schemas/opensheaf-collection-0.1.schema.json)
   for `members.json`.
-- [`index.tm`](https://github.com/opensheaf/opensheaf/blob/main/index.tm)/[`index.html`](https://github.com/opensheaf/opensheaf/blob/main/index.html),
-  [`opensheaf-specification-0.1.tm`](https://github.com/opensheaf/opensheaf/blob/main/opensheaf-specification-0.1.tm)/[`.html`](https://github.com/opensheaf/opensheaf/blob/main/opensheaf-specification-0.1.html),
-  [`faq.tm`](https://github.com/opensheaf/opensheaf/blob/main/faq.tm)/[`faq.html`](https://github.com/opensheaf/opensheaf/blob/main/faq.html): the pages of the site,
+- [`index.tm`](https://github.com/opensheaf/opensheaf.github.io/blob/main/index.tm)/[`index.html`](https://github.com/opensheaf/opensheaf.github.io/blob/main/index.html),
+  [`opensheaf-specification-0.1.tm`](https://github.com/opensheaf/opensheaf.github.io/blob/main/opensheaf-specification-0.1.tm)/[`.html`](https://github.com/opensheaf/opensheaf.github.io/blob/main/opensheaf-specification-0.1.html),
+  [`faq.tm`](https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.tm)/[`faq.html`](https://github.com/opensheaf/opensheaf.github.io/blob/main/faq.html): the pages of the site,
   generated from the Markdown files (for TeXmacs and for the web); do not
   edit them.
-- [`notes-meta.ts`](https://github.com/opensheaf/opensheaf/blob/main/notes-meta.ts): the TeXmacs style package of the
-  page; [`resources/`](https://github.com/opensheaf/opensheaf/tree/main/resources): its stylesheets, scripts and fonts.
-- [`resources/brand/`](https://github.com/opensheaf/opensheaf/tree/main/resources/brand): the logo (dot mark and
+- [`notes-meta.ts`](https://github.com/opensheaf/opensheaf.github.io/blob/main/notes-meta.ts): the TeXmacs style package of the
+  page; [`resources/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/resources): its stylesheets, scripts and fonts.
+- [`resources/brand/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/brand): the logo (dot mark and
   lettering), the symbol, the wordmark and the favicon, as self-contained SVG
   files (with PNG and PDF copies of the logo); see its
-  [README](https://github.com/opensheaf/opensheaf/blob/main/resources/brand/README.md). The lettering is outlined from
+  [README](https://github.com/opensheaf/opensheaf.github.io/blob/main/resources/brand/README.md). The lettering is outlined from
   Geist Serif (SIL Open Font License).
-- [`tools/build.py`](https://github.com/opensheaf/opensheaf/blob/main/tools/build.py): converts the Markdown files to
-  TeXmacs ([`tools/md2tm.py`](https://github.com/opensheaf/opensheaf/blob/main/tools/md2tm.py)) and exports them to HTML
+- [`tools/build.py`](https://github.com/opensheaf/opensheaf.github.io/blob/main/tools/build.py): converts the Markdown files to
+  TeXmacs ([`tools/md2tm.py`](https://github.com/opensheaf/opensheaf.github.io/blob/main/tools/md2tm.py)) and exports them to HTML
   with TeXmacs. It needs the `notes` and `max-html` TeXmacs plugins, linked
   in `~/.TeXmacs/plugins`.
-- [`.agents/skills/opensheaf-style/`](https://github.com/opensheaf/opensheaf/tree/main/.agents/skills/opensheaf-style):
+- [`.agents/skills/opensheaf-style/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/.agents/skills/opensheaf-style):
   the conventions of the site's style and build, for people and agents.
-- [`CNAME`](https://github.com/opensheaf/opensheaf/blob/main/CNAME): the GitHub Pages custom domain, `opensheaf.org`.
+- [`CNAME`](https://github.com/opensheaf/opensheaf.github.io/blob/main/CNAME): the GitHub Pages custom domain, `opensheaf.org`.
 
 ## Licence
 
@@ -143,10 +145,10 @@ The text of the specification and of the FAQ is licensed under the
 [Creative Commons Attribution-ShareAlike 4.0 International licence](https://creativecommons.org/licenses/by-sa/4.0/)
 (CC BY-SA 4.0): it may be copied and adapted with attribution, and adapted
 versions must be shared under the same licence. The JSON Schemas in
-[`schemas/`](https://github.com/opensheaf/opensheaf/tree/main/schemas) are dedicated to the public domain under
+[`schemas/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/schemas) are dedicated to the public domain under
 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), so that they can
 be embedded in any software. The tools and style files are licensed under the GNU
-General Public License, version 3 or later. The fonts in [`resources/fonts/`](https://github.com/opensheaf/opensheaf/tree/main/resources/fonts)
+General Public License, version 3 or later. The fonts in [`resources/fonts/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/fonts)
 keep their own licence (SIL Open Font License).
 
 **Editor:** [Massimiliano Gubinelli](https://mgubi.org/docs/main.html)

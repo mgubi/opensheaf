@@ -66,7 +66,9 @@
 
     <item><strong|Tools:> <hlink|opensheaf-py|https://github.com/opensheaf/opensheaf-py> (Python, the <verbatim|osheaf> command): deposits documents as OCFL objects with DataCite and OpenSheaf metadata (any source with its PDF, or TeXmacs sources typeset by the archive), keeps document versions, history and collections, writes the discovery document and a website with landing pages, deposits on Zenodo, imports from arXiv, and verifies an archive (also with the JSON Schemas and the <verbatim|ocfl-py> validator).
 
-    <item><strong|Template:> <hlink|archive-template|https://github.com/opensheaf/archive-template>, a ready repository for your own archive of papers, published with GitHub Pages ("Use this template", then <verbatim|osheaf init>).
+    <item><strong|Templates:> <hlink|archive-template|https://github.com/opensheaf/archive-template>, a ready repository for your own archive of papers, and <hlink|collection-template|https://github.com/opensheaf/collection-template>, for a curated collection of papers from any archive; both are published with GitHub Pages ("Use this template", then <verbatim|osheaf init>), and both are testing grounds that run every workflow of the tools on every push.
+
+    <item><strong|Test data:> <hlink|example-papers|https://github.com/opensheaf/example-papers>, papers to deposit (invented ones, TeXmacs papers and slides, real openly licensed preprints from arXiv and slides from Zenodo) with their metadata.
   </itemize>
 
   <section*|Files>

@@ -87,9 +87,15 @@ This repository is the place to discuss OpenSheaf and to propose changes:
   collections, writes the discovery document and a website with landing
   pages, deposits on Zenodo, imports from arXiv, and verifies an archive
   (also with the JSON Schemas and the `ocfl-py` validator).
-- **Template:** [archive-template](https://github.com/opensheaf/archive-template),
-  a ready repository for your own archive of papers, published with GitHub
-  Pages ("Use this template", then `osheaf init`).
+- **Templates:** [archive-template](https://github.com/opensheaf/archive-template),
+  a ready repository for your own archive of papers, and
+  [collection-template](https://github.com/opensheaf/collection-template), for
+  a curated collection of papers from any archive; both are published with
+  GitHub Pages ("Use this template", then `osheaf init`), and both are testing
+  grounds that run every workflow of the tools on every push.
+- **Test data:** [example-papers](https://github.com/opensheaf/example-papers),
+  papers to deposit (invented ones, TeXmacs papers and slides, real openly
+  licensed preprints from arXiv and slides from Zenodo) with their metadata.
 
 ## Files
 

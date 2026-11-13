@@ -9,7 +9,9 @@ their TeXmacs versions (exported to HTML, they become links to the pages).
 Handles the subset of Markdown used by spec.md:
 
 - `# Title` (first line): the page title; the first paragraph, if it is in
-  *italics*, becomes the abstract;
+  *italics*, becomes the abstract. The first line may instead be an image
+  `![Title](logo.svg)`, which then stands as the title;
+- images `![alt](path)` on a line of their own (centred);
 - `## Section`, `### Subsection`;
 - paragraphs; lists with `- ` and nested lists indented by two spaces;
   a paragraph after a nested list is indented by two spaces;
@@ -72,11 +74,23 @@ def code_line(c):
     return '    ' + '\\ ' * n + rest
 
 
+IMAGE_RE = re.compile(r'^!\[([^\]]*)\]\(([^)\s]+)\)\s*$')
+
+
+def image(path, width):
+    return f'<image|{esc(path)}|{width}|||>'
+
+
 def convert(md):
     lines = md.split('\n')
-    if not lines or not lines[0].startswith('# '):
-        sys.exit('spec.md must start with "# Title"')
-    title = lines[0][2:].strip()
+    first = IMAGE_RE.match(lines[0]) if lines else None
+    if first:
+        # a logo standing for the title
+        title_markup = image(first.group(2), '0.5par')
+    elif lines and lines[0].startswith('# '):
+        title_markup = inline(lines[0][2:].strip())
+    else:
+        sys.exit('the Markdown file must start with "# Title" or a title image')
     i = 1
     while i < len(lines) and not lines[i].strip():
         i += 1
@@ -104,6 +118,11 @@ def convert(md):
             body = '\n\n'.join(code_line(c) for c in code)
             blocks.append('  <\\verbatim-code>\n' + body + '\n  </verbatim-code>')
             i = j + 1
+            continue
+        m = IMAGE_RE.match(l)
+        if m:
+            blocks.append(f'  <\\with|par-mode|center>\n    {image(m.group(2), "0.6par")}\n  </with>')
+            i += 1
             continue
         if l.startswith('### '):
             blocks.append(f'  <subsection*|{inline(l[4:])}>')
@@ -151,7 +170,7 @@ def convert(md):
 
     head = ('<TeXmacs|2.1.5>\n\n<style|<tuple|notes|notes-meta>>\n\n<\\body>\n'
             '  <notes-header>\n\n'
-            f'  <chapter*|{inline(title)}>\n\n')
+            f'  <chapter*|{title_markup}>\n\n')
     if abstract:
         head += f'  <notes-abstract|{inline(abstract)}>\n\n'
     tail = ('\n</body>\n\n<\\initial>\n  <\\collection>\n'

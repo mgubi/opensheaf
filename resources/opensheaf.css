@@ -40,3 +40,18 @@ div.tmweb-code pre.verbatim {
     margin: 0;
     padding: 0;
 }
+
+/* The logo is drawn in black on a transparent background: no image
+   background (the site gives images a white one on the dark theme), and
+   inverted on the dark theme. */
+img[src$="opensheaf-logo.svg"] {
+    background-color: transparent !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) img[src$="opensheaf-logo.svg"] {
+        filter: invert(1);
+    }
+}
+:root[data-theme="dark"] img[src$="opensheaf-logo.svg"] {
+    filter: invert(1);
+}

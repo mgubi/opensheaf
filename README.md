@@ -1,4 +1,4 @@
-# OpenSheaf
+![OpenSheaf](resources/brand/opensheaf-logo.svg)
 
 OpenSheaf is an open format for archives of scholarly documents and for
 collections of them. Read the
@@ -96,6 +96,10 @@ This repository is the place to discuss OpenSheaf and to propose changes:
   files (for TeXmacs and for the web); do not edit them.
 - `notes-meta.ts`: the TeXmacs style package of the page; `resources/`: its
   stylesheets, scripts and fonts.
+- `resources/brand/`: the logo (dot mark and lettering), the symbol, the
+  wordmark and the favicon, as self-contained SVG files (with PNG and PDF
+  copies of the logo); see its README. The lettering is outlined from Geist
+  Serif (SIL Open Font License).
 - `tools/build.py`: converts the Markdown files to TeXmacs
   (`tools/md2tm.py`) and exports them to HTML with TeXmacs. It needs the
   `notes` and `max-html` TeXmacs plugins, linked in `~/.TeXmacs/plugins`.

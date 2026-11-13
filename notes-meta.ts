@@ -34,7 +34,7 @@
 
   <assign|html-title|OpenSheaf>
 
-  <assign|html-head-favicon|resources/favicon-32x32.png>
+  <assign|html-head-favicon|resources/brand/favicon.svg>
 
   <assign|html-head-javascript-src|<tuple|resources/theme.js>>
 

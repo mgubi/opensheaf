@@ -175,6 +175,7 @@ osheaf verify --remote
 ```yaml
 id: preserved
 title: Papers preserved by the library
+type: archive
 members:
   - archive: https://example.org/papers/
     id: kpz-uniqueness
@@ -224,20 +225,21 @@ osheaf accept https://authors.example.org/ network-discrimination \
   --stage VoR \
   --agreement "the journal's publication terms"
 
-# list the issue (issue-7.yaml below). The reference tools do not yet write
-# selections (type and revisions, section 10.2): until they do, a
-# collection whose members each pin one object version is the nearest form.
-# Name the collection: without a name, sync replaces the main collection.
+# list the issue (issue-7.yaml below): a selection, whose member pins the
+# revisions vetted; update never changes them, it only reports versions
+# not vetted. Name the collection: without a name, sync replaces the main
+# collection.
 osheaf collection sync issue-7 --from issue-7.yaml
 ```
 
 ```yaml
 id: issue-7
 title: Issue 7
+type: selection
 members:
   - archive: "."                  # the accepted copy, in the journal's archive
     id: network-discrimination
-    version: v1
+    revisions: [1]                # its document version 1; after a correction, [1, 2]
 ```
 
 ### A journal that publishes its own version

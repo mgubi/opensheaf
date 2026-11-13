@@ -1135,8 +1135,7 @@
     </ul>
     <p>
       Each member MAY have <tt class="verbatim">mirrors</tt> (base URLs of archives
-      holding a copy: section 10.4 for archive collections, section 10.5 for
-      the accepted copy of a selection's revision), <tt class="verbatim">doi</tt> (the
+      holding a mirror of the object, section 10.4), <tt class="verbatim">doi</tt> (the
       version DOI), <tt class="verbatim">conceptDoi</tt> and <tt class="verbatim">cite</tt>, a
       cached citation (<tt class="verbatim">title</tt>, <tt class="verbatim">creators</tt> as a
       list of names, <tt class="verbatim">year</tt>, and <tt class="verbatim">issued</tt>, the
@@ -1146,39 +1145,47 @@
     </p>
     <p>
       <strong>Members of an archive collection</strong> MUST have <tt class="verbatim">version</tt>,
-      the pinned object version (the head of the object when the collection
-      version was made), and <tt class="verbatim">inventorySha512</tt>, the SHA-512
-      digest of that version's inventory file. Since the inventory of an
-      object version lists every earlier version, the pin fixes the object
+      the pinned object version, and <tt class="verbatim">inventorySha512</tt>, the
+      SHA-512 digest of that version's inventory file. Since the inventory of
+      an object version lists every earlier version, the pin fixes the object
       with all its versions up to it. A member MAY have <tt class="verbatim">follow</tt>,
       <tt class="verbatim">&quot;latest&quot;</tt>: a curation setting, not a floating
-      reference. A tool maintaining the collection reads the member archive's
-      discovery document (or its feed); when the followed object has a new
-      head, the tool writes a new collection version pinning it, whatever the
-      new head holds (a new document version, a description, a notice, a
-      withdrawal): an archive collection does not judge the versions of its
-      members. A withdrawn member stays, and presentations show the
-      withdrawal. Presentations show the current version of each member, read
-      from the history of the pinned version (section 7.3).
+      reference. A followed member pins the head of the object when the
+      collection version was made; a member without <tt class="verbatim">follow</tt>
+      keeps the version its curator pinned, which MAY be earlier than the
+      head, until the curator changes it. A tool maintaining the collection
+      reads the member archive's discovery document (or its feed); when the
+      followed object has a new head, the tool writes a new collection version
+      pinning it, whatever the new head holds (a new document version, a
+      description, a notice, a withdrawal): an archive collection does not
+      judge the versions of its members. A withdrawn member stays, and
+      presentations show the withdrawal. Presentations show the current
+      version of each member, read from the history of the pinned version
+      (section 7.3).
     </p>
     <p>
       <strong>Members of a selection</strong> MUST have <tt class="verbatim">revisions</tt>:
       a non-empty list of the revisions vetted, in the order of the document's
       history, each with <tt class="verbatim">documentVersion</tt>, <tt class="verbatim">version</tt>
-      (the object version vetted, which holds that document version) and <tt
-      class="verbatim">inventorySha512</tt> (the digest of its inventory file). They
-      MUST NOT have <tt class="verbatim">version</tt>, <tt class="verbatim">inventorySha512</tt>
-      or <tt class="verbatim">follow</tt> themselves. The revision presented as the
-      selection's is the last of the list. A revision pins the object version
-      that was vetted: descriptions and notices added later by the document's
-      archive are not vetted by the selection, and presentations that show
-      them SHOULD say where they come from. Tools MUST NOT change revision
-      sets on their own: adding a revision (for instance a corrected version,
-      accepted after review), removing one, or adding or removing a member is
-      a new version of the selection, made by its curator, recorded in the
-      inventory (who and when) with a message saying what was decided. A
-      revision set MAY hold several revisions of the same document, for
-      instance a version accepted and its later correction.
+      (the object version vetted, which holds that document version: when
+      several do, the last of them when the revision was vetted, which is its
+      entry in the history, section 7.3) and <tt class="verbatim">inventorySha512</tt>
+      (the digest of its inventory file). They MUST NOT have <tt class="verbatim">version</tt>,
+      <tt class="verbatim">inventorySha512</tt> or <tt class="verbatim">follow</tt> themselves.
+      The revision presented as the selection's is the last of the list. A
+      revision pins the object version that was vetted: descriptions and
+      notices added later by the document's archive are not vetted by the
+      selection, and presentations that show them SHOULD say where they come
+      from; a revision keeps its pin in later versions of the selection. If
+      the document is withdrawn in its archive, the revisions stay vetted, and
+      presentations show the withdrawal as section 11.1 asks, saying that it
+      comes from the member's archive. Tools MUST NOT change revision sets on
+      their own: adding a revision (for instance a corrected version, accepted
+      after review), removing one, or adding or removing a member is a new
+      version of the selection, made by its curator, recorded in the inventory
+      (who and when) with a message saying what was decided. A revision set
+      MAY hold several revisions of the same document, for instance a version
+      accepted and its later correction.
     </p>
     <p>
       Every member is pinned: a collection version states exactly which object
@@ -1240,9 +1247,11 @@
       Later document versions of an accepted copy are acts of the selection's
       curator (a corrected version accepted, a notice, a withdrawal); the
       authors' later versions change nothing in it. The selection lists the
-      accepted copy as its member (a member of its own archive), or the
-      original revision set with the accepted copy's archive in the member's
-      <tt class="verbatim">mirrors</tt>.
+      accepted copy as its member, a member of its own archive; it MAY list
+      the original revision set as well. An accepted copy is not a mirror: it
+      is another object, with its own inventories, and cannot stand for the
+      original in the resolution of a pin (section 6.4), so it is never listed
+      in <tt class="verbatim">mirrors</tt>.
     </p>
     <p>
       A version that the selection makes itself, such as a journal's typeset
@@ -1469,11 +1478,14 @@
       </li>
       <li>
         <p>
-          for each collection version, resolve each member (each revision, in
-          a selection) as in section 6.4 and check its pin, and for a revision
-          that the pinned object version holds the stated document version,
-          reporting each as verified, mismatch (a copy was found and does not
-          match), unavailable (no copy found) or removed (tombstoned);
+          for the head of each collection, resolve each member (each revision,
+          in a selection) as in section 6.4 and check its pin, and for earlier
+          collection versions check the pins of members of the archive itself
+          (resolving the members of other archives for every earlier
+          collection version is OPTIONAL); for a revision, check that the
+          pinned object version holds the stated document version; report each
+          as verified, mismatch (a copy was found and does not match),
+          unavailable (no copy found) or removed (tombstoned);
         </p>
       </li>
       <li>
@@ -1583,9 +1595,13 @@
           in <tt class="verbatim">members.json</tt>): an archive collection pins objects
           whole and may follow them; a selection pins revision sets, the
           document versions it vetted, and changes only by an act of its
-          curator. Mirrors (whole objects, <tt class="verbatim">mirrorOf</tt> in the
-          discovery document) and accepted copies (one vetted revision, as a
-          document of the selection's archive) are defined. <tt class="verbatim">follow</tt>
+          curator. A member of an archive collection without <tt class="verbatim">follow</tt>
+          may stay at an earlier version; a revision pins the last object
+          version holding its document version when it was vetted; accepted
+          copies are never listed as mirrors; verifiers resolve remote members
+          for the head of a collection. Mirrors (whole objects, <tt class="verbatim">mirrorOf</tt>
+          in the discovery document) and accepted copies (one vetted revision,
+          as a document of the selection's archive) are defined. <tt class="verbatim">follow</tt>
           is for archive collections only, and follows the head.
         </p>
       </li>
@@ -1985,7 +2001,6 @@
       &quot;revisions&quot;: [
         { &quot;documentVersion&quot;: 2, &quot;version&quot;: &quot;v2&quot;, &quot;inventorySha512&quot;: &quot;4f1e&hellip;&quot; },
         { &quot;documentVersion&quot;: 3, &quot;version&quot;: &quot;v4&quot;, &quot;inventorySha512&quot;: &quot;c07a&hellip;&quot; } ],
-      &quot;mirrors&quot;: [&quot;https://journal.example.org/&quot;],
       &quot;cite&quot;: { &quot;title&quot;: &quot;Quantum network discrimination&quot;, &quot;creators&quot;: [&quot;C. Hirche&quot;], &quot;year&quot;: 2021 } },
     { &quot;kind&quot;: &quot;collection&quot;,
       &quot;archive&quot;: &quot;tag:example.org,2026:seminar&quot;,

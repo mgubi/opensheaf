@@ -278,6 +278,7 @@ osheaf verify --remote</pre>
         <pre class="verbatim" xml:space="preserve">
 id: preserved
 title: Papers preserved by the library
+type: archive
 members:
   - archive: https://example.org/papers/
     id: kpz-uniqueness
@@ -342,10 +343,10 @@ osheaf accept https://authors.example.org/ network-discrimination \
   --version v2 \
   --stage VoR \
   --agreement &quot;the journal's publication terms&quot;
-# list the issue (issue-7.yaml below). The reference tools do not yet write
-# selections (type and revisions, section 10.2): until they do, a
-# collection whose members each pin one object version is the nearest form.
-# Name the collection: without a name, sync replaces the main collection.
+# list the issue (issue-7.yaml below): a selection, whose member pins the
+# revisions vetted; update never changes them, it only reports versions
+# not vetted. Name the collection: without a name, sync replaces the main
+# collection.
 osheaf collection sync issue-7 --from issue-7.yaml</pre>
       </div>
     </div>
@@ -354,10 +355,11 @@ osheaf collection sync issue-7 --from issue-7.yaml</pre>
         <pre class="verbatim" xml:space="preserve">
 id: issue-7
 title: Issue 7
+type: selection
 members:
   - archive: &quot;.&quot;                  # the accepted copy, in the journal's archive
     id: network-discrimination
-    version: v1</pre>
+    revisions: [1]                # its document version 1; after a correction, [1, 2]</pre>
       </div>
     </div>
     <h3 id="auto-12">A journal that publishes its own version<span style="margin-left: 1em"></span></h3>

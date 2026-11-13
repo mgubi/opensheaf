@@ -187,6 +187,8 @@
 
     title: Papers preserved by the library
 
+    type: archive
+
     members:
 
     \ \ - archive: https://example.org/papers/
@@ -233,13 +235,13 @@
 
 
 
-    # list the issue (issue-7.yaml below). The reference tools do not yet write
+    # list the issue (issue-7.yaml below): a selection, whose member pins the
 
-    # selections (type and revisions, section 10.2): until they do, a
+    # revisions vetted; update never changes them, it only reports versions
 
-    # collection whose members each pin one object version is the nearest form.
+    # not vetted. Name the collection: without a name, sync replaces the main
 
-    # Name the collection: without a name, sync replaces the main collection.
+    # collection.
 
     osheaf collection sync issue-7 --from issue-7.yaml
   </verbatim-code>
@@ -251,13 +253,15 @@
 
     title: Issue 7
 
+    type: selection
+
     members:
 
     \ \ - archive: "." \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ # the accepted copy, in the journal's archive
 
     \ \ \ \ id: network-discrimination
 
-    \ \ \ \ version: v1
+    \ \ \ \ revisions: [1] \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ # its document version 1; after a correction, [1, 2]
   </verbatim-code>
   </html-div-class>
 

@@ -25,6 +25,12 @@ description: The look and brand of the OpenSheaf site and documents. Use before 
   values. The converter turns `<dfn>` into TeXmacs' `dfn` tag, shown bold in
   the heading colour like the run-in labels and exported as HTML `<dfn>`
   (GitHub shows it in italics).
+- Alerts (GitHub's `> [!WARNING]`, `> [!NOTE]`): `os-alert` in
+  `notes-meta.ts`, drawn by `os-alert-box`, a one-cell table with a 3pt
+  rule on its left: the table is set in the colour of the rule (TeXmacs
+  borders have no colour of their own) and the content back in the colour
+  of the text; amber for warnings, blue for notes, as the `div.os-alert` of
+  the web. Do not use `padded-framed`: TeXmacs 2.1 does not define it.
 
 ## The look
 

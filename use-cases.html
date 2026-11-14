@@ -621,22 +621,26 @@ osheaf collection sync issue-7-details --from issue-7-details.yaml</pre>
           the SHA-512 digest of the referee's identifier (an ORCID iD, which
           is unambiguous where a name is not) followed by a secret. The secret
           is what makes it safe, since names and ORCID iDs are few enough to
-          be guessed one by one; one secret per report, rather than one for
-          the journal, also keeps the reports of the same referee from being
-          linked to each other by equal digests. The journal can derive each
-          report's secret from a private seed of its own (an HMAC of the
-          report's identifier under the seed), so that it keeps a single seed,
-          and gives the referee the secret of each report. The commitment is
-          fixed in the report's version, so it cannot be changed afterwards:
-          neither the journal nor anyone else can later attribute the report
-          to someone else, and revealing the identifier and the secret (the
+          be guessed one by one. The journal keeps one secret per paper (which
+          it can derive from a private seed of its own, as an HMAC of the
+          paper's identifier, so that it keeps a single seed), and from it the
+          secret of each referee of that paper, an HMAC of the referee's
+          identifier under the paper's secret. So the reports of one referee
+          on one paper, through every round of the review, carry the same
+          digest and are seen to come from the same person; the reports of
+          different referees, or of the same referee on different papers,
+          cannot be linked; and revealing a referee's secret discloses neither
+          the paper's secret nor the other referees (revealing the paper's
+          secret itself would let anyone guess them). The commitment is fixed
+          in the report's version, so it cannot be changed afterwards: neither
+          the journal nor anyone else can later attribute the report to
+          someone else, and revealing the identifier and the secret (the
           referee, to claim the report; the journal, with the referee's
           agreement or as an institution may require) lets anyone check the
-          attribution by recomputing the digest. Revealing one report's secret
-          discloses nothing about the others, nor the seed. A referee who
-          agrees to sign the report after acceptance is added to its creators,
-          by name, by a description-only version, with the identifier and the
-          secret that open the commitment.
+          attribution by recomputing the digest. A referee who agrees to sign
+          the reports after acceptance is added to their creators, by name, by
+          description-only versions, with the identifier and the secret that
+          open the commitment.
         </p>
       </li>
       <li>

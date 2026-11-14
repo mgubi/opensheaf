@@ -255,7 +255,7 @@
 
   <verbatim|publisher> is the archive's name, or the external service registering a DOI for the version (appendix A). <verbatim|publisher> and <verbatim|affiliation> SHOULD be written as objects (with <verbatim|name> and, where available, an identifier); readers MUST also accept plain strings.
 
-  <verbatim|doi> and <verbatim|url> are OPTIONAL: they are present when the version has a DOI. <verbatim|types> gives the kind of content: <verbatim|resourceTypeGeneral> from DataCite's list (<verbatim|Preprint>, <verbatim|JournalArticle>, <verbatim|Book>, <verbatim|Dissertation>, <verbatim|Report>, <verbatim|Text>, <verbatim|Dataset>, <verbatim|Software>, <verbatim|Audiovisual> and so on, and <verbatim|Collection> for collections), with <verbatim|resourceType> for detail (for instance "Lecture notes"). An author's versions of a work not published elsewhere are <verbatim|Preprint>, also the accepted manuscript; the stage of a version is given by <verbatim|stage> in <verbatim|object.json> (section 9).
+  <verbatim|doi> and <verbatim|url> are OPTIONAL: they are present when the version has a DOI. <verbatim|types> gives the kind of content: <verbatim|resourceTypeGeneral> from DataCite's list (<verbatim|Preprint>, <verbatim|JournalArticle>, <verbatim|Book>, <verbatim|Dissertation>, <verbatim|Report>, <verbatim|Text>, <verbatim|Dataset>, <verbatim|Software>, <verbatim|Audiovisual>, <verbatim|Presentation> (slides, since DataCite 4.7) and so on, and <verbatim|Collection> for collections), with <verbatim|resourceType> for detail (for instance "Lecture notes"). An author's versions of a work not published elsewhere are <verbatim|Preprint>, also the accepted manuscript; the stage of a version is given by <verbatim|stage> in <verbatim|object.json> (section 9).
 
   <strong|Dates.> Dates are information for readers and services: they never order document versions (section 7.3). Each date type has one meaning:
 
@@ -527,6 +527,8 @@
     <item><strong|0.1 (draft), 14 November 2026, revision:> extensions (section 4): specifications published separately, whose data <verbatim|object.json> records under <verbatim|extensions>, keyed by their names; the discovery document should list them; they never change the core, and verifiers report those they do not know.
 
     <item><strong|0.1 (draft), 14 November 2026, revision:> the impartial kind of collection is named catalogue (<verbatim|type> <verbatim|catalogue> in <verbatim|members.json>), formerly archive collection, so that it is not confused with an archive.
+
+    <item><strong|0.1 (draft), 14 November 2026, revision:> <verbatim|Presentation> (slides) named among the values of <verbatim|resourceTypeGeneral> (section 8).
   </itemize>
 
   <section*|Appendix A. Zenodo binding (normative for archives declaring the profile <verbatim|zenodo>)><label|appendix-a-zenodo-binding-normative-for-archives-declaring-the-profile-zenodo>

@@ -787,13 +787,13 @@
       of content: <tt class="verbatim">resourceTypeGeneral</tt> from DataCite's list
       (<tt class="verbatim">Preprint</tt>, <tt class="verbatim">JournalArticle</tt>, <tt class="verbatim">Book</tt>,
       <tt class="verbatim">Dissertation</tt>, <tt class="verbatim">Report</tt>, <tt class="verbatim">Text</tt>,
-      <tt class="verbatim">Dataset</tt>, <tt class="verbatim">Software</tt>, <tt class="verbatim">Audiovisual</tt>
-      and so on, and <tt class="verbatim">Collection</tt> for collections), with <tt
-      class="verbatim">resourceType</tt> for detail (for instance &quot;Lecture
-      notes&quot;). An author's versions of a work not published elsewhere are
-      <tt class="verbatim">Preprint</tt>, also the accepted manuscript; the stage of a
-      version is given by <tt class="verbatim">stage</tt> in <tt class="verbatim">object.json</tt>
-      (section 9).
+      <tt class="verbatim">Dataset</tt>, <tt class="verbatim">Software</tt>, <tt class="verbatim">Audiovisual</tt>,
+      <tt class="verbatim">Presentation</tt> (slides, since DataCite 4.7) and so on, and
+      <tt class="verbatim">Collection</tt> for collections), with <tt class="verbatim">resourceType</tt>
+      for detail (for instance &quot;Lecture notes&quot;). An author's
+      versions of a work not published elsewhere are <tt class="verbatim">Preprint</tt>,
+      also the accepted manuscript; the stage of a version is given by <tt
+      class="verbatim">stage</tt> in <tt class="verbatim">object.json</tt> (section 9).
     </p>
     <p>
       <strong>Dates.</strong> Dates are information for readers and services:
@@ -1648,6 +1648,13 @@
           impartial kind of collection is named catalogue (<tt class="verbatim">type</tt>
           <tt class="verbatim">catalogue</tt> in <tt class="verbatim">members.json</tt>), formerly
           archive collection, so that it is not confused with an archive.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>0.1 (draft), 14 November 2026, revision:</strong> <tt class="verbatim">Presentation</tt>
+          (slides) named among the values of <tt class="verbatim">resourceTypeGeneral</tt>
+          (section 8).
         </p>
       </li>
     </ul>

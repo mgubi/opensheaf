@@ -179,7 +179,7 @@ It SHOULD contain:
 
 `publisher` is the archive's name, or the external service registering a DOI for the version (appendix A). `publisher` and `affiliation` SHOULD be written as objects (with `name` and, where available, an identifier); readers MUST also accept plain strings.
 
-`doi` and `url` are OPTIONAL: they are present when the version has a DOI. `types` gives the kind of content: `resourceTypeGeneral` from DataCite's list (`Preprint`, `JournalArticle`, `Book`, `Dissertation`, `Report`, `Text`, `Dataset`, `Software`, `Audiovisual` and so on, and `Collection` for collections), with `resourceType` for detail (for instance "Lecture notes"). An author's versions of a work not published elsewhere are `Preprint`, also the accepted manuscript; the stage of a version is given by `stage` in `object.json` (section 9).
+`doi` and `url` are OPTIONAL: they are present when the version has a DOI. `types` gives the kind of content: `resourceTypeGeneral` from DataCite's list (`Preprint`, `JournalArticle`, `Book`, `Dissertation`, `Report`, `Text`, `Dataset`, `Software`, `Audiovisual`, `Presentation` (slides, since DataCite 4.7) and so on, and `Collection` for collections), with `resourceType` for detail (for instance "Lecture notes"). An author's versions of a work not published elsewhere are `Preprint`, also the accepted manuscript; the stage of a version is given by `stage` in `object.json` (section 9).
 
 **Dates.** Dates are information for readers and services: they never order document versions (section 7.3). Each date type has one meaning:
 
@@ -377,6 +377,7 @@ A verifier SHOULD check the witnesses it finds, the requirements of the profiles
 - **0.1 (draft), 13 November 2026, revision:** collections are archive collections or selections (`type` in `members.json`): an archive collection pins objects whole and may follow them; a selection pins revision sets, the document versions it vetted, and changes only by an act of its curator. A member of an archive collection without `follow` may stay at an earlier version; a revision pins the last object version holding its document version when it was vetted; accepted copies are never listed as mirrors; verifiers resolve remote members for the head of a collection. Mirrors (whole objects, `mirrorOf` in the discovery document) and accepted copies (one vetted revision, as a document of the selection's archive) are defined. `follow` is for archive collections only, and follows the head.
 - **0.1 (draft), 14 November 2026, revision:** extensions (section 4): specifications published separately, whose data `object.json` records under `extensions`, keyed by their names; the discovery document should list them; they never change the core, and verifiers report those they do not know.
 - **0.1 (draft), 14 November 2026, revision:** the impartial kind of collection is named catalogue (`type` `catalogue` in `members.json`), formerly archive collection, so that it is not confused with an archive.
+- **0.1 (draft), 14 November 2026, revision:** `Presentation` (slides) named among the values of `resourceTypeGeneral` (section 8).
 
 ## Appendix A. Zenodo binding (normative for archives declaring the profile `zenodo`)
 

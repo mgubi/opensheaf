@@ -156,8 +156,12 @@ on GitHub, and archives made with them.
   TeXmacs ([`tools/md2tm.py`](https://github.com/opensheaf/opensheaf.github.io/blob/main/tools/md2tm.py)) and exports them to HTML
   with TeXmacs. It needs the `notes` and `max-html` TeXmacs plugins, linked
   in `~/.TeXmacs/plugins`.
-- [`.agents/skills/opensheaf-style/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/.agents/skills/opensheaf-style):
-  the conventions of the site's style and build, for people and agents.
+- [`AGENTS.md`](https://github.com/opensheaf/opensheaf.github.io/blob/main/AGENTS.md):
+  how to work on this repository, for people and agents, with two skills:
+  [`.agents/skills/opensheaf-spec/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/.agents/skills/opensheaf-spec),
+  the concepts of the specification and how to change it, and
+  [`.agents/skills/opensheaf-style/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/.agents/skills/opensheaf-style),
+  the conventions of the site's style and build.
 - [`CNAME`](https://github.com/opensheaf/opensheaf.github.io/blob/main/CNAME): the GitHub Pages custom domain, `opensheaf.org`.
 - [`LICENSE`](https://github.com/opensheaf/opensheaf.github.io/blob/main/LICENSE) and
   [`LICENSES/`](https://github.com/opensheaf/opensheaf.github.io/tree/main/LICENSES): which licence

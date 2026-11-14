@@ -96,7 +96,7 @@
 
     <item><hlink|<verbatim|tools/build.py>|https://github.com/opensheaf/opensheaf.github.io/blob/main/tools/build.py>: converts the Markdown files to TeXmacs (<hlink|<verbatim|tools/md2tm.py>|https://github.com/opensheaf/opensheaf.github.io/blob/main/tools/md2tm.py>) and exports them to HTML with TeXmacs. It needs the <verbatim|notes> and <verbatim|max-html> TeXmacs plugins, linked in <verbatim|~/.TeXmacs/plugins>.
 
-    <item><hlink|<verbatim|.agents/skills/opensheaf-style/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/.agents/skills/opensheaf-style>: the conventions of the site's style and build, for people and agents.
+    <item><hlink|<verbatim|AGENTS.md>|https://github.com/opensheaf/opensheaf.github.io/blob/main/AGENTS.md>: how to work on this repository, for people and agents, with two skills: <hlink|<verbatim|.agents/skills/opensheaf-spec/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/.agents/skills/opensheaf-spec>, the concepts of the specification and how to change it, and <hlink|<verbatim|.agents/skills/opensheaf-style/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/.agents/skills/opensheaf-style>, the conventions of the site's style and build.
 
     <item><hlink|<verbatim|CNAME>|https://github.com/opensheaf/opensheaf.github.io/blob/main/CNAME>: the GitHub Pages custom domain, <verbatim|opensheaf.org>.
 

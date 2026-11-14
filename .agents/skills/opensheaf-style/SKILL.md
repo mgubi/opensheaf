@@ -8,7 +8,7 @@ description: The look and brand of the OpenSheaf site and documents. Use before 
 ## How the pages are made
 
 - Edit only the Markdown sources: `README.md` (home page and GitHub README),
-  `opensheaf-specification-0.1.md`, `FAQ.md`.
+  `opensheaf-specification-0.1.md`, `FAQ.md`, `USE-CASES.md`.
 - `tools/md2tm.py` converts them to TeXmacs; `tools/build.py` runs it and
   exports each `.tm` to `.html`. Never edit the `.tm` or `.html` files; commit
   them regenerated, together with their sources.

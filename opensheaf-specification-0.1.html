@@ -203,9 +203,46 @@
       </li>
       <li>
         <p>
-          <dfn>Accepted copy</dfn>: a document of a selection's archive
-          holding exactly the files of a revision it vetted from another
-          archive (section 10.5).
+          <dfn>Accepted copy</dfn>: a shallow branch kept by a selection,
+          starting from a revision it vetted from another archive (section
+          10.5).
+        </p>
+      </li>
+      <li>
+        <p>
+          <dfn>Genesis record</dfn>: the file <tt class="verbatim">genesis.json</tt>,
+          written when an object is first sealed and kept unchanged in all its
+          versions and branches; its digest is the object's name (section
+          6.5).
+        </p>
+      </li>
+      <li>
+        <p>
+          <dfn>Name</dfn>: 52 characters of base32 from the digest of the
+          genesis record, the same for the object in every archive, copy and
+          branch (section 6.5).
+        </p>
+      </li>
+      <li>
+        <p>
+          <dfn>Owner</dfn>: the URI of whoever decides the versions of a line:
+          none for a draft, a named owner (an archive identifier, an ORCID iD,
+          a web address) or a keyed owner (a public key) (section 6.5).
+        </p>
+      </li>
+      <li>
+        <p>
+          <dfn>Line</dfn>: the history of an object as decided by one owner,
+          identified by the pair (owner, name); its object versions form a
+          single sequence (section 6.5).
+        </p>
+      </li>
+      <li>
+        <p>
+          <dfn>Branch</dfn>: a line of another owner continuing an object from
+          one of its versions, the branch point: deep when it holds the
+          earlier versions too, shallow when it holds only the branch point
+          and its own versions (section 10.5).
         </p>
       </li>
       <li>
@@ -457,7 +494,8 @@
           file) and <tt class="verbatim">status</tt> (<tt class="verbatim">active</tt> or <tt
           class="verbatim">withdrawn</tt>, section 11); a mirror (section 10.4) also has
           <tt class="verbatim">mirrorOf</tt>, the archive identifier of the archive
-          whose object it copies.
+          whose object it copies; an object with a genesis record (section
+          6.5) also has its <tt class="verbatim">name</tt> and <tt class="verbatim">owner</tt>.
         </p>
       </li>
     </ul>
@@ -534,8 +572,120 @@
       Any copy whose bytes match the pinned digest is acceptable: integrity
       comes from the pin, not from the place.
     </p>
-    <h2 id="auto-12"><a id="7-objects"></a>7. Objects<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-13"><a id="71-common-rules"></a>7.1 Common rules<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-12"><a id="65-names-owners-and-lines"></a>6.5 Names, owners and lines<span style="margin-left: 1em"></span></h3>
+    <div class="os-alert os-note">
+      <font class="os-alert-label">Note.</font> <strong>Proposal.</strong> This section, and
+      the sections it changes (9, 10.2, 10.5, 13.2, 14), are a proposal on the
+      branch <tt class="verbatim">proposal/identity</tt>, not yet agreed. It builds on
+      the discussions of self-certifying names (#20), decentralised holding
+      and keys (#13), global names (#14) and private and draft objects (#29).
+    </div>
+    <p>
+      An object identifier names an object within its archive (section 6.3).
+      An object also has a name, independent of any archive, and an owner. The
+      pair (owner, name) identifies a line: the history of the object as
+      decided by that owner. Copies of a line (mirrors, section 10.4) are the
+      same line wherever they are kept; lines of other owners with the same
+      name are branches (section 10.5).
+    </p>
+    <p>
+      <strong>Genesis record.</strong> When an object is first sealed, that is
+      made available to others, its owner writes the genesis record, the JSON
+      file <tt class="verbatim">genesis.json</tt> at the root of the content, with <tt
+      class="verbatim">format</tt> (<tt class="verbatim">&quot;opensheaf-genesis/0.1&quot;</tt>),
+      <tt class="verbatim">kind</tt> (<tt class="verbatim">document</tt> or <tt class="verbatim">collection</tt>),
+      <tt class="verbatim">created</tt> (the date and time, in UTC), <tt class="verbatim">originator</tt>
+      (the owner of the first line, a URI) and <tt class="verbatim">nonce</tt> (at least
+      128 random bits, in lowercase hexadecimal). The genesis record MUST be
+      part of every later object version of the object and of its branches,
+      byte for byte. It contains neither the name nor the object identifier,
+      so that the name does not depend on itself.
+    </p>
+    <p>
+      <strong>Name.</strong> The name of the object is the SHA-512 digest of
+      <tt class="verbatim">genesis.json</tt>, truncated to its first 256 bits and
+      written in lowercase base32 (RFC 4648, without padding): 52 characters,
+      a valid object identifier (section 6.3). Anyone holding a copy can
+      compute it; it is unique without a registry, since the record holds a
+      random nonce. <tt class="verbatim">object.json</tt> records it as <tt class="verbatim">name</tt>.
+      An archive MAY use the name as the object identifier.
+    </p>
+    <p>
+      <strong>Owner.</strong> The owner of a line is a URI, recorded in <tt
+      class="verbatim">object.json</tt> as <tt class="verbatim">owner</tt> from the first sealed
+      version. There are three cases:
+    </p>
+    <ul>
+      <li>
+        <p>
+          a <strong>draft</strong> (or a private object) has no owner and no
+          genesis record yet: it may be rewritten, and it is not pinned by
+          others (#29); it receives both when it is sealed;
+        </p>
+      </li>
+      <li>
+        <p>
+          a <strong>named owner</strong> is a URI that the owner asserts: the
+          archive identifier, an ORCID iD (<tt class="verbatim">https://orcid.org/&hellip;</tt>),
+          a web address the owner controls. It costs nothing, and proves no
+          more than the archive that serves the line;
+        </p>
+      </li>
+      <li>
+        <p>
+          a <strong>keyed owner</strong> is a public key written as a URI: <tt
+          class="verbatim">did:key:</tt> (the key itself) or <tt class="verbatim">openpgp4fpr:</tt>
+          followed by an OpenPGP fingerprint. Every object version of a keyed
+          line MUST be signed with that key (section 13.2), so that the line
+          can be checked without trusting any host, also after its archive has
+          disappeared.
+        </p>
+      </li>
+    </ul>
+    <p>
+      A named owner MAY sign its versions with keys of its own (<tt class="verbatim">keys</tt>
+      of the discovery document); its line is still identified by the named
+      URI.
+    </p>
+    <p>
+      <strong>One writer per line.</strong> The object versions of a line form
+      a single sequence, each extending the one before, as OCFL objects do: an
+      owner MUST NOT publish two different object versions with the same
+      number for the same name, in one archive or in several. Since every
+      inventory repeats the records of all earlier versions, two copies of a
+      line can be compared from their inventories alone: one MUST be a prefix
+      of the other. Two copies that differ are a fork of the line, an error of
+      its owner; for a keyed owner, the signatures show that the owner made
+      both.
+    </p>
+    <p>
+      <strong>Origin.</strong> The line of the originator is the origin of the
+      name. Every other line with the same name MUST declare its parent
+      (section 10.5); a line of another owner that declares none is not a
+      valid line of the name.
+    </p>
+    <p>
+      <strong>Sealing and transfer.</strong> Sealing a draft makes its owner
+      the first writer; versions made before sealing belong to no line. A line
+      is not handed over: when another owner continues the work (an author
+      leaving an institution's repository, a journal handing a report to its
+      referee), the new owner makes a deep branch (section 10.5), and the
+      previous owner MAY add a notice to its own line pointing to the branch.
+    </p>
+    <p>
+      <strong>Existing objects.</strong> An object made without a genesis
+      record MAY receive one by a description-only version (section 7.3), with
+      the archive identifier as owner and originator; its name holds from that
+      version on.
+    </p>
+    <p>
+      <strong>Open questions.</strong> Writing a line, a version and a pin as
+      one URI (#14, #20); how co-authors own a line (one owner, a group key,
+      or a branch each); the numbering of document versions on branches
+      (section 10.5).
+    </p>
+    <h2 id="auto-13"><a id="7-objects"></a>7. Objects<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-14"><a id="71-common-rules"></a>7.1 Common rules<span style="margin-left: 1em"></span></h3>
     <p>
       Every object MUST be a valid OCFL 1.1 object. Its inventories MUST use
       <tt class="verbatim">sha512</tt> as digest algorithm. Every object version MUST
@@ -564,7 +714,7 @@
       MUST NOT begin with <tt class="verbatim">/</tt>, and MUST NOT contain <tt class="verbatim">.</tt>
       or <tt class="verbatim">..</tt> segments.
     </p>
-    <h3 id="auto-14"><a id="72-documents"></a>7.2 Documents<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-15"><a id="72-documents"></a>7.2 Documents<span style="margin-left: 1em"></span></h3>
     <p>
       A document version contains, at the top level of its content unless a
       profile says otherwise:
@@ -606,7 +756,7 @@
       since they depend on the presentation and are regenerated when it
       improves.
     </p>
-    <h3 id="auto-15"><a id="73-document-versions"></a>7.3 Document versions<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-16"><a id="73-document-versions"></a>7.3 Document versions<span style="margin-left: 1em"></span></h3>
     <p>
       <strong>Numbering.</strong> Document versions are numbered by the
       archive, from 1, without gaps, independently of any external numbering:
@@ -691,7 +841,7 @@
       Dates never order document versions and never decide the current version
       (section 8).
     </p>
-    <h3 id="auto-16"><a id="74-collections"></a>7.4 Collections<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-17"><a id="74-collections"></a>7.4 Collections<span style="margin-left: 1em"></span></h3>
     <p>
       A collection version contains <tt class="verbatim">datacite.json</tt>, <tt class="verbatim">object.json</tt>
       and <tt class="verbatim">members.json</tt> (section 10), which states whether the
@@ -703,7 +853,7 @@
       <tt class="verbatim">changes</tt>, <tt class="verbatim">stage</tt>, <tt class="verbatim">history</tt>,
       <tt class="verbatim">notices</tt>).
     </p>
-    <h2 id="auto-17"><a id="8-description-datacitejson"></a>8. Description: datacite.json<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-18"><a id="8-description-datacitejson"></a>8. Description: datacite.json<span style="margin-left: 1em"></span></h2>
     <p>
       Every object version MUST contain <tt class="verbatim">datacite.json</tt>, a JSON
       object with the DataCite 4.7 properties in the form of the <tt class="verbatim">attributes</tt>
@@ -859,7 +1009,7 @@
       explaining them (for instance &quot;from file timestamps&quot;); unknown
       dates are omitted.
     </p>
-    <h3 id="auto-18"><a id="81-relations"></a>8.1 Relations<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-19"><a id="81-relations"></a>8.1 Relations<span style="margin-left: 1em"></span></h3>
     <ul>
       <li>
         <p>
@@ -909,7 +1059,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-19"><a id="9-the-object-objectjson"></a>9. The object: object.json<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-20"><a id="9-the-object-objectjson"></a>9. The object: object.json<span style="margin-left: 1em"></span></h2>
     <p>
       Every object version MUST contain <tt class="verbatim">object.json</tt>,
       OpenSheaf's record of the object as of that version: its identity, the
@@ -949,6 +1099,11 @@
         </p>
       </li>
     </ul>
+    <p>
+      From its first sealed version (section 6.5), an object MUST also contain
+      <tt class="verbatim">name</tt> and <tt class="verbatim">owner</tt>, and a branch <tt class="verbatim">parent</tt>
+      (section 10.5).
+    </p>
     <p>
       A document MUST also have <tt class="verbatim">mainSource</tt> (a logical path)
       and <tt class="verbatim">sourceFormat</tt> (the media type of the main source),
@@ -1066,8 +1221,8 @@
       <tt class="verbatim">object.json</tt> is metadata and is placed under CC0 (section
       16).
     </p>
-    <h2 id="auto-20"><a id="10-collections-membersjson"></a>10. Collections: members.json<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-21"><a id="101-catalogues-and-selections"></a>10.1 Catalogues and selections<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-21"><a id="10-collections-membersjson"></a>10. Collections: members.json<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-22"><a id="101-catalogues-and-selections"></a>10.1 Catalogues and selections<span style="margin-left: 1em"></span></h3>
     <p>
       Collections are of two kinds, which differ in how they treat the
       versions of their members.
@@ -1100,7 +1255,7 @@
       Both kinds may contain collections as members (an archive of archives, a
       selection of issues). <tt class="verbatim">members.json</tt> states the kind.
     </p>
-    <h3 id="auto-22"><a id="102-the-member-list"></a>10.2 The member list<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-23"><a id="102-the-member-list"></a>10.2 The member list<span style="margin-left: 1em"></span></h3>
     <p>
       A collection version MUST contain <tt class="verbatim">members.json</tt> with:
     </p>
@@ -1162,13 +1317,15 @@
     </ul>
     <p>
       Each member MAY have <tt class="verbatim">mirrors</tt> (base URLs of archives
-      holding a mirror of the object, section 10.4), <tt class="verbatim">doi</tt> (the
-      version DOI), <tt class="verbatim">conceptDoi</tt> and <tt class="verbatim">cite</tt>, a
-      cached citation (<tt class="verbatim">title</tt>, <tt class="verbatim">creators</tt> as a
-      list of names, <tt class="verbatim">year</tt>, and <tt class="verbatim">issued</tt>, the
-      member's <tt class="verbatim">Issued</tt> date) so that the collection stays
-      readable, and can be ordered, without resolving its members, also if
-      they become unavailable. <tt class="verbatim">cite</tt> is not authoritative.
+      holding a mirror of the object, section 10.4), <tt class="verbatim">name</tt> and
+      <tt class="verbatim">owner</tt> (its line, section 6.5, so that it can be found by
+      name after its archive disappears), <tt class="verbatim">doi</tt> (the version
+      DOI), <tt class="verbatim">conceptDoi</tt> and <tt class="verbatim">cite</tt>, a cached
+      citation (<tt class="verbatim">title</tt>, <tt class="verbatim">creators</tt> as a list of
+      names, <tt class="verbatim">year</tt>, and <tt class="verbatim">issued</tt>, the member's
+      <tt class="verbatim">Issued</tt> date) so that the collection stays readable, and
+      can be ordered, without resolving its members, also if they become
+      unavailable. <tt class="verbatim">cite</tt> is not authoritative.
     </p>
     <p>
       <strong>Members of a catalogue</strong> MUST have <tt class="verbatim">version</tt>,
@@ -1221,14 +1378,14 @@
       inventory, which fixes all its files, collections are hash trees. Pins
       cannot form cycles.
     </p>
-    <h3 id="auto-23"><a id="103-members-of-other-archives"></a>10.3 Members of other archives<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-24"><a id="103-members-of-other-archives"></a>10.3 Members of other archives<span style="margin-left: 1em"></span></h3>
     <p>
       A member may belong to another archive. Nothing is copied: the member is
       resolved as in section 6.4. A reference (a pin without a copy) needs no
       permission. Copies are of two kinds: mirrors (section 10.4) and accepted
       copies (section 10.5).
     </p>
-    <h3 id="auto-24"><a id="104-mirrors"></a>10.4 Mirrors<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-25"><a id="104-mirrors"></a>10.4 Mirrors<span style="margin-left: 1em"></span></h3>
     <p>
       An archive MAY mirror an object of another archive: copy the whole
       object, every version with its inventories and files, byte for byte,
@@ -1250,50 +1407,94 @@
       its members' archives, an independent storage site): they are impartial,
       like catalogues, and carry every version.
     </p>
-    <h3 id="auto-25"><a id="105-accepted-copies"></a>10.5 Accepted copies<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-26"><a id="105-branches-and-accepted-copies"></a>10.5 Branches and accepted copies<span style="margin-left: 1em"></span></h3>
     <p>
-      A selection MAY keep its own copy of a revision it vetted, as a document
-      of the selection's archive, called an accepted copy, so that what it
-      vetted stays available whatever happens to the original. Its first
-      document version holds exactly the files of the vetted revision (every
-      file except <tt class="verbatim">datacite.json</tt> and <tt class="verbatim">object.json</tt>),
-      byte for byte; its <tt class="verbatim">object.json</tt> records the source in <tt
-      class="verbatim">external</tt>, with <tt class="verbatim">role</tt> <tt class="verbatim">source</tt>,
-      <tt class="verbatim">service</tt> <tt class="verbatim">OpenSheaf</tt>, <tt class="verbatim">record</tt>
-      the URL of the source object version, <tt class="verbatim">label</tt> the source
-      object identifier and object version (for instance <tt class="verbatim">&quot;paper
-      v2&quot;</tt>), and <tt class="verbatim">files</tt> with one entry, <tt class="verbatim">inventory.json</tt>,
-      whose <tt class="verbatim">sha512</tt> is the pin of the source version; its <tt
-      class="verbatim">datacite.json</tt> describes it with the selection's archive as
-      <tt class="verbatim">publisher</tt>, keeps the relations of the source, and links
-      the source version with <tt class="verbatim">IsIdenticalTo</tt> (a <tt class="verbatim">URL</tt>).
-      Copying requires the right to redistribute only the revision copied.
+      A branch is a line of another owner continuing an object from one of its
+      versions, the branch point: a co-author carrying the work on, a journal
+      keeping the version it vetted and correcting it afterwards. Its genesis
+      record is the object's, so it has the same name (section 6.5). Its <tt
+      class="verbatim">object.json</tt> records its own <tt class="verbatim">owner</tt> and <tt
+      class="verbatim">parent</tt>: the <tt class="verbatim">owner</tt>, <tt class="verbatim">name</tt>, <tt
+      class="verbatim">archiveId</tt>, <tt class="verbatim">objectId</tt>, <tt class="verbatim">objectVersion</tt>
+      (the branch point), <tt class="verbatim">documentVersion</tt> and <tt class="verbatim">inventorySha512</tt>
+      of the parent version, and, when known, the <tt class="verbatim">url</tt> of that
+      object version. A branch is deep or shallow.
+    </p>
+    <ul>
+      <li>
+        <p>
+          A <strong>deep branch</strong> holds the parent's object versions up
+          to the branch point, byte for byte, under the parent's object
+          identifier (only if no object of its own archive has it), and
+          continues them with versions of its own owner. Its common past with
+          the parent is checked by the records of those versions in its
+          inventories, which equal the parent's. It copies every earlier
+          version, so it is allowed only if their licences allow
+          redistribution, or with the agreement of their owners.
+        </p>
+      </li>
+      <li>
+        <p>
+          A <strong>shallow branch</strong> holds only the branch point. Its
+          first object version holds exactly the files of the parent version
+          (every file except <tt class="verbatim">datacite.json</tt> and <tt class="verbatim">object.json</tt>,
+          the genesis record included), byte for byte, and <tt class="verbatim">parent.inventory.json</tt>,
+          a copy of the inventory of the parent version; its later versions
+          are its owner's own. It needs the right to redistribute only the
+          parent version.
+        </p>
+      </li>
+    </ul>
+    <p>
+      <strong>The evidence of a shallow branch.</strong> Its first version
+      proves, without access to the parent: the name (the digest of <tt class="verbatim">genesis.json</tt>),
+      the parent pin (the digest of <tt class="verbatim">parent.inventory.json</tt>
+      equals <tt class="verbatim">inventorySha512</tt> of <tt class="verbatim">parent</tt>), the
+      files (their digests equal those of the parent version's state in that
+      inventory), and the consistency of the history (the record of the first
+      version in that inventory is the genesis record's version). It does not
+      prove that the parent's owner made the parent version. For that a
+      verifier resolves the parent (section 6.4); or checks the parent owner's
+      signature of the parent inventory, which the branch SHOULD keep as a
+      witness when that owner is keyed (section 13.2); or relies on other
+      witnesses (timestamps, external records). Failing these, the branch's
+      owner vouches for the copy by signing its first version.
     </p>
     <p>
-      Later document versions of an accepted copy are acts of the selection's
-      curator (a corrected version accepted, a notice, a withdrawal); the
-      authors' later versions change nothing in it. The selection lists the
-      accepted copy as its member, a member of its own archive; it MAY list
-      the original revision set as well. An accepted copy is not a mirror: it
-      is another object, with its own inventories, and cannot stand for the
-      original in the resolution of a pin (section 6.4), so it is never listed
-      in <tt class="verbatim">mirrors</tt>.
+      <strong>Accepted copies.</strong> An accepted copy is a shallow branch
+      kept by a selection from a revision it vetted. Its later document
+      versions are acts of the selection's curator (a corrected version
+      accepted, a notice, a withdrawal); the authors' later versions change
+      nothing in it. The selection lists the accepted copy as its member, a
+      member of its own archive; it MAY list the original revision set as
+      well. A branch is not a mirror: it is another line, with its own
+      inventories, and cannot stand for the parent in the resolution of a pin
+      (section 6.4), so it is never listed in <tt class="verbatim">mirrors</tt>.
     </p>
     <p>
       A version that the selection makes itself, such as a journal's typeset
-      version of record, is a document of the selection's archive like any
-      other, with the selection as <tt class="verbatim">publisher</tt>, the authors'
-      agreement in <tt class="verbatim">object.json</tt> (section 9), and relations to
-      the authors' versions (sections 7.3 and 8.1).
+      version of record, is a later version of the selection's branch, with
+      the selection as <tt class="verbatim">publisher</tt>, the authors' agreement in
+      <tt class="verbatim">object.json</tt> (section 9), and relations to the authors'
+      versions (sections 7.3 and 8.1).
     </p>
-    <h3 id="auto-26"><a id="106-rights"></a>10.6 Rights<span style="margin-left: 1em"></span></h3>
+    <p>
+      <strong>Open question: numbering on branches.</strong> The branch point
+      keeps its document version (version 3 stays version 3). Later versions
+      of the branch either (a) continue the numbering within the branch (the
+      journal's version 4, distinct from the authors' version 4, the owner
+      telling them apart), or (b) are numbered from the branch point (3.1,
+      3.2), which reads more clearly but makes <tt class="verbatim">documentVersion</tt>
+      more than an integer.
+    </p>
+    <h3 id="auto-27"><a id="106-rights"></a>10.6 Rights<span style="margin-left: 1em"></span></h3>
     <p>
       The member list of a collection is placed under CC0. The licence of a
       collection never extends to its members. Mirrors and accepted copies
       keep the licences of what they copy.
     </p>
-    <h2 id="auto-27"><a id="11-withdrawal-and-takedown"></a>11. Withdrawal and takedown<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-28"><a id="111-withdrawal"></a>11.1 Withdrawal<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-28"><a id="11-withdrawal-and-takedown"></a>11. Withdrawal and takedown<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-29"><a id="111-withdrawal"></a>11.1 Withdrawal<span style="margin-left: 1em"></span></h3>
     <p>
       A document or collection is withdrawn (for instance retracted by its
       authors) by a description-only version whose <tt class="verbatim">object.json</tt>
@@ -1306,13 +1507,13 @@
       <tt class="verbatim">withdrawn</tt>. Presentations MUST show the withdrawal notice
       with the document.
     </p>
-    <h3 id="auto-29"><a id="112-takedown"></a>11.2 Takedown<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-30"><a id="112-takedown"></a>11.2 Takedown<span style="margin-left: 1em"></span></h3>
     <p>
       When content must be removed (by law, or for a breach of rights), the
       object is deleted from the storage root and a tombstone MUST be added to
       the discovery document.
     </p>
-    <h3 id="auto-30"><a id="113-tombstones"></a>11.3 Tombstones<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-31"><a id="113-tombstones"></a>11.3 Tombstones<span style="margin-left: 1em"></span></h3>
     <p>
       A tombstone records <tt class="verbatim">id</tt>, <tt class="verbatim">kind</tt>, <tt class="verbatim">lastVersion</tt>,
       <tt class="verbatim">inventorySha512</tt> of that version, <tt class="verbatim">date</tt>
@@ -1330,7 +1531,7 @@
       mechanism is published, a later version of this specification will adopt
       it for takedowns of single files.
     </p>
-    <h2 id="auto-31"><a id="12-versioning-of-this-specification"></a>12. Versioning of this specification<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-32"><a id="12-versioning-of-this-specification"></a>12. Versioning of this specification<span style="margin-left: 1em"></span></h2>
     <p>
       This specification is versioned MAJOR.MINOR.PATCH, a form of semantic
       versioning adapted to a format:
@@ -1385,8 +1586,8 @@
       and is not changed after the version is final, except by patch versions,
       which are listed in its changelog.
     </p>
-    <h2 id="auto-32"><a id="13-integrity-and-authenticity"></a>13. Integrity and authenticity<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-33"><a id="131-integrity"></a>13.1 Integrity<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-33"><a id="13-integrity-and-authenticity"></a>13. Integrity and authenticity<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-34"><a id="131-integrity"></a>13.1 Integrity<span style="margin-left: 1em"></span></h3>
     <p>
       Integrity rests on OCFL digests: every file is fixed by its SHA-512
       digest in the inventory, every inventory by its checksum file, and every
@@ -1395,7 +1596,7 @@
       block; archives following the Zenodo binding MUST record MD5 (appendix
       A).
     </p>
-    <h3 id="auto-34"><a id="132-authenticity-and-dates"></a>13.2 Authenticity and dates<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-35"><a id="132-authenticity-and-dates"></a>13.2 Authenticity and dates<span style="margin-left: 1em"></span></h3>
     <p>
       Digests show that files were not changed; they do not show who made them
       or when. An archive MAY provide, for each object version:
@@ -1434,12 +1635,21 @@
       against the checksum file it names, which the pins fix.
     </p>
     <p>
+      The versions of a line whose owner is keyed (section 6.5) MUST carry
+      this signature, made with the owner's key: the key is the owner URI
+      itself (<tt class="verbatim">did:key</tt>) or is found from it (an OpenPGP
+      fingerprint, with the key file named in <tt class="verbatim">keys</tt>). A
+      signature by someone else (the owner of a parent line, a selection
+      vouching for its branch) is a witness; its key is identified in the
+      witness file.
+    </p>
+    <p>
       External deposits (appendix A) and software archive snapshots are
       further witnesses. Archives kept in git MAY also sign their commits or
       tags, but git hashes are not part of the integrity chain of this
       specification.
     </p>
-    <h2 id="auto-35"><a id="14-verification"></a>14. Verification<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-36"><a id="14-verification"></a>14. Verification<span style="margin-left: 1em"></span></h2>
     <p>
       A verifier checking an archive MUST:
     </p>
@@ -1517,10 +1727,35 @@
       <li>
         <p>
           for each mirror (<tt class="verbatim">mirrorOf</tt>), check that its <tt
-          class="verbatim">object.json</tt> files name that archive; for each accepted
-          copy, check that its first document version holds exactly the files
-          of the source version named in <tt class="verbatim">external</tt>, when the
-          source is available.
+          class="verbatim">object.json</tt> files name that archive;
+        </p>
+      </li>
+      <li>
+        <p>
+          for each object with a genesis record (section 6.5): that <tt class="verbatim">genesis.json</tt>
+          is the same in every object version from the first sealed one, that
+          <tt class="verbatim">name</tt> is its digest, that <tt class="verbatim">owner</tt> and
+          <tt class="verbatim">name</tt> do not change within the object, that a line
+          whose owner is not the originator declares a parent, and, for a
+          keyed owner, the signature of every object version;
+        </p>
+      </li>
+      <li>
+        <p>
+          for each branch (section 10.5): for a deep branch, that its versions
+          up to the branch point are recorded as in the parent; for a shallow
+          branch, the evidence of its first version; and report each branch as
+          confirmed (the parent was resolved and matches, or its owner's
+          signature holds), attested (consistent, with witnesses or the
+          signature of the branch's owner), unconfirmed (consistent, with
+          nothing outside the branch) or mismatch (an error);
+        </p>
+      </li>
+      <li>
+        <p>
+          where several copies of a line are known (mirrors, members,
+          branches' parents), that each is a prefix of the other; two that are
+          not are a fork of the line, an error of its owner.
         </p>
       </li>
     </ul>
@@ -1532,7 +1767,7 @@
       authoritative. It SHOULD limit the depth and size of the collections it
       follows, and report when it stops.
     </p>
-    <h2 id="auto-36"><a id="15-security-considerations"></a>15. Security considerations<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-37"><a id="15-security-considerations"></a>15. Security considerations<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1581,7 +1816,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-37"><a id="16-privacy-and-rights"></a>16. Privacy and rights<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-38"><a id="16-privacy-and-rights"></a>16. Privacy and rights<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1609,7 +1844,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-38"><a id="17-changelog"></a>17. Changelog<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-39"><a id="17-changelog"></a>17. Changelog<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1657,8 +1892,19 @@
           (section 8).
         </p>
       </li>
+      <li>
+        <p>
+          **0.1 (draft), 14 November 2026, proposal (branch <tt class="verbatim">proposal/identity</tt>,
+          not yet agreed):** names from genesis records; owners (none for
+          drafts, named or keyed) and lines (owner, name) with a single writer
+          each; branches, deep and shallow, of which accepted copies are a
+          case, and the evidence a shallow branch carries; verification of
+          names, lines and branches; schemas for <tt class="verbatim">genesis.json</tt>
+          and the new fields (#13, #14, #20, #29).
+        </p>
+      </li>
     </ul>
-    <h2 id="auto-39"><a id="appendix-a-zenodo-binding-normative-for-archives-declaring-the-profile-zenodo"></a>Appendix A. Zenodo binding (normative for archives
+    <h2 id="auto-40"><a id="appendix-a-zenodo-binding-normative-for-archives-declaring-the-profile-zenodo"></a>Appendix A. Zenodo binding (normative for archives
     declaring the profile <tt class="verbatim">zenodo</tt>)<span style="margin-left: 1em"></span></h2>
     <p>
       Zenodo issues DataCite DOIs (prefix <tt class="verbatim">10.5281</tt>) and keeps
@@ -1747,7 +1993,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-40"><a id="appendix-b-texmacs-profile-normative-for-archives-declaring-the-profile-texmacs"></a>Appendix B. TeXmacs profile (normative for archives
+    <h2 id="auto-41"><a id="appendix-b-texmacs-profile-normative-for-archives-declaring-the-profile-texmacs"></a>Appendix B. TeXmacs profile (normative for archives
     declaring the profile <tt class="verbatim">texmacs</tt>)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
@@ -1796,7 +2042,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-41"><a id="appendix-c-website-profile-normative-for-archives-declaring-the-profile-website"></a>Appendix C. Website profile (normative for archives
+    <h2 id="auto-42"><a id="appendix-c-website-profile-normative-for-archives-declaring-the-profile-website"></a>Appendix C. Website profile (normative for archives
     declaring the profile <tt class="verbatim">website</tt>)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
@@ -1856,7 +2102,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-42"><a id="appendix-d-json-schemas-normative"></a>Appendix D. JSON Schemas (normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-43"><a id="appendix-d-json-schemas-normative"></a>Appendix D. JSON Schemas (normative)<span style="margin-left: 1em"></span></h2>
     <p>
       The schemas (JSON Schema draft 2020-12) are published with this
       specification and dedicated to the public domain under CC0 1.0, so that
@@ -1875,7 +2121,13 @@
       </li>
       <li>
         <p>
-          <a href="https://opensheaf.org/schemas/opensheaf-collection-0.1.schema.json">opensheaf-collection-0.1.schema.json</a> for <tt class="verbatim">members.json</tt>.
+          <a href="https://opensheaf.org/schemas/opensheaf-collection-0.1.schema.json">opensheaf-collection-0.1.schema.json</a> for <tt class="verbatim">members.json</tt>;
+        </p>
+      </li>
+      <li>
+        <p>
+          <a href="https://opensheaf.org/schemas/opensheaf-genesis-0.1.schema.json">opensheaf-genesis-0.1.schema.json</a> for <tt class="verbatim">genesis.json</tt>
+          (proposal, section 6.5).
         </p>
       </li>
     </ul>
@@ -1886,7 +2138,7 @@
       against the DataCite 4.7 XML Schema, together with the requirements of
       section 8.
     </p>
-    <h2 id="auto-43"><a id="appendix-e-examples-non-normative"></a>Appendix E. Examples (non-normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-44"><a id="appendix-e-examples-non-normative"></a>Appendix E. Examples (non-normative)<span style="margin-left: 1em"></span></h2>
     <p>
       The values below come from the first archive. Digests are shortened, and
       the DOIs and ORCID iDs are placeholders.
@@ -2065,7 +2317,9 @@
     </div>
     <p>
       The <tt class="verbatim">object.json</tt> of the journal's accepted copy of the
-      first member's version 2:
+      first member's version 2 (as defined before the proposal of section
+      10.5, which records the source in <tt class="verbatim">parent</tt> instead; see
+      the last example):
     </p>
     <div class="language-json">
       <div class="tmweb-code">
@@ -2089,7 +2343,60 @@
 }</pre>
       </div>
     </div>
-    <h2 id="auto-44"><a id="appendix-f-rationale-non-normative"></a>Appendix F. Rationale (non-normative)<span style="margin-left: 1em"></span></h2>
+    <p>
+      A genesis record (proposal, section 6.5), written when the authors'
+      paper was first sealed; its digest gives the name <tt class="verbatim">vxq3k7m2hd5w6yne4tqzjb5tcuxr2l6gpm3aofs7ib2kxdn4ea7q</tt>
+      (illustrative):
+    </p>
+    <div class="language-json">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
+{
+  &quot;format&quot;: &quot;opensheaf-genesis/0.1&quot;,
+  &quot;kind&quot;: &quot;document&quot;,
+  &quot;created&quot;: &quot;2026-03-02T09:14:00Z&quot;,
+  &quot;originator&quot;: &quot;https://orcid.org/0000-0002-1234-5678&quot;,
+  &quot;nonce&quot;: &quot;5f2c8e1a9b7d4036c2e1f08a7b6d5c43&quot;
+}</pre>
+      </div>
+    </div>
+    <p>
+      The <tt class="verbatim">object.json</tt> of the first version of a journal's
+      shallow branch of that paper, from the authors' document version 3
+      (proposal, section 10.5); its content also holds <tt class="verbatim">genesis.json</tt>
+      and <tt class="verbatim">parent.inventory.json</tt>:
+    </p>
+    <div class="language-json">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
+{
+  &quot;format&quot;: &quot;opensheaf-object/0.1&quot;,
+  &quot;specification&quot;: &quot;0.1&quot;,
+  &quot;kind&quot;: &quot;document&quot;,
+  &quot;archiveId&quot;: &quot;tag:journal.example.org,2026:quantum-tests&quot;,
+  &quot;objectId&quot;: &quot;network-discrimination&quot;,
+  &quot;name&quot;: &quot;vxq3k7m2hd5w6yne4tqzjb5tcuxr2l6gpm3aofs7ib2kxdn4ea7q&quot;,
+  &quot;owner&quot;: &quot;did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK&quot;,
+  &quot;parent&quot;: {
+    &quot;owner&quot;: &quot;https://orcid.org/0000-0002-1234-5678&quot;,
+    &quot;name&quot;: &quot;vxq3k7m2hd5w6yne4tqzjb5tcuxr2l6gpm3aofs7ib2kxdn4ea7q&quot;,
+    &quot;archiveId&quot;: &quot;tag:example.org,2026:authors&quot;,
+    &quot;objectId&quot;: &quot;network-discrimination&quot;,
+    &quot;objectVersion&quot;: &quot;v4&quot;,
+    &quot;documentVersion&quot;: 3,
+    &quot;inventorySha512&quot;: &quot;c07a&hellip;&quot;,
+    &quot;url&quot;: &quot;https://authors.example.org/ocfl/network-discrimination/v4/&quot;
+  },
+  &quot;documentVersion&quot;: 3,
+  &quot;mainSource&quot;: &quot;paper.tex&quot;,
+  &quot;sourceFormat&quot;: &quot;application/x-tex&quot;,
+  &quot;renditions&quot;: [ { &quot;path&quot;: &quot;paper.pdf&quot;, &quot;mediaType&quot;: &quot;application/pdf&quot; } ],
+  &quot;stage&quot;: { &quot;scheme&quot;: &quot;NISO-JAV&quot;, &quot;value&quot;: &quot;AM&quot; },
+  &quot;status&quot;: &quot;active&quot;
+}</pre>
+      </div>
+    </div>
+    <h2 id="auto-45"><a id="appendix-f-rationale-non-normative"></a>Appendix F. Rationale (non-normative)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -2143,6 +2450,26 @@
           archive, where it continues under the selection's responsibility
           (corrections, notices, withdrawal); OCFL cannot hold part of an
           object, so a copy of one revision is necessarily a new object.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Why the owner is part of the identity (proposal).</strong> A
+          name alone cannot say whose history is the right one: anyone may
+          copy a genesis record. With (owner, name), copying is no forgery: a
+          copy under another owner is a branch, declared as such, and each
+          owner answers for one line only. Location stays out of the identity,
+          so an object can be kept anywhere.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Why deep and shallow branches (proposal).</strong> A
+          co-author continuing the work needs its whole past, and can check it
+          by digests; a journal needs only the version it vetted, and may not
+          be allowed to copy the others. A shallow branch carries the parent's
+          inventory, so that its identity can be checked after the parent has
+          gone.
         </p>
       </li>
       <li>
@@ -2241,7 +2568,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-45"><a id="appendix-g-references"></a>Appendix G. References<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-46"><a id="appendix-g-references"></a>Appendix G. References<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>

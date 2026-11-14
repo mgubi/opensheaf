@@ -73,6 +73,18 @@
 
   Yes. A reference (a pin) copies nothing and needs no permission. There are two ways to keep a copy, both allowed only if the licence of what is copied permits redistribution (or the authors agree): a <strong|mirror> copies the whole object, every version, and stays the original archive's object (for an institution or a storage site); an <strong|accepted copy> takes the one revision a selection vetted into the selection's own archive, where later changes are the curator's acts (for a journal). The licence of a collection (CC0 for the list) never extends to its members.
 
+  <section*|Who owns an object, and what is a branch?><label|who-owns-an-object-and-what-is-a-branch>
+
+  <os-alert|note|Note.|This answer describes a proposal (section 6.5 and 10.5 of the specification, on the branch <verbatim|proposal/identity>), not yet agreed.>
+
+  An object has a <dfn|name>, the digest of the genesis record written when it is first made available, and an <dfn|owner>, the one who decides its versions. The pair (owner, name) identifies a <dfn|line>: one history, with a single writer. The archive that keeps the object is only where it lives: mirrors keep the same line elsewhere.
+
+  The owner can be light or strong. A draft has none. A named owner is a URI the owner asserts (an archive identifier, an ORCID iD, a web address): enough for most authors. A keyed owner is a public key: every version is signed, so the line can be checked even when its archive has gone.
+
+  Anyone can copy a genesis record, so the name alone cannot say whose history is the right one. That is why the owner is part of the identity: a copy kept by another owner is a <dfn|branch>, which declares the version it starts from. A <strong|deep> branch copies all earlier versions and continues them (a co- author carrying the work on). A <strong|shallow> branch keeps only the version it starts from, with the parent's inventory as evidence, and adds its own versions (a journal keeping the version it vetted, then its corrections). An accepted copy is a shallow branch kept by a selection.
+
+  A shallow branch can be checked without its parent: the genesis record gives the name, the copied inventory gives the parent pin, and the files match that inventory. Whether the parent's owner really made that version is confirmed by resolving the parent, by the parent owner's signature, by other witnesses, or, failing these, rests on the branch owner's word.
+
   <section*|Can documents be linked in richer ways (a short account and its full proof)?><label|can-documents-be-linked-in-richer-ways-a-short-account-and-its-full-proof>
 
   Yes, on top of the format rather than in it. The core keeps only what every archive needs to keep, cite, compose and verify documents. Other relations are built from it: by links inside the documents and DataCite relations, which need nothing more, or by <strong|extensions> (section 4 of the specification), published separately, whose data an object version records in its <verbatim|object.json>, so that tools that know them can follow the relation when they copy, verify or present documents. Extensions never change the core: an archive is read and verified without them. The <hlink|use cases|use-cases.tm> show a journal publishing a short account of a proof whose detailed argument, possibly written with AI, stays online in the version reviewed.

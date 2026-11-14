@@ -39,7 +39,12 @@ Sections marked non-normative, examples, notes and the appendices marked as such
 - <dfn>Revision</dfn>: a document version, as vetted by a selection, pinned by the object version that held it when it was vetted.
 - <dfn>Revision set</dfn>: the revisions of one document vetted by a selection (usually one; more after a correction).
 - <dfn>Mirror</dfn>: a copy, in an archive's storage root, of another archive's object, whole and byte for byte (section 10.4).
-- <dfn>Accepted copy</dfn>: a document of a selection's archive holding exactly the files of a revision it vetted from another archive (section 10.5).
+- <dfn>Accepted copy</dfn>: a shallow branch kept by a selection, starting from a revision it vetted from another archive (section 10.5).
+- <dfn>Genesis record</dfn>: the file `genesis.json`, written when an object is first sealed and kept unchanged in all its versions and branches; its digest is the object's name (section 6.5).
+- <dfn>Name</dfn>: 52 characters of base32 from the digest of the genesis record, the same for the object in every archive, copy and branch (section 6.5).
+- <dfn>Owner</dfn>: the URI of whoever decides the versions of a line: none for a draft, a named owner (an archive identifier, an ORCID iD, a web address) or a keyed owner (a public key) (section 6.5).
+- <dfn>Line</dfn>: the history of an object as decided by one owner, identified by the pair (owner, name); its object versions form a single sequence (section 6.5).
+- <dfn>Branch</dfn>: a line of another owner continuing an object from one of its versions, the branch point: deep when it holds the earlier versions too, shallow when it holds only the branch point and its own versions (section 10.5).
 - <dfn>Object version</dfn>: an OCFL version of an object (`v1`, `v2`, ...). It changes at every change of the object.
 - <dfn>Document version</dfn>: the version of the work, a positive integer numbered by the archive, in `object.json` and `datacite.json`. It changes exactly when the document's own files change (section 7.3).
 - <dfn>Description-only version</dfn>: an object version that holds an existing document version with its files unchanged, changing only the description, the state or the notices of the object (section 7.3).
@@ -92,7 +97,7 @@ The discovery document is the JSON file `opensheaf.json` at the base URL of the 
 - `name`: a human-readable name;
 - `storageRoot`: the URL of the storage root, ending with `/` (relative URLs are allowed);
 - `storageLayout`: `"0002-flat-direct-storage-layout"`;
-- `objects`: the list of all objects in the storage root, each with `id`, `kind`, `head` (the head object version), `inventorySha512` (the SHA-512 digest of the head inventory, as written in its checksum file) and `status` (`active` or `withdrawn`, section 11); a mirror (section 10.4) also has `mirrorOf`, the archive identifier of the archive whose object it copies.
+- `objects`: the list of all objects in the storage root, each with `id`, `kind`, `head` (the head object version), `inventorySha512` (the SHA-512 digest of the head inventory, as written in its checksum file) and `status` (`active` or `withdrawn`, section 11); a mirror (section 10.4) also has `mirrorOf`, the archive identifier of the archive whose object it copies; an object with a genesis record (section 6.5) also has its `name` and `owner`.
 
 It MUST also contain `profiles`, the list of profiles followed, from `zenodo`, `texmacs`, `website` (an empty list if none). It SHOULD contain `mainCollection` (the identifier of the collection that lists the archive's own documents), `contact` (a URI) and, if its objects use extensions, `extensions` (their names, section 4). It MAY contain `mirrors` (base URLs of complete copies of the archive), `tombstones` (section 11.3), `keys` (section 13.2) and `feed` (the URL of an Atom feed of new object versions).
 
@@ -115,6 +120,35 @@ To fetch an object version of a member, a client:
 - if this fails, MAY use external copies: the files of an external record named in the version's `object.json` (a DOI record), or a software archive snapshot (a SWHID).
 
 Any copy whose bytes match the pinned digest is acceptable: integrity comes from the pin, not from the place.
+
+### 6.5 Names, owners and lines
+
+> [!NOTE]
+> **Proposal.** This section, and the sections it changes (9, 10.2, 10.5, 13.2, 14), are a proposal on the branch `proposal/identity`, not yet agreed. It builds on the discussions of self-certifying names (#20), decentralised holding and keys (#13), global names (#14) and private and draft objects (#29).
+
+An object identifier names an object within its archive (section 6.3). An object also has a name, independent of any archive, and an owner. The pair (owner, name) identifies a line: the history of the object as decided by that owner. Copies of a line (mirrors, section 10.4) are the same line wherever they are kept; lines of other owners with the same name are branches (section 10.5).
+
+**Genesis record.** When an object is first sealed, that is made available to others, its owner writes the genesis record, the JSON file `genesis.json` at the root of the content, with `format` (`"opensheaf-genesis/0.1"`), `kind` (`document` or `collection`), `created` (the date and time, in UTC), `originator` (the owner of the first line, a URI) and `nonce` (at least 128 random bits, in lowercase hexadecimal). The genesis record MUST be part of every later object version of the object and of its branches, byte for byte. It contains neither the name nor the object identifier, so that the name does not depend on itself.
+
+**Name.** The name of the object is the SHA-512 digest of `genesis.json`, truncated to its first 256 bits and written in lowercase base32 (RFC 4648, without padding): 52 characters, a valid object identifier (section 6.3). Anyone holding a copy can compute it; it is unique without a registry, since the record holds a random nonce. `object.json` records it as `name`. An archive MAY use the name as the object identifier.
+
+**Owner.** The owner of a line is a URI, recorded in `object.json` as `owner` from the first sealed version. There are three cases:
+
+- a **draft** (or a private object) has no owner and no genesis record yet: it may be rewritten, and it is not pinned by others (#29); it receives both when it is sealed;
+- a **named owner** is a URI that the owner asserts: the archive identifier, an ORCID iD (`https://orcid.org/...`), a web address the owner controls. It costs nothing, and proves no more than the archive that serves the line;
+- a **keyed owner** is a public key written as a URI: `did:key:` (the key itself) or `openpgp4fpr:` followed by an OpenPGP fingerprint. Every object version of a keyed line MUST be signed with that key (section 13.2), so that the line can be checked without trusting any host, also after its archive has disappeared.
+
+A named owner MAY sign its versions with keys of its own (`keys` of the discovery document); its line is still identified by the named URI.
+
+**One writer per line.** The object versions of a line form a single sequence, each extending the one before, as OCFL objects do: an owner MUST NOT publish two different object versions with the same number for the same name, in one archive or in several. Since every inventory repeats the records of all earlier versions, two copies of a line can be compared from their inventories alone: one MUST be a prefix of the other. Two copies that differ are a fork of the line, an error of its owner; for a keyed owner, the signatures show that the owner made both.
+
+**Origin.** The line of the originator is the origin of the name. Every other line with the same name MUST declare its parent (section 10.5); a line of another owner that declares none is not a valid line of the name.
+
+**Sealing and transfer.** Sealing a draft makes its owner the first writer; versions made before sealing belong to no line. A line is not handed over: when another owner continues the work (an author leaving an institution's repository, a journal handing a report to its referee), the new owner makes a deep branch (section 10.5), and the previous owner MAY add a notice to its own line pointing to the branch.
+
+**Existing objects.** An object made without a genesis record MAY receive one by a description-only version (section 7.3), with the archive identifier as owner and originator; its name holds from that version on.
+
+**Open questions.** Writing a line, a version and a pin as one URI (#14, #20); how co-authors own a line (one owner, a group key, or a branch each); the numbering of document versions on branches (section 10.5).
 
 ## 7. Objects
 
@@ -213,6 +247,8 @@ Every object version MUST contain `object.json`, OpenSheaf's record of the objec
 - `documentVersion`: a positive integer, equal to the `version` of `datacite.json`;
 - `status`: `active` or `withdrawn` (section 11).
 
+From its first sealed version (section 6.5), an object MUST also contain `name` and `owner`, and a branch `parent` (section 10.5).
+
 A document MUST also have `mainSource` (a logical path) and `sourceFormat` (the media type of the main source), and SHOULD have `renditions` (a list of objects with `path`, a logical path, and `mediaType`) and `toolchain` (a list of tools with `name`, `version` and, optionally, `packages`), enough to reproduce the renditions. A document version whose sources are not available instead has `sourcesMissing`, a note (see below) saying why (for instance "arXiv keeps only the PDF of this version"), no `mainSource` and `sourceFormat`, and at least one rendition; a rendition is never presented as a source.
 
 A **note** is an object with `text` (a short plain text), or `path` and `mediaType` (a file of the content of the same object version), or both: the text serves feeds, indexes and external services, the file holds the full statement (with mathematics, or as a PDF). Files of notes are covered by the inventory like every file of the content.
@@ -262,7 +298,7 @@ Each member MUST have:
 - `archiveUrl`: the base URL of that archive when the collection version was made;
 - `id`: the object identifier.
 
-Each member MAY have `mirrors` (base URLs of archives holding a mirror of the object, section 10.4), `doi` (the version DOI), `conceptDoi` and `cite`, a cached citation (`title`, `creators` as a list of names, `year`, and `issued`, the member's `Issued` date) so that the collection stays readable, and can be ordered, without resolving its members, also if they become unavailable. `cite` is not authoritative.
+Each member MAY have `mirrors` (base URLs of archives holding a mirror of the object, section 10.4), `name` and `owner` (its line, section 6.5, so that it can be found by name after its archive disappears), `doi` (the version DOI), `conceptDoi` and `cite`, a cached citation (`title`, `creators` as a list of names, `year`, and `issued`, the member's `Issued` date) so that the collection stays readable, and can be ordered, without resolving its members, also if they become unavailable. `cite` is not authoritative.
 
 **Members of a catalogue** MUST have `version`, the pinned object version, and `inventorySha512`, the SHA-512 digest of that version's inventory file. Since the inventory of an object version lists every earlier version, the pin fixes the object with all its versions up to it. A member MAY have `follow`, `"latest"`: a curation setting, not a floating reference. A followed member pins the head of the object when the collection version was made; a member without `follow` keeps the version its curator pinned, which MAY be earlier than the head, until the curator changes it. A tool maintaining the collection reads the member archive's discovery document (or its feed); when the followed object has a new head, the tool writes a new collection version pinning it, whatever the new head holds (a new document version, a description, a notice, a withdrawal): a catalogue does not judge the versions of its members. A withdrawn member stays, and presentations show the withdrawal. Presentations show the current version of each member, read from the history of the pinned version (section 7.3).
 
@@ -280,13 +316,20 @@ An archive MAY mirror an object of another archive: copy the whole object, every
 
 Mirrors serve preservation and access (an institution keeping copies of its members' archives, an independent storage site): they are impartial, like catalogues, and carry every version.
 
-### 10.5 Accepted copies
+### 10.5 Branches and accepted copies
 
-A selection MAY keep its own copy of a revision it vetted, as a document of the selection's archive, called an accepted copy, so that what it vetted stays available whatever happens to the original. Its first document version holds exactly the files of the vetted revision (every file except `datacite.json` and `object.json`), byte for byte; its `object.json` records the source in `external`, with `role` `source`, `service` `OpenSheaf`, `record` the URL of the source object version, `label` the source object identifier and object version (for instance `"paper v2"`), and `files` with one entry, `inventory.json`, whose `sha512` is the pin of the source version; its `datacite.json` describes it with the selection's archive as `publisher`, keeps the relations of the source, and links the source version with `IsIdenticalTo` (a `URL`). Copying requires the right to redistribute only the revision copied.
+A branch is a line of another owner continuing an object from one of its versions, the branch point: a co-author carrying the work on, a journal keeping the version it vetted and correcting it afterwards. Its genesis record is the object's, so it has the same name (section 6.5). Its `object.json` records its own `owner` and `parent`: the `owner`, `name`, `archiveId`, `objectId`, `objectVersion` (the branch point), `documentVersion` and `inventorySha512` of the parent version, and, when known, the `url` of that object version. A branch is deep or shallow.
 
-Later document versions of an accepted copy are acts of the selection's curator (a corrected version accepted, a notice, a withdrawal); the authors' later versions change nothing in it. The selection lists the accepted copy as its member, a member of its own archive; it MAY list the original revision set as well. An accepted copy is not a mirror: it is another object, with its own inventories, and cannot stand for the original in the resolution of a pin (section 6.4), so it is never listed in `mirrors`.
+- A **deep branch** holds the parent's object versions up to the branch point, byte for byte, under the parent's object identifier (only if no object of its own archive has it), and continues them with versions of its own owner. Its common past with the parent is checked by the records of those versions in its inventories, which equal the parent's. It copies every earlier version, so it is allowed only if their licences allow redistribution, or with the agreement of their owners.
+- A **shallow branch** holds only the branch point. Its first object version holds exactly the files of the parent version (every file except `datacite.json` and `object.json`, the genesis record included), byte for byte, and `parent.inventory.json`, a copy of the inventory of the parent version; its later versions are its owner's own. It needs the right to redistribute only the parent version.
 
-A version that the selection makes itself, such as a journal's typeset version of record, is a document of the selection's archive like any other, with the selection as `publisher`, the authors' agreement in `object.json` (section 9), and relations to the authors' versions (sections 7.3 and 8.1).
+**The evidence of a shallow branch.** Its first version proves, without access to the parent: the name (the digest of `genesis.json`), the parent pin (the digest of `parent.inventory.json` equals `inventorySha512` of `parent`), the files (their digests equal those of the parent version's state in that inventory), and the consistency of the history (the record of the first version in that inventory is the genesis record's version). It does not prove that the parent's owner made the parent version. For that a verifier resolves the parent (section 6.4); or checks the parent owner's signature of the parent inventory, which the branch SHOULD keep as a witness when that owner is keyed (section 13.2); or relies on other witnesses (timestamps, external records). Failing these, the branch's owner vouches for the copy by signing its first version.
+
+**Accepted copies.** An accepted copy is a shallow branch kept by a selection from a revision it vetted. Its later document versions are acts of the selection's curator (a corrected version accepted, a notice, a withdrawal); the authors' later versions change nothing in it. The selection lists the accepted copy as its member, a member of its own archive; it MAY list the original revision set as well. A branch is not a mirror: it is another line, with its own inventories, and cannot stand for the parent in the resolution of a pin (section 6.4), so it is never listed in `mirrors`.
+
+A version that the selection makes itself, such as a journal's typeset version of record, is a later version of the selection's branch, with the selection as `publisher`, the authors' agreement in `object.json` (section 9), and relations to the authors' versions (sections 7.3 and 8.1).
+
+**Open question: numbering on branches.** The branch point keeps its document version (version 3 stays version 3). Later versions of the branch either (a) continue the numbering within the branch (the journal's version 4, distinct from the authors' version 4, the owner telling them apart), or (b) are numbered from the branch point (3.1, 3.2), which reads more clearly but makes `documentVersion` more than an integer.
 
 ### 10.6 Rights
 
@@ -339,6 +382,8 @@ Digests show that files were not changed; they do not show who made them or when
 
 These witness files SHOULD be kept in the object's extension folder `extensions/opensheaf-witnesses/`, so that they travel with the object when it is copied or mirrored. OCFL allows object extension folders, which are not part of any version; the extension name `opensheaf-witnesses` is not yet registered with OCFL, so validators may warn about it. An archive that does not modify object folders after a version is committed MAY instead keep them under `witnesses/<object id>/`, next to the discovery document. Witnesses can be added later, by the owner or by others, and replaced when a proof is upgraded (an OpenTimestamps proof is completed once its attestation is confirmed); they are not covered by the inventory digests, and need not be, since each one is checked directly against the checksum file it names, which the pins fix.
 
+The versions of a line whose owner is keyed (section 6.5) MUST carry this signature, made with the owner's key: the key is the owner URI itself (`did:key`) or is found from it (an OpenPGP fingerprint, with the key file named in `keys`). A signature by someone else (the owner of a parent line, a selection vouching for its branch) is a witness; its key is identified in the witness file.
+
 External deposits (appendix A) and software archive snapshots are further witnesses. Archives kept in git MAY also sign their commits or tags, but git hashes are not part of the integrity chain of this specification.
 
 ## 14. Verification
@@ -352,7 +397,10 @@ A verifier checking an archive MUST:
 - check the document versions of each document (section 7.3): object versions with the same document version have the same sources, renditions and change note, except that a version with `sourcesMissing` may be completed by adding files (section 7.3); new numbers follow the rule of new versions, without gaps; `history`, when present, lists distinct document versions, covers all of them, each entry being the last object version holding its document version; no object version after the first one with `history` lacks it; every notice is kept unchanged in every later object version;
 - check that each `members.json` has a `type`, that the members of a catalogue have `version` and `inventorySha512`, and that the members of a selection have `revisions` and none of `version`, `inventorySha512` or `follow`, with distinct document versions;
 - for the head of each collection, resolve each member (each revision, in a selection) as in section 6.4 and check its pin, and for earlier collection versions check the pins of members of the archive itself (resolving the members of other archives for every earlier collection version is OPTIONAL); for a revision, check that the pinned object version holds the stated document version; report each as verified, mismatch (a copy was found and does not match), unavailable (no copy found) or removed (tombstoned);
-- for each mirror (`mirrorOf`), check that its `object.json` files name that archive; for each accepted copy, check that its first document version holds exactly the files of the source version named in `external`, when the source is available.
+- for each mirror (`mirrorOf`), check that its `object.json` files name that archive;
+- for each object with a genesis record (section 6.5): that `genesis.json` is the same in every object version from the first sealed one, that `name` is its digest, that `owner` and `name` do not change within the object, that a line whose owner is not the originator declares a parent, and, for a keyed owner, the signature of every object version;
+- for each branch (section 10.5): for a deep branch, that its versions up to the branch point are recorded as in the parent; for a shallow branch, the evidence of its first version; and report each branch as confirmed (the parent was resolved and matches, or its owner's signature holds), attested (consistent, with witnesses or the signature of the branch's owner), unconfirmed (consistent, with nothing outside the branch) or mismatch (an error);
+- where several copies of a line are known (mirrors, members, branches' parents), that each is a prefix of the other; two that are not are a fork of the line, an error of its owner.
 
 A verifier SHOULD check the witnesses it finds, the requirements of the profiles the archive declares, and those of the extensions it knows; it SHOULD report the extensions it does not know, which do not make an archive fail verification. It MUST NOT treat the presentation as authoritative. It SHOULD limit the depth and size of the collections it follows, and report when it stops.
 
@@ -378,6 +426,7 @@ A verifier SHOULD check the witnesses it finds, the requirements of the profiles
 - **0.1 (draft), 14 November 2026, revision:** extensions (section 4): specifications published separately, whose data `object.json` records under `extensions`, keyed by their names; the discovery document should list them; they never change the core, and verifiers report those they do not know.
 - **0.1 (draft), 14 November 2026, revision:** the impartial kind of collection is named catalogue (`type` `catalogue` in `members.json`), formerly archive collection, so that it is not confused with an archive.
 - **0.1 (draft), 14 November 2026, revision:** `Presentation` (slides) named among the values of `resourceTypeGeneral` (section 8).
+- **0.1 (draft), 14 November 2026, proposal (branch `proposal/identity`, not yet agreed):** names from genesis records; owners (none for drafts, named or keyed) and lines (owner, name) with a single writer each; branches, deep and shallow, of which accepted copies are a case, and the evidence a shallow branch carries; verification of names, lines and branches; schemas for `genesis.json` and the new fields (#13, #14, #20, #29).
 
 ## Appendix A. Zenodo binding (normative for archives declaring the profile `zenodo`)
 
@@ -416,7 +465,8 @@ The schemas (JSON Schema draft 2020-12) are published with this specification an
 
 - [opensheaf-archive-0.1.schema.json](https://opensheaf.org/schemas/opensheaf-archive-0.1.schema.json) for `opensheaf.json`;
 - [opensheaf-object-0.1.schema.json](https://opensheaf.org/schemas/opensheaf-object-0.1.schema.json) for `object.json`;
-- [opensheaf-collection-0.1.schema.json](https://opensheaf.org/schemas/opensheaf-collection-0.1.schema.json) for `members.json`.
+- [opensheaf-collection-0.1.schema.json](https://opensheaf.org/schemas/opensheaf-collection-0.1.schema.json) for `members.json`;
+- [opensheaf-genesis-0.1.schema.json](https://opensheaf.org/schemas/opensheaf-genesis-0.1.schema.json) for `genesis.json` (proposal, section 6.5).
 
 DataCite publishes its schema as an XML Schema only. `datacite.json` is validated by converting it to DataCite XML (following DataCite's mapping between the REST API's JSON and XML) and validating the result against the DataCite 4.7 XML Schema, together with the requirements of section 8.
 
@@ -562,7 +612,7 @@ A `members.json` of a selection: an issue of a journal, with a paper vetted in i
 }
 ```
 
-The `object.json` of the journal's accepted copy of the first member's version 2:
+The `object.json` of the journal's accepted copy of the first member's version 2 (as defined before the proposal of section 10.5, which records the source in `parent` instead; see the last example):
 
 ```json
 {
@@ -584,6 +634,48 @@ The `object.json` of the journal's accepted copy of the first member's version 2
 }
 ```
 
+A genesis record (proposal, section 6.5), written when the authors' paper was first sealed; its digest gives the name `vxq3k7m2hd5w6yne4tqzjb5tcuxr2l6gpm3aofs7ib2kxdn4ea7q` (illustrative):
+
+```json
+{
+  "format": "opensheaf-genesis/0.1",
+  "kind": "document",
+  "created": "2026-03-02T09:14:00Z",
+  "originator": "https://orcid.org/0000-0002-1234-5678",
+  "nonce": "5f2c8e1a9b7d4036c2e1f08a7b6d5c43"
+}
+```
+
+The `object.json` of the first version of a journal's shallow branch of that paper, from the authors' document version 3 (proposal, section 10.5); its content also holds `genesis.json` and `parent.inventory.json`:
+
+```json
+{
+  "format": "opensheaf-object/0.1",
+  "specification": "0.1",
+  "kind": "document",
+  "archiveId": "tag:journal.example.org,2026:quantum-tests",
+  "objectId": "network-discrimination",
+  "name": "vxq3k7m2hd5w6yne4tqzjb5tcuxr2l6gpm3aofs7ib2kxdn4ea7q",
+  "owner": "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK",
+  "parent": {
+    "owner": "https://orcid.org/0000-0002-1234-5678",
+    "name": "vxq3k7m2hd5w6yne4tqzjb5tcuxr2l6gpm3aofs7ib2kxdn4ea7q",
+    "archiveId": "tag:example.org,2026:authors",
+    "objectId": "network-discrimination",
+    "objectVersion": "v4",
+    "documentVersion": 3,
+    "inventorySha512": "c07a...",
+    "url": "https://authors.example.org/ocfl/network-discrimination/v4/"
+  },
+  "documentVersion": 3,
+  "mainSource": "paper.tex",
+  "sourceFormat": "application/x-tex",
+  "renditions": [ { "path": "paper.pdf", "mediaType": "application/pdf" } ],
+  "stage": { "scheme": "NISO-JAV", "value": "AM" },
+  "status": "active"
+}
+```
+
 ## Appendix F. Rationale (non-normative)
 
 - **Why OCFL.** It is a published, versioned specification for exactly this problem (versioned objects as plain files with digests), with independent validators, used by research libraries. OpenSheaf adds only discovery and collections.
@@ -592,6 +684,8 @@ The `object.json` of the journal's accepted copy of the first member's version 2
 - **Why pins by inventory digest.** One digest fixes a whole object version, so collections become hash trees across archives, and any matching copy will do.
 - **Why catalogues and selections.** Keeping and vetting are different acts. An archive (an author's, an institution's, a storage site) keeps what its members deposit, every version, without judging them: following an object as it grows is its job. A selection (a journal, a digest, a review journal) vouches for particular revisions: a later version by the authors has not been vetted, so it cannot enter the selection by itself, and a change of what is vetted is an editorial act that the selection's own history records. Pinning whole objects in one case and revision sets in the other makes the difference explicit and checkable.
 - **Why mirrors and accepted copies differ.** A mirror copies a whole object and stays the same object, owned by its original archive, so it can only grow by the original's versions. An accepted copy takes one vetted revision into the selection's own archive, where it continues under the selection's responsibility (corrections, notices, withdrawal); OCFL cannot hold part of an object, so a copy of one revision is necessarily a new object.
+- **Why the owner is part of the identity (proposal).** A name alone cannot say whose history is the right one: anyone may copy a genesis record. With (owner, name), copying is no forgery: a copy under another owner is a branch, declared as such, and each owner answers for one line only. Location stays out of the identity, so an object can be kept anywhere.
+- **Why deep and shallow branches (proposal).** A co-author continuing the work needs its whole past, and can check it by digests; a journal needs only the version it vetted, and may not be allowed to copy the others. A shallow branch carries the parent's inventory, so that its identity can be checked after the parent has gone.
 - **Why separate document and object versions.** Readers and DOI services see versions of the work; the storage keeps every change, including corrections of the description.
 - **Why the archive numbers document versions itself.** External numberings have gaps (versions an external service no longer serves) and do not cover versions that were never public there. The archive's own numbers have no gaps; external labels are recorded beside them.
 - **Why an explicit history, and why it lists object versions.** Dates may be approximate or unknown, so they cannot order versions, and pointers from each version to the previous one cannot be corrected when a version is inserted later, since earlier versions are fixed. A list kept in each object version, with the head's list authoritative, can be corrected by a new version and keeps a record of what was known before. Its entries name object versions, which are exact and resolved directly through the inventory, and name the last object version of each document version, which carries its most complete description. Digests could not be used: an object version cannot contain the digest of its own inventory.

@@ -364,6 +364,90 @@ so that such relations, and in time an infrastructure for scientific
 knowledge built from them, can be designed on top of it, while the pins keep
 everything that is built checkable.
 
+### Peer review, from a private submission to a published record
+
+The authors prepare a paper in an archive that is not public: an archive of
+their own kept in a private git repository, or on their own machine. A
+journal reviews it privately, and in the end publishes the accepted version
+together with as much of the review as the participants agree to make public
+(ideally the reports themselves, even if this is not customary today).
+
+- **A private archive is an archive.** Nothing in the format requires an
+  archive to be served publicly: the same files, kept in a private
+  repository, are deposited, pinned and verified in the same way, by whoever
+  has them. Versions not public at the time leave `Available` out of their
+  description; it is added, by a description-only version, when they are
+  made public.
+- **Priority without disclosure.** The authors can timestamp each object
+  version with [OpenTimestamps](https://opentimestamps.org/) (section 13.2):
+  the proof is made on the digest of the inventory, which reveals nothing of
+  the content, and later shows that exactly these files existed at that
+  date. A signature with a key of the authors (section 13.2) shows who made
+  them.
+- **The submission.** The authors send the journal the object (the whole
+  OCFL object, as a mirror: byte for byte, still the authors' object), or a
+  small collection pinning the objects that go together (the paper, a
+  detailed argument, data). The journal checks what it received against the
+  pins the authors give it, in the submission message or in the collection.
+- **The review as a collection of documents.** The journal keeps, in its own
+  private archive, a collection for each submission whose members are the
+  documents of the process, linked to each other: the submitted versions
+  (mirrors of the authors' objects), the referees' reports (documents of type
+  `PeerReview`, each with `Reviews` pointing to the exact object version
+  reviewed), the authors' replies (documents of the authors' archive, sent
+  back the same way), and the editors' decisions. Each new version of the
+  collection is a step of the process, recorded in its inventory (who, when,
+  and a message saying what was decided); the collection's history is the
+  history of the review.
+- **Objects travel on their own.** Every object is independent of the
+  collections that list it, and can be sent whole: the journal sends a
+  report to the authors as an object, which they keep as a mirror and check
+  against its pin; their reply comes back the same way.
+- **Anonymous referees.** A fixed version cannot forget what it records: a
+  referee's name in a report's `datacite.json`, or as the depositor in its
+  inventory, could be removed afterwards only by a takedown (section 11.2),
+  which breaks every pin of it. Anonymity must therefore be built in from the
+  start: the journal deposits the reports itself (the inventory names the
+  editorial office as depositor), witnesses are the journal's, not the
+  referee's, and if the archive is kept in git, commits that are sent or
+  published name the journal, not the referee.
+- **The referee as a commitment.** In place of the referee's name, the
+  report's creator is a cryptographic commitment: the SHA-512 digest of the
+  referee's identifier (an ORCID iD, which is unambiguous where a name is
+  not) followed by a secret. The secret is what makes it safe, since names
+  and ORCID iDs are few enough to be guessed one by one; one secret per
+  report, rather than one for the journal, also keeps the reports of the same
+  referee from being linked to each other by equal digests. The journal can
+  derive each report's secret from a private seed of its own (an HMAC of the
+  report's identifier under the seed), so that it keeps a single seed, and
+  gives the referee the secret of each report. The commitment is fixed in the
+  report's version, so it cannot be changed afterwards: neither the journal
+  nor anyone else can later attribute the report to someone else, and
+  revealing the identifier and the secret (the referee, to claim the report;
+  the journal, with the referee's agreement or as an institution may
+  require) lets anyone check the attribution by recomputing the digest.
+  Revealing one report's secret discloses nothing about the others, nor the
+  seed. A referee who agrees to sign the report after acceptance is added to
+  its creators, by name, by a description-only version, with the identifier
+  and the secret that open the commitment.
+- **The record.** When the paper is accepted, the journal keeps the accepted
+  version, with the reports, the replies and the decisions, in its archive:
+  the complete record of the process, fixed by pins. It publishes only the
+  public part: an accepted copy of the paper (section 10.5) and, with the
+  agreement of those concerned, the reports and replies, as documents of its
+  public archive linked to the version they reviewed, listed with the paper
+  in the issue (a selection) or in a public collection of the review.
+  Everything else stays private, still verifiable by those who have it.
+
+Open questions for the specification: how an object kept privately becomes
+public (the discovery document lists all the objects of an archive, so
+either an archive may serve only part of them, or publishing is a copy into
+another archive, with a new identity); how `Available` is checked for
+versions deposited privately; and how a commitment is written as a creator
+in DataCite (for instance a `nameIdentifier` with a scheme of its own), with
+the exact encoding of what is hashed, so that every tool computes the same
+digest (issue #29).
+
 ### A digest, a reading list, a curated bibliography
 
 A researcher publishes a list of recommended papers on a topic, from any

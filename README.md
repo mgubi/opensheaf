@@ -46,7 +46,7 @@ OpenSheaf proposes a lean common format instead:
   Layout (OCFL), used by research libraries for long-term preservation;
   description follows the DataCite metadata of DOIs. OpenSheaf only adds what
   these leave open.
-- **Collections that compose.** Archive collections keep documents whole,
+- **Collections that compose.** Catalogues keep documents whole,
   every version, impartially; selections (a journal, a digest, a review
   journal, a reading list) vet particular versions, and change only by an act
   of their curator. Both are versioned objects pinning their members by
@@ -99,7 +99,7 @@ on GitHub, and archives made with them.
   along the specification): deposits documents as OCFL objects with
   DataCite and OpenSheaf metadata (any source with its PDF, or TeXmacs
   sources typeset by the archive), keeps document versions and their
-  history, notices and withdrawals, keeps archive collections and selections
+  history, notices and withdrawals, keeps catalogues and selections
   across archives, mirrors objects and keeps accepted copies of vetted
   versions, writes the discovery document and a website with landing pages,
   deposits on Zenodo, imports from arXiv, and verifies an archive (also with
@@ -108,7 +108,7 @@ on GitHub, and archives made with them.
   a ready repository for your own archive of papers, and
   [collection-template](https://github.com/opensheaf/collection-template), for
   a curated collection of papers from any archive (a reading list, written as
-  a selection, or an archive collection); both are published with
+  a selection, or a catalogue); both are published with
   GitHub Pages ("Use this template", then `osheaf init`), and both are testing
   grounds that run every workflow of the tools on every push.
 - **Test data:** [example-papers](https://github.com/opensheaf/example-papers),

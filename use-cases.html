@@ -60,10 +60,10 @@
       </li>
     </ul>
     <p>
-      Archives list what they keep in <strong>archive collections</strong>,
-      which pin objects whole and may follow them as they grow; selections are
-      the other kind of collection of section 10, which pins revision sets and
-      changes only by an act of its curator. Copies are of two kinds too: a
+      Archives list what they keep in <strong>catalogues</strong>, which pin
+      objects whole and may follow them as they grow; selections are the other
+      kind of collection of section 10, which pins revision sets and changes
+      only by an act of its curator. Copies are of two kinds too: a
       <strong>mirror</strong> copies a whole object (an archive keeping
       another archive's objects), an <strong>accepted copy</strong> takes one
       vetted revision into the selection's own archive. Collections and copies
@@ -112,9 +112,9 @@
       </li>
       <li>
         <p>
-          The archive's main collection is an <strong>archive
-          collection</strong> of her own documents, following them: the index
-          shows the current version of each.
+          The archive's main collection is a <strong>catalogue</strong> of her
+          own documents, following them: the index shows the current version
+          of each.
         </p>
       </li>
       <li>
@@ -170,27 +170,27 @@ osheaf verify</pre>
       Two co-authors each keep an archive; their joint paper is deposited
       once, in one of them. The other lists it in a collection of her own
       archive (for instance &quot;papers with my students&quot;) as a member
-      of another archive. In an <strong>archive collection</strong> with <tt
-      class="verbatim">follow</tt>, each time she updates the collection (<tt class="verbatim">osheaf
-      collect</tt>) it pins the head of her co-author's object, its newest
-      object version; nothing is copied, and no permission is needed. Her
-      member entry can list in <tt class="verbatim">mirrors</tt> the archives that
-      mirror the paper (section 10.2), so that readers still reach it when her
-      co-author's archive is down. If she wants the paper in her archive too,
-      and the licences of all its versions allow redistribution, she can
+      of another archive. In an <strong>catalogue</strong> with <tt class="verbatim">follow</tt>,
+      each time she updates the collection (<tt class="verbatim">osheaf collect</tt>) it
+      pins the head of her co-author's object, its newest object version;
+      nothing is copied, and no permission is needed. Her member entry can
+      list in <tt class="verbatim">mirrors</tt> the archives that mirror the paper
+      (section 10.2), so that readers still reach it when her co-author's
+      archive is down. If she wants the paper in her archive too, and the
+      licences of all its versions allow redistribution, she can
       <strong>mirror</strong> it: a byte-for-byte copy of the whole object,
       which stays the co-author's object (<tt class="verbatim">mirrorOf</tt>).
     </p>
     <h3 id="auto-5"><a id="a-research-group-a-seminar-lecture-notes"></a>A research group, a seminar, lecture notes<span style="margin-left: 1em"></span></h3>
     <p>
       A group keeps one archive for its members' papers, theses and slides, or
-      each researcher keeps her own and the group keeps an archive collection
-      whose members are documents of those archives. Lecture notes and slides
-      are documents like papers (<tt class="verbatim">resourceTypeGeneral</tt> <tt
-      class="verbatim">Text</tt>, with <tt class="verbatim">resourceType</tt> &quot;Lecture
-      notes&quot;, or <tt class="verbatim">Presentation</tt> for slides); notes revised
-      every year are versions of one document, or separate documents when an
-      edition is a different work (a new title, a different course).
+      each researcher keeps her own and the group keeps a catalogue whose
+      members are documents of those archives. Lecture notes and slides are
+      documents like papers (<tt class="verbatim">resourceTypeGeneral</tt> <tt class="verbatim">Text</tt>,
+      with <tt class="verbatim">resourceType</tt> &quot;Lecture notes&quot;, or <tt
+      class="verbatim">Presentation</tt> for slides); notes revised every year are
+      versions of one document, or separate documents when an edition is a
+      different work (a new title, a different course).
     </p>
     <h2 id="auto-6"><a id="archives"></a>Archives<span style="margin-left: 1em"></span></h2>
     <h3 id="auto-7"><a id="an-institutional-repository"></a>An institutional repository<span style="margin-left: 1em"></span></h3>
@@ -201,8 +201,8 @@ osheaf verify</pre>
       <li>
         <p>
           Members may deposit directly in the institution's archive, whose
-          main collection is an archive collection of its documents, perhaps
-          with one archive collection per department.
+          main collection is a catalogue of its documents, perhaps with one
+          catalogue per department.
         </p>
       </li>
       <li>
@@ -281,7 +281,7 @@ osheaf verify --remote</pre>
         <pre class="verbatim" xml:space="preserve">
 id: preserved
 title: Papers preserved by the library
-type: archive
+type: catalogue
 members:
   - archive: https://example.org/papers/   # the base URL (archiveUrl in members.json)
     id: kpz-uniqueness
@@ -391,8 +391,8 @@ members:
       </li>
       <li>
         <p>
-          The journal's issues are selections of its own documents, or archive
-          collections of them: the journal's own documents change only by its
+          The journal's issues are selections of its own documents, or
+          catalogues of them: the journal's own documents change only by its
           own acts in either case.
         </p>
       </li>
@@ -469,12 +469,11 @@ members:
       <li>
         <p>
           <strong>Later versions.</strong> When she improves the detailed
-          argument after publication, her archive collection follows it; the
-          account published by the journal keeps pointing to the version
-          reviewed, and presentations may say that later, unreviewed versions
-          exist. If scrutiny finds an error, the journal adds a notice to its
-          accepted copy, or vets a corrected pair, as a new version of the
-          issue.
+          argument after publication, her catalogue follows it; the account
+          published by the journal keeps pointing to the version reviewed, and
+          presentations may say that later, unreviewed versions exist. If
+          scrutiny finds an error, the journal adds a notice to its accepted
+          copy, or vets a corrected pair, as a new version of the issue.
         </p>
       </li>
     </ul>
@@ -804,7 +803,7 @@ osheaf collection sync issue-7-details --from issue-7-details.yaml</pre>
       <table style="display: inline-table; vertical-align: middle">
         <tbody><tr>
           <td style="border-right: 1px solid; border-bottom: 1px solid; border-left: 1px solid; border-top: 1px solid">Event</td>
-          <td style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid">Archive collection (an archive, a storage site)</td>
+          <td style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid">Catalogue (an archive, a storage site)</td>
           <td style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid">Selection (a journal, a digest)</td>
         </tr><tr>
           <td style="border-right: 1px solid; border-bottom: 1px solid; border-left: 1px solid">the authors deposit a new version</td>

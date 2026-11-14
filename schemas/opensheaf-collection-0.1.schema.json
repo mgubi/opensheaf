@@ -127,10 +127,10 @@
     },
     "type": {
       "enum": [
-        "archive",
+        "catalogue",
         "selection"
       ],
-      "description": "archive: members pin objects whole (version, inventorySha512, optional follow); selection: members pin revision sets (revisions)"
+      "description": "catalogue: members pin objects whole (version, inventorySha512, optional follow); selection: members pin revision sets (revisions)"
     }
   },
   "allOf": [
@@ -138,7 +138,7 @@
       "if": {
         "properties": {
           "type": {
-            "const": "archive"
+            "const": "catalogue"
           }
         }
       },

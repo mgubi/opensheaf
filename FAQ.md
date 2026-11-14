@@ -113,14 +113,40 @@ mirror, from its DOI deposit or from a Software Heritage snapshot: any copy
 that matches the pin is the right one. A collection also keeps a cached
 citation of each member, so that it stays readable even if no copy is found.
 
-## What is the difference between an archive and a selection?
+## Why both archives and collections?
+
+They answer different questions. An **archive** is custody and naming: one
+owner's storage root and discovery document, under an archive identifier. It
+says who keeps an object, what it is called, and where its files are. An
+object is named by the pair (archive identifier, object identifier), and its
+versions are added only by its archive, which is its single writer: a copy
+kept elsewhere (a mirror) stays the object of its archive and can only
+receive its versions. Archives do not overlap and do not nest.
+
+A **collection** is a statement: a versioned list of pins, made by a curator,
+over objects of any archives. It says which objects, in which versions, go
+together: an author's papers, an issue of a journal, a reading list.
+Collections are objects themselves, so they can be pinned, nested and
+included in other collections, across archives.
+
+The two are kept apart because an archive changes at every deposit and holds
+facts that are nobody's claim (which objects it holds, their heads, mirrors,
+tombstones, keys), while a collection changes by the rules its curator set
+(adding members, following them as they grow, vetting their versions), and
+each of its versions can be cited and verified as it stood. When an archive
+itself should be cited as it stood, that is what its main collection is for:
+a catalogue of its own documents, pinned like any other. Archives partition
+the objects, each object having one home; collections overlay them, any
+number of views over any homes.
+
+## What is the difference between a catalogue and a selection?
 
 Keeping and vetting are different acts, and OpenSheaf has a kind of
-collection for each. An **archive collection** keeps objects whole and is
+collection for each. A **catalogue** keeps objects whole and is
 impartial about their versions: each member pins an object with all its
 versions, and the collection may follow it as its owner adds versions. An
-author's archive, an institution's repository and a storage site keep
-documents this way. A **selection** vets particular revisions: a journal its
+author's archive, an institution's repository and a storage site list what
+they keep in catalogues. A **selection** vets particular revisions: a journal its
 accepted version, a digest or a review journal the version it read. Each
 member pins the revision set that was vetted; later versions by the authors
 are not part of it, and any change of what is vetted (a correction accepted

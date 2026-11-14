@@ -17,7 +17,7 @@ Three roles recur:
   documents: a journal, a digest, a review journal, a reading list,
   proceedings.
 
-Archives list what they keep in **archive collections**, which pin objects
+Archives list what they keep in **catalogues**, which pin objects
 whole and may follow them as they grow; selections are the other kind of
 collection of section 10, which pins revision sets and changes only by an act
 of its curator. Copies are of two kinds too: a **mirror** copies a whole
@@ -47,7 +47,7 @@ archive, [mgubi.org/papers](https://mgubi.org/papers/), is one).
   the date of their deposit.
 - An erratum is a notice about a version; a retraction is a withdrawal. Both
   are description-only versions: nothing deposited changes.
-- The archive's main collection is an **archive collection** of her own
+- The archive's main collection is a **catalogue** of her own
   documents, following them: the index shows the current version of each.
 - DOIs come from the Zenodo binding (appendix A): a concept DOI for each
   document and a DOI for each document version. A version deposited out of
@@ -99,7 +99,7 @@ osheaf verify
 Two co-authors each keep an archive; their joint paper is deposited once, in
 one of them. The other lists it in a collection of her own archive (for
 instance "papers with my students") as a member of another archive. In an
-**archive collection** with `follow`, each time she updates the collection
+**catalogue** with `follow`, each time she updates the collection
 (`osheaf collect`) it pins the head of her co-author's object, its newest
 object version; nothing is copied, and no permission is needed. Her member
 entry can list in `mirrors` the archives that mirror the paper (section
@@ -111,7 +111,7 @@ byte-for-byte copy of the whole object, which stays the co-author's object
 ### A research group, a seminar, lecture notes
 
 A group keeps one archive for its members' papers, theses and slides, or each
-researcher keeps her own and the group keeps an archive collection whose
+researcher keeps her own and the group keeps a catalogue whose
 members are documents of those archives. Lecture notes and slides are
 documents like papers (`resourceTypeGeneral` `Text`, with `resourceType`
 "Lecture notes", or `Presentation` for slides); notes revised every year are versions of one
@@ -125,8 +125,8 @@ title, a different course).
 A university keeps an archive of its members' work.
 
 - Members may deposit directly in the institution's archive, whose main
-  collection is an archive collection of its documents, perhaps with one
-  archive collection per department.
+  collection is a catalogue of its documents, perhaps with one
+  catalogue per department.
 - Or members keep their own archives, and the institution **mirrors** their
   documents: each mirror is a whole copy, every version, kept up to date by
   copying new versions, and listed with `mirrorOf` in the institution's
@@ -178,7 +178,7 @@ osheaf verify --remote
 ```yaml
 id: preserved
 title: Papers preserved by the library
-type: archive
+type: catalogue
 members:
   - archive: https://example.org/papers/   # the base URL (archiveUrl in members.json)
     id: kpz-uniqueness
@@ -258,8 +258,8 @@ publishes it under its licence, with the authors' agreement.
   section 8.1).
 - The authors' preprint is linked to it by a description-only version of their
   own document (`IsVersionOf` the article's DOI, section 8.1), if they want.
-- The journal's issues are selections of its own documents, or archive
-  collections of them: the journal's own documents change only by its own
+- The journal's issues are selections of its own documents, or
+  catalogues of them: the journal's own documents change only by its own
   acts in either case.
 
 ### A short account of a proof, with its detailed argument
@@ -307,7 +307,7 @@ analysis by people and machines.
   selection `issue-7-details` lists the mirror in its member's `mirrors`; a
   Software Heritage snapshot of her archive is a further witness.
 - **Later versions.** When she improves the detailed argument after
-  publication, her archive collection follows it; the account published by
+  publication, her catalogue follows it; the account published by
   the journal keeps pointing to the version reviewed, and presentations may
   say that later, unreviewed versions exist. If scrutiny finds an error, the
   journal adds a notice to its accepted copy, or vets a corrected pair, as a
@@ -524,7 +524,7 @@ copies.
 
 ## What happens when ...
 
-| Event | Archive collection (an archive, a storage site) | Selection (a journal, a digest) |
+| Event | Catalogue (an archive, a storage site) | Selection (a journal, a digest) |
 |---|---|---|
 | the authors deposit a new version | it is followed (with `follow`): the next collection version pins the new head | nothing changes; the curator may vet it and add it to the revision set |
 | the authors revise a document that another one focuses on (the detailed argument of a short account) | it is followed, like any new version | nothing changes: the account, and any selection of the detailed argument, keep pinning the version reviewed; the curator may vet the new one |

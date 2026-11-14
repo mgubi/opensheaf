@@ -162,16 +162,16 @@
       <li>
         <p>
           <strong>Collection:</strong> an object holding a list of members. A
-          collection is an archive collection or a selection (section 10.1).
+          collection is a catalogue or a selection (section 10.1).
         </p>
       </li>
       <li>
         <p>
-          <strong>Archive collection:</strong> a collection that keeps objects
-          whole, impartial about their versions: each member pins an object
-          with all its versions, and may follow it as it grows. An archive's
-          main collection, and the list of objects an archive mirrors, are
-          archive collections.
+          <strong>Catalogue:</strong> a collection that keeps objects whole,
+          impartial about their versions: each member pins an object with all
+          its versions, and may follow it as it grows. An archive's main
+          collection, and the list of objects an archive mirrors, are
+          catalogues.
         </p>
       </li>
       <li>
@@ -252,9 +252,9 @@
       </li>
       <li>
         <p>
-          <strong>Member:</strong> an entry of a collection: an object (in an
-          archive collection) or a revision set of a document (in a
-          selection), of any archive.
+          <strong>Member:</strong> an entry of a collection: an object (in a
+          catalogue) or a revision set of a document (in a selection), of any
+          archive.
         </p>
       </li>
       <li>
@@ -696,7 +696,7 @@
     <p>
       A collection version contains <tt class="verbatim">datacite.json</tt>, <tt class="verbatim">object.json</tt>
       and <tt class="verbatim">members.json</tt> (section 10), which states whether the
-      collection is an archive collection or a selection. Its <tt class="verbatim">object.json</tt>
+      collection is a catalogue or a selection. Its <tt class="verbatim">object.json</tt>
       declares <tt class="verbatim">kind</tt> <tt class="verbatim">collection</tt>; its document
       version counts the changes of the member list, and it has none of the
       fields specific to documents (<tt class="verbatim">mainSource</tt>, <tt class="verbatim">sourceFormat</tt>,
@@ -1068,7 +1068,7 @@
       16).
     </p>
     <h2 id="auto-20"><a id="10-collections-membersjson"></a>10. Collections: members.json<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-21"><a id="101-archive-collections-and-selections"></a>10.1 Archive collections and selections<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-21"><a id="101-catalogues-and-selections"></a>10.1 Catalogues and selections<span style="margin-left: 1em"></span></h3>
     <p>
       Collections are of two kinds, which differ in how they treat the
       versions of their members.
@@ -1076,13 +1076,12 @@
     <ul>
       <li>
         <p>
-          An <strong>archive collection</strong> keeps objects whole and is
-          impartial about their versions. Each member pins an object, with all
-          its versions, and the collection may follow it as it grows, whoever
-          adds the versions: the owner of the object decides what its versions
-          are. An archive's main collection (its own documents) and the list
-          of objects an archive mirrors (section 10.4) are archive
-          collections.
+          A <strong>catalogue</strong> keeps objects whole and is impartial
+          about their versions. Each member pins an object, with all its
+          versions, and the collection may follow it as it grows, whoever adds
+          the versions: the owner of the object decides what its versions are.
+          An archive's main collection (its own documents) and the list of
+          objects an archive mirrors (section 10.4) are catalogues.
         </p>
       </li>
       <li>
@@ -1114,7 +1113,7 @@
       </li>
       <li>
         <p>
-          <tt class="verbatim">type</tt>: <tt class="verbatim">&quot;archive&quot;</tt> or <tt
+          <tt class="verbatim">type</tt>: <tt class="verbatim">&quot;catalogue&quot;</tt> or <tt
           class="verbatim">&quot;selection&quot;</tt>;
         </p>
       </li>
@@ -1173,7 +1172,7 @@
       they become unavailable. <tt class="verbatim">cite</tt> is not authoritative.
     </p>
     <p>
-      <strong>Members of an archive collection</strong> MUST have <tt class="verbatim">version</tt>,
+      <strong>Members of a catalogue</strong> MUST have <tt class="verbatim">version</tt>,
       the pinned object version, and <tt class="verbatim">inventorySha512</tt>, the
       SHA-512 digest of that version's inventory file. Since the inventory of
       an object version lists every earlier version, the pin fixes the object
@@ -1186,11 +1185,10 @@
       reads the member archive's discovery document (or its feed); when the
       followed object has a new head, the tool writes a new collection version
       pinning it, whatever the new head holds (a new document version, a
-      description, a notice, a withdrawal): an archive collection does not
-      judge the versions of its members. A withdrawn member stays, and
-      presentations show the withdrawal. Presentations show the current
-      version of each member, read from the history of the pinned version
-      (section 7.3).
+      description, a notice, a withdrawal): a catalogue does not judge the
+      versions of its members. A withdrawn member stays, and presentations
+      show the withdrawal. Presentations show the current version of each
+      member, read from the history of the pinned version (section 7.3).
     </p>
     <p>
       <strong>Members of a selection</strong> MUST have <tt class="verbatim">revisions</tt>:
@@ -1218,9 +1216,9 @@
     </p>
     <p>
       Every member is pinned: a collection version states exactly which object
-      versions it contains, whole objects up to a version in an archive
-      collection, revisions in a selection. A collection version therefore
-      fixes everything it contains, also across archives; since a pin fixes an
+      versions it contains, whole objects up to a version in a catalogue,
+      revisions in a selection. A collection version therefore fixes
+      everything it contains, also across archives; since a pin fixes an
       inventory, which fixes all its files, collections are hash trees. Pins
       cannot form cycles.
     </p>
@@ -1243,15 +1241,15 @@
       to date only by copying the new versions of the original, which is
       possible because OCFL objects only grow; it MUST NOT be changed
       otherwise. Mirroring is allowed only if the licences of all the versions
-      copied allow redistribution. An archive collection MAY list a mirror of
-      a member in the member's <tt class="verbatim">mirrors</tt>. An archive that
-      mirrors another archive entirely SHOULD be listed in the <tt class="verbatim">mirrors</tt>
-      of that archive's discovery document, with the agreement of its owner.
+      copied allow redistribution. A catalogue MAY list a mirror of a member
+      in the member's <tt class="verbatim">mirrors</tt>. An archive that mirrors another
+      archive entirely SHOULD be listed in the <tt class="verbatim">mirrors</tt> of that
+      archive's discovery document, with the agreement of its owner.
     </p>
     <p>
       Mirrors serve preservation and access (an institution keeping copies of
       its members' archives, an independent storage site): they are impartial,
-      like archive collections, and carry every version.
+      like catalogues, and carry every version.
     </p>
     <h3 id="auto-25"><a id="105-accepted-copies"></a>10.5 Accepted copies<span style="margin-left: 1em"></span></h3>
     <p>
@@ -1498,9 +1496,9 @@
       <li>
         <p>
           check that each <tt class="verbatim">members.json</tt> has a <tt class="verbatim">type</tt>,
-          that the members of an archive collection have <tt class="verbatim">version</tt>
-          and <tt class="verbatim">inventorySha512</tt>, and that the members of a
-          selection have <tt class="verbatim">revisions</tt> and none of <tt class="verbatim">version</tt>,
+          that the members of a catalogue have <tt class="verbatim">version</tt> and <tt
+          class="verbatim">inventorySha512</tt>, and that the members of a selection
+          have <tt class="verbatim">revisions</tt> and none of <tt class="verbatim">version</tt>,
           <tt class="verbatim">inventorySha512</tt> or <tt class="verbatim">follow</tt>, with
           distinct document versions;
         </p>
@@ -1643,6 +1641,14 @@
           class="verbatim">object.json</tt> records under <tt class="verbatim">extensions</tt>,
           keyed by their names; the discovery document should list them; they
           never change the core, and verifiers report those they do not know.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>0.1 (draft), 14 November 2026, revision:</strong> the
+          impartial kind of collection is named catalogue (<tt class="verbatim">type</tt>
+          <tt class="verbatim">catalogue</tt> in <tt class="verbatim">members.json</tt>), formerly
+          archive collection, so that it is not confused with an archive.
         </p>
       </li>
     </ul>
@@ -1997,15 +2003,15 @@
       is document version 3, the last in the history.
     </p>
     <p>
-      A <tt class="verbatim">members.json</tt> of an archive collection: the main
-      collection of an archive, following its documents whole:
+      A <tt class="verbatim">members.json</tt> of a catalogue: the main collection of an
+      archive, following its documents whole:
     </p>
     <div class="language-json">
       <div class="tmweb-code">
         <pre class="verbatim" xml:space="preserve">
 {
   &quot;format&quot;: &quot;opensheaf-collection/0.1&quot;,
-  &quot;type&quot;: &quot;archive&quot;,
+  &quot;type&quot;: &quot;catalogue&quot;,
   &quot;order&quot;: &quot;issued-desc&quot;,
   &quot;members&quot;: [
     { &quot;kind&quot;: &quot;document&quot;,
@@ -2110,16 +2116,16 @@
       </li>
       <li>
         <p>
-          <strong>Why archive collections and selections.</strong> Keeping and
-          vetting are different acts. An archive (an author's, an
-          institution's, a storage site) keeps what its members deposit, every
-          version, without judging them: following an object as it grows is
-          its job. A selection (a journal, a digest, a review journal) vouches
-          for particular revisions: a later version by the authors has not
-          been vetted, so it cannot enter the selection by itself, and a
-          change of what is vetted is an editorial act that the selection's
-          own history records. Pinning whole objects in one case and revision
-          sets in the other makes the difference explicit and checkable.
+          <strong>Why catalogues and selections.</strong> Keeping and vetting
+          are different acts. An archive (an author's, an institution's, a
+          storage site) keeps what its members deposit, every version, without
+          judging them: following an object as it grows is its job. A
+          selection (a journal, a digest, a review journal) vouches for
+          particular revisions: a later version by the authors has not been
+          vetted, so it cannot enter the selection by itself, and a change of
+          what is vetted is an editorial act that the selection's own history
+          records. Pinning whole objects in one case and revision sets in the
+          other makes the difference explicit and checkable.
         </p>
       </li>
       <li>

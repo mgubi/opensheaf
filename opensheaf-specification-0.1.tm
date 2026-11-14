@@ -40,55 +40,55 @@
   <section*|3. Terminology><label|3-terminology>
 
   <\itemize>
-    <item><strong|Archive:> a set of objects kept by one owner (a person, group or institution), with one storage root and one discovery document, identified by an archive identifier.
+    <item><dfn|Archive>: a set of objects kept by one owner (a person, group or institution), with one storage root and one discovery document, identified by an archive identifier.
 
-    <item><strong|Archive identifier:> a URI naming the archive independently of where it is served (section 6).
+    <item><dfn|Archive identifier>: a URI naming the archive independently of where it is served (section 6).
 
-    <item><strong|Base URL:> the URL at which an archive is currently served, ending with <verbatim|/>; its discovery document is at <verbatim|\<less\>base URL\<gtr\>opensheaf.json>.
+    <item><dfn|Base URL>: the URL at which an archive is currently served, ending with <verbatim|/>; its discovery document is at <verbatim|\<less\>base URL\<gtr\>opensheaf.json>.
 
-    <item><strong|Storage root:> an OCFL 1.1 storage root holding the objects of the archive.
+    <item><dfn|Storage root>: an OCFL 1.1 storage root holding the objects of the archive.
 
-    <item><strong|Object:> an OCFL object. Its <strong|kind> is <verbatim|document> or <verbatim|collection>.
+    <item><dfn|Object>: an OCFL object. Its <dfn|kind> is <verbatim|document> or <verbatim|collection>.
 
-    <item><strong|Document:> an object holding one scholarly work (an article, notes, a thesis, a book) with its sources and renditions.
+    <item><dfn|Document>: an object holding one scholarly work (an article, notes, a thesis, a book) with its sources and renditions.
 
-    <item><strong|Collection:> an object holding a list of members. A collection is a catalogue or a selection (section 10.1).
+    <item><dfn|Collection>: an object holding a list of members. A collection is a catalogue or a selection (section 10.1).
 
-    <item><strong|Catalogue:> a collection that keeps objects whole, impartial about their versions: each member pins an object with all its versions, and may follow it as it grows. An archive's main collection, and the list of objects an archive mirrors, are catalogues.
+    <item><dfn|Catalogue>: a collection that keeps objects whole, impartial about their versions: each member pins an object with all its versions, and may follow it as it grows. An archive's main collection, and the list of objects an archive mirrors, are catalogues.
 
-    <item><strong|Selection:> a collection that vets particular revisions of documents (a journal, a digest, a review journal, a reading list): each member pins a revision set, and earlier or later versions are not part of the selection unless its curator adds them, by a new version of the selection.
+    <item><dfn|Selection>: a collection that vets particular revisions of documents (a journal, a digest, a review journal, a reading list): each member pins a revision set, and earlier or later versions are not part of the selection unless its curator adds them, by a new version of the selection.
 
-    <item><strong|Revision:> a document version, as vetted by a selection, pinned by the object version that held it when it was vetted.
+    <item><dfn|Revision>: a document version, as vetted by a selection, pinned by the object version that held it when it was vetted.
 
-    <item><strong|Revision set:> the revisions of one document vetted by a selection (usually one; more after a correction).
+    <item><dfn|Revision set>: the revisions of one document vetted by a selection (usually one; more after a correction).
 
-    <item><strong|Mirror:> a copy, in an archive's storage root, of another archive's object, whole and byte for byte (section 10.4).
+    <item><dfn|Mirror>: a copy, in an archive's storage root, of another archive's object, whole and byte for byte (section 10.4).
 
-    <item><strong|Accepted copy:> a document of a selection's archive holding exactly the files of a revision it vetted from another archive (section 10.5).
+    <item><dfn|Accepted copy>: a document of a selection's archive holding exactly the files of a revision it vetted from another archive (section 10.5).
 
-    <item><strong|Object version:> an OCFL version of an object (<verbatim|v1>, <verbatim|v2>, ...). It changes at every change of the object.
+    <item><dfn|Object version>: an OCFL version of an object (<verbatim|v1>, <verbatim|v2>, ...). It changes at every change of the object.
 
-    <item><strong|Document version:> the version of the work, a positive integer numbered by the archive, in <verbatim|object.json> and <verbatim|datacite.json>. It changes exactly when the document's own files change (section 7.3).
+    <item><dfn|Document version>: the version of the work, a positive integer numbered by the archive, in <verbatim|object.json> and <verbatim|datacite.json>. It changes exactly when the document's own files change (section 7.3).
 
-    <item><strong|Description-only version:> an object version that holds an existing document version with its files unchanged, changing only the description, the state or the notices of the object (section 7.3).
+    <item><dfn|Description-only version>: an object version that holds an existing document version with its files unchanged, changing only the description, the state or the notices of the object (section 7.3).
 
-    <item><strong|History:> the order of a document's versions in the history of the work (section 7.3).
+    <item><dfn|History>: the order of a document's versions in the history of the work (section 7.3).
 
-    <item><strong|Current version:> the document version to which readers are directed: the last in the history.
+    <item><dfn|Current version>: the document version to which readers are directed: the last in the history.
 
-    <item><strong|Note:> a short text, a file of the content, or both, as used for change notes, notices and withdrawals (section 9).
+    <item><dfn|Note>: a short text, a file of the content, or both, as used for change notes, notices and withdrawals (section 9).
 
-    <item><strong|Member:> an entry of a collection: an object (in a catalogue) or a revision set of a document (in a selection), of any archive.
+    <item><dfn|Member>: an entry of a collection: an object (in a catalogue) or a revision set of a document (in a selection), of any archive.
 
-    <item><strong|Pin:> the pair (object version, SHA-512 digest of that version's inventory file).
+    <item><dfn|Pin>: the pair (object version, SHA-512 digest of that version's inventory file).
 
-    <item><strong|Rendition:> a file produced from the sources and deposited with them (a PDF, an EPUB).
+    <item><dfn|Rendition>: a file produced from the sources and deposited with them (a PDF, an EPUB).
 
-    <item><strong|Presentation:> files generated from the archive for readers (web pages, indexes, HTML versions of documents). It is never authoritative.
+    <item><dfn|Presentation>: files generated from the archive for readers (web pages, indexes, HTML versions of documents). It is never authoritative.
 
-    <item><strong|Witness:> an independent copy or proof: a signature, a timestamp, an external deposit, a software archive snapshot.
+    <item><dfn|Witness>: an independent copy or proof: a signature, a timestamp, an external deposit, a software archive snapshot.
 
-    <item><strong|Verifier:> a program that checks an archive or a collection against this specification.
+    <item><dfn|Verifier>: a program that checks an archive or a collection against this specification.
   </itemize>
 
   <section*|4. Conformance><label|4-conformance>

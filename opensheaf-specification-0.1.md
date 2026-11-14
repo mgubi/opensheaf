@@ -27,31 +27,31 @@ Sections marked non-normative, examples, notes and the appendices marked as such
 
 ## 3. Terminology
 
-- **Archive:** a set of objects kept by one owner (a person, group or institution), with one storage root and one discovery document, identified by an archive identifier.
-- **Archive identifier:** a URI naming the archive independently of where it is served (section 6).
-- **Base URL:** the URL at which an archive is currently served, ending with `/`; its discovery document is at `<base URL>opensheaf.json`.
-- **Storage root:** an OCFL 1.1 storage root holding the objects of the archive.
-- **Object:** an OCFL object. Its **kind** is `document` or `collection`.
-- **Document:** an object holding one scholarly work (an article, notes, a thesis, a book) with its sources and renditions.
-- **Collection:** an object holding a list of members. A collection is a catalogue or a selection (section 10.1).
-- **Catalogue:** a collection that keeps objects whole, impartial about their versions: each member pins an object with all its versions, and may follow it as it grows. An archive's main collection, and the list of objects an archive mirrors, are catalogues.
-- **Selection:** a collection that vets particular revisions of documents (a journal, a digest, a review journal, a reading list): each member pins a revision set, and earlier or later versions are not part of the selection unless its curator adds them, by a new version of the selection.
-- **Revision:** a document version, as vetted by a selection, pinned by the object version that held it when it was vetted.
-- **Revision set:** the revisions of one document vetted by a selection (usually one; more after a correction).
-- **Mirror:** a copy, in an archive's storage root, of another archive's object, whole and byte for byte (section 10.4).
-- **Accepted copy:** a document of a selection's archive holding exactly the files of a revision it vetted from another archive (section 10.5).
-- **Object version:** an OCFL version of an object (`v1`, `v2`, ...). It changes at every change of the object.
-- **Document version:** the version of the work, a positive integer numbered by the archive, in `object.json` and `datacite.json`. It changes exactly when the document's own files change (section 7.3).
-- **Description-only version:** an object version that holds an existing document version with its files unchanged, changing only the description, the state or the notices of the object (section 7.3).
-- **History:** the order of a document's versions in the history of the work (section 7.3).
-- **Current version:** the document version to which readers are directed: the last in the history.
-- **Note:** a short text, a file of the content, or both, as used for change notes, notices and withdrawals (section 9).
-- **Member:** an entry of a collection: an object (in a catalogue) or a revision set of a document (in a selection), of any archive.
-- **Pin:** the pair (object version, SHA-512 digest of that version's inventory file).
-- **Rendition:** a file produced from the sources and deposited with them (a PDF, an EPUB).
-- **Presentation:** files generated from the archive for readers (web pages, indexes, HTML versions of documents). It is never authoritative.
-- **Witness:** an independent copy or proof: a signature, a timestamp, an external deposit, a software archive snapshot.
-- **Verifier:** a program that checks an archive or a collection against this specification.
+- <dfn>Archive</dfn>: a set of objects kept by one owner (a person, group or institution), with one storage root and one discovery document, identified by an archive identifier.
+- <dfn>Archive identifier</dfn>: a URI naming the archive independently of where it is served (section 6).
+- <dfn>Base URL</dfn>: the URL at which an archive is currently served, ending with `/`; its discovery document is at `<base URL>opensheaf.json`.
+- <dfn>Storage root</dfn>: an OCFL 1.1 storage root holding the objects of the archive.
+- <dfn>Object</dfn>: an OCFL object. Its <dfn>kind</dfn> is `document` or `collection`.
+- <dfn>Document</dfn>: an object holding one scholarly work (an article, notes, a thesis, a book) with its sources and renditions.
+- <dfn>Collection</dfn>: an object holding a list of members. A collection is a catalogue or a selection (section 10.1).
+- <dfn>Catalogue</dfn>: a collection that keeps objects whole, impartial about their versions: each member pins an object with all its versions, and may follow it as it grows. An archive's main collection, and the list of objects an archive mirrors, are catalogues.
+- <dfn>Selection</dfn>: a collection that vets particular revisions of documents (a journal, a digest, a review journal, a reading list): each member pins a revision set, and earlier or later versions are not part of the selection unless its curator adds them, by a new version of the selection.
+- <dfn>Revision</dfn>: a document version, as vetted by a selection, pinned by the object version that held it when it was vetted.
+- <dfn>Revision set</dfn>: the revisions of one document vetted by a selection (usually one; more after a correction).
+- <dfn>Mirror</dfn>: a copy, in an archive's storage root, of another archive's object, whole and byte for byte (section 10.4).
+- <dfn>Accepted copy</dfn>: a document of a selection's archive holding exactly the files of a revision it vetted from another archive (section 10.5).
+- <dfn>Object version</dfn>: an OCFL version of an object (`v1`, `v2`, ...). It changes at every change of the object.
+- <dfn>Document version</dfn>: the version of the work, a positive integer numbered by the archive, in `object.json` and `datacite.json`. It changes exactly when the document's own files change (section 7.3).
+- <dfn>Description-only version</dfn>: an object version that holds an existing document version with its files unchanged, changing only the description, the state or the notices of the object (section 7.3).
+- <dfn>History</dfn>: the order of a document's versions in the history of the work (section 7.3).
+- <dfn>Current version</dfn>: the document version to which readers are directed: the last in the history.
+- <dfn>Note</dfn>: a short text, a file of the content, or both, as used for change notes, notices and withdrawals (section 9).
+- <dfn>Member</dfn>: an entry of a collection: an object (in a catalogue) or a revision set of a document (in a selection), of any archive.
+- <dfn>Pin</dfn>: the pair (object version, SHA-512 digest of that version's inventory file).
+- <dfn>Rendition</dfn>: a file produced from the sources and deposited with them (a PDF, an EPUB).
+- <dfn>Presentation</dfn>: files generated from the archive for readers (web pages, indexes, HTML versions of documents). It is never authoritative.
+- <dfn>Witness</dfn>: an independent copy or proof: a signature, a timestamp, an external deposit, a software archive snapshot.
+- <dfn>Verifier</dfn>: a program that checks an archive or a collection against this specification.
 
 ## 4. Conformance
 

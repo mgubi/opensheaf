@@ -123,51 +123,51 @@
     <ul>
       <li>
         <p>
-          <strong>Archive:</strong> a set of objects kept by one owner (a
-          person, group or institution), with one storage root and one
-          discovery document, identified by an archive identifier.
+          <dfn>Archive</dfn>: a set of objects kept by one owner (a person,
+          group or institution), with one storage root and one discovery
+          document, identified by an archive identifier.
         </p>
       </li>
       <li>
         <p>
-          <strong>Archive identifier:</strong> a URI naming the archive
+          <dfn>Archive identifier</dfn>: a URI naming the archive
           independently of where it is served (section 6).
         </p>
       </li>
       <li>
         <p>
-          <strong>Base URL:</strong> the URL at which an archive is currently
+          <dfn>Base URL</dfn>: the URL at which an archive is currently
           served, ending with <tt class="verbatim">/</tt>; its discovery document is at
           <tt class="verbatim">&lt;base URL&gt;opensheaf.json</tt>.
         </p>
       </li>
       <li>
         <p>
-          <strong>Storage root:</strong> an OCFL 1.1 storage root holding the
+          <dfn>Storage root</dfn>: an OCFL 1.1 storage root holding the
           objects of the archive.
         </p>
       </li>
       <li>
         <p>
-          <strong>Object:</strong> an OCFL object. Its <strong>kind</strong>
-          is <tt class="verbatim">document</tt> or <tt class="verbatim">collection</tt>.
+          <dfn>Object</dfn>: an OCFL object. Its <dfn>kind</dfn> is <tt class="verbatim">document</tt>
+          or <tt class="verbatim">collection</tt>.
         </p>
       </li>
       <li>
         <p>
-          <strong>Document:</strong> an object holding one scholarly work (an
+          <dfn>Document</dfn>: an object holding one scholarly work (an
           article, notes, a thesis, a book) with its sources and renditions.
         </p>
       </li>
       <li>
         <p>
-          <strong>Collection:</strong> an object holding a list of members. A
+          <dfn>Collection</dfn>: an object holding a list of members. A
           collection is a catalogue or a selection (section 10.1).
         </p>
       </li>
       <li>
         <p>
-          <strong>Catalogue:</strong> a collection that keeps objects whole,
+          <dfn>Catalogue</dfn>: a collection that keeps objects whole,
           impartial about their versions: each member pins an object with all
           its versions, and may follow it as it grows. An archive's main
           collection, and the list of objects an archive mirrors, are
@@ -176,115 +176,114 @@
       </li>
       <li>
         <p>
-          <strong>Selection:</strong> a collection that vets particular
-          revisions of documents (a journal, a digest, a review journal, a
-          reading list): each member pins a revision set, and earlier or later
-          versions are not part of the selection unless its curator adds them,
-          by a new version of the selection.
+          <dfn>Selection</dfn>: a collection that vets particular revisions of
+          documents (a journal, a digest, a review journal, a reading list):
+          each member pins a revision set, and earlier or later versions are
+          not part of the selection unless its curator adds them, by a new
+          version of the selection.
         </p>
       </li>
       <li>
         <p>
-          <strong>Revision:</strong> a document version, as vetted by a
-          selection, pinned by the object version that held it when it was
-          vetted.
+          <dfn>Revision</dfn>: a document version, as vetted by a selection,
+          pinned by the object version that held it when it was vetted.
         </p>
       </li>
       <li>
         <p>
-          <strong>Revision set:</strong> the revisions of one document vetted
-          by a selection (usually one; more after a correction).
+          <dfn>Revision set</dfn>: the revisions of one document vetted by a
+          selection (usually one; more after a correction).
         </p>
       </li>
       <li>
         <p>
-          <strong>Mirror:</strong> a copy, in an archive's storage root, of
-          another archive's object, whole and byte for byte (section 10.4).
+          <dfn>Mirror</dfn>: a copy, in an archive's storage root, of another
+          archive's object, whole and byte for byte (section 10.4).
         </p>
       </li>
       <li>
         <p>
-          <strong>Accepted copy:</strong> a document of a selection's archive
+          <dfn>Accepted copy</dfn>: a document of a selection's archive
           holding exactly the files of a revision it vetted from another
           archive (section 10.5).
         </p>
       </li>
       <li>
         <p>
-          <strong>Object version:</strong> an OCFL version of an object (<tt
-          class="verbatim">v1</tt>, <tt class="verbatim">v2</tt>, &hellip;). It changes at every
-          change of the object.
+          <dfn>Object version</dfn>: an OCFL version of an object (<tt class="verbatim">v1</tt>,
+          <tt class="verbatim">v2</tt>, &hellip;). It changes at every change of the
+          object.
         </p>
       </li>
       <li>
         <p>
-          <strong>Document version:</strong> the version of the work, a
-          positive integer numbered by the archive, in <tt class="verbatim">object.json</tt>
-          and <tt class="verbatim">datacite.json</tt>. It changes exactly when the
+          <dfn>Document version</dfn>: the version of the work, a positive
+          integer numbered by the archive, in <tt class="verbatim">object.json</tt> and
+          <tt class="verbatim">datacite.json</tt>. It changes exactly when the
           document's own files change (section 7.3).
         </p>
       </li>
       <li>
         <p>
-          <strong>Description-only version:</strong> an object version that
-          holds an existing document version with its files unchanged,
-          changing only the description, the state or the notices of the
-          object (section 7.3).
+          <dfn>Description-only version</dfn>: an object version that holds an
+          existing document version with its files unchanged, changing only
+          the description, the state or the notices of the object (section
+          7.3).
         </p>
       </li>
       <li>
         <p>
-          <strong>History:</strong> the order of a document's versions in the
+          <dfn>History</dfn>: the order of a document's versions in the
           history of the work (section 7.3).
         </p>
       </li>
       <li>
         <p>
-          <strong>Current version:</strong> the document version to which
-          readers are directed: the last in the history.
+          <dfn>Current version</dfn>: the document version to which readers
+          are directed: the last in the history.
         </p>
       </li>
       <li>
         <p>
-          <strong>Note:</strong> a short text, a file of the content, or both,
-          as used for change notes, notices and withdrawals (section 9).
+          <dfn>Note</dfn>: a short text, a file of the content, or both, as
+          used for change notes, notices and withdrawals (section 9).
         </p>
       </li>
       <li>
         <p>
-          <strong>Member:</strong> an entry of a collection: an object (in a
+          <dfn>Member</dfn>: an entry of a collection: an object (in a
           catalogue) or a revision set of a document (in a selection), of any
           archive.
         </p>
       </li>
       <li>
         <p>
-          <strong>Pin:</strong> the pair (object version, SHA-512 digest of
-          that version's inventory file).
+          <dfn>Pin</dfn>: the pair (object version, SHA-512 digest of that
+          version's inventory file).
         </p>
       </li>
       <li>
         <p>
-          <strong>Rendition:</strong> a file produced from the sources and
-          deposited with them (a PDF, an EPUB).
+          <dfn>Rendition</dfn>: a file produced from the sources and deposited
+          with them (a PDF, an EPUB).
         </p>
       </li>
       <li>
         <p>
-          <strong>Presentation:</strong> files generated from the archive for
+          <dfn>Presentation</dfn>: files generated from the archive for
           readers (web pages, indexes, HTML versions of documents). It is
           never authoritative.
         </p>
       </li>
       <li>
         <p>
-          <strong>Witness:</strong> an independent copy or proof: a signature,
-          a timestamp, an external deposit, a software archive snapshot.
+          <dfn>Witness</dfn>: an independent copy or proof: a signature, a
+          timestamp, an external deposit, a software archive snapshot.
         </p>
       </li>
       <li>
         <p>
-          <strong>Verifier:</strong> a program that checks an archive or a
+          <dfn>Verifier</dfn>: a program that checks an archive or a
           collection against this specification.
         </p>
       </li>

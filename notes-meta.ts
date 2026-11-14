@@ -59,19 +59,34 @@
   <\active*>
     <\src-comment>
       Alert boxes, from GitHub's alert syntax in the Markdown sources (\<gtr\>
-      [!WARNING], [!NOTE], [!IMPORTANT]): a framed box in TeXmacs, a div of
-      class os-alert (with the kind as a second class) on the web.
+      [!WARNING], [!NOTE], [!IMPORTANT]): a box with a coloured rule on
+      its left in TeXmacs (os-alert-box: a one-row table, since the
+      padded-framed macro is not defined in TeXmacs 2.1), with the colours
+      of the web, where it is a div of class os-alert (with the kind as a
+      second class).
     </src-comment>
   </active*>
 
-  <assign|os-alert|<macro|kind|label|body|<\surround|<vspace*|0.5fn>|<vspace|0.5fn>>
-    <\padded-framed>
-      <with|font-series|bold|color|#8a4b00|<arg|label>> <arg|body>
-    </padded-framed>
-  </surround>>>
+  <assign|os-alert-box|<macro|rule|paper|body|<surround|<vspace*|0.5fn>|<vspace|0.5fn>|<tformat|<twith|table-width|1par>|<twith|table-hmode|exact>|<twith|table-block|yes>|<cwith|1|1|1|1|cell-width|4pt>|<cwith|1|1|1|1|cell-hmode|exact>|<cwith|1|1|1|1|cell-lsep|0pt>|<cwith|1|1|1|1|cell-rsep|0pt>|<cwith|1|1|1|1|cell-background|<arg|rule>>|<cwith|1|1|2|2|cell-hyphen|t>|<cwith|1|1|2|2|cell-hpart|1>|<cwith|1|1|2|2|cell-background|<arg|paper>>|<cwith|1|1|2|2|cell-lsep|1em>|<cwith|1|1|2|2|cell-rsep|1em>|<cwith|1|1|2|2|cell-tsep|0.6em>|<cwith|1|1|2|2|cell-bsep|0.6em>|<table|<row|<cell|>|<\cell>
+    <arg|body>
+  </cell>>>>>>>
+
+  <assign|os-alert|<macro|kind|label|body|<if|<equal|<arg|kind>|note>|<os-alert-box|#2f6db5|#eef5fd|<with|color|#1c3554|<with|font-series|bold|<arg|label>>
+  <arg|body>>>|<os-alert-box|#d08a1c|#fff7e8|<with|color|#3a2a0f|<with|font-series|bold|color|#8a4b00|<arg|label>>
+  <arg|body>>>>>>
 
   <assign|tmhtml-os-alert|<macro|kind|label|body|<html-div-class|os-alert
   os-<arg|kind>|<html-class|os-alert-label|<arg|label>> <arg|body>>>>
+
+  <\active*>
+    <\src-comment>
+      Technical terms where they are defined (\<less\>dfn\<gtr\> in the
+      Markdown sources): in bold, like the run-in labels; exported to HTML
+      as dfn elements, styled the same way by resources/opensheaf.css.
+    </src-comment>
+  </active*>
+
+  <assign|dfn|<macro|body|<strong|<arg|body>>>>
 
   <assign|html-title|OpenSheaf>
 

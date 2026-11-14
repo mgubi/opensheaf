@@ -40,37 +40,35 @@
     <ul>
       <li>
         <p>
-          <a href="#authors"><strong>authors</strong></a> make documents and their
-          versions;
+          <a href="#authors"><dfn>authors</dfn></a> make documents and their versions;
         </p>
       </li>
       <li>
         <p>
-          <a href="#archives"><strong>archives</strong></a> keep documents, every
-          version, impartially: an author's own archive, an institution's
-          repository, an independent storage site;
+          <a href="#archives"><dfn>archives</dfn></a> keep documents, every version,
+          impartially: an author's own archive, an institution's repository,
+          an independent storage site;
         </p>
       </li>
       <li>
         <p>
-          <a href="#selections"><strong>selections</strong></a> vet particular versions
+          <a href="#selections"><dfn>selections</dfn></a> vet particular versions
           (revisions) of documents: a journal, a digest, a review journal, a
           reading list, proceedings.
         </p>
       </li>
     </ul>
     <p>
-      Archives list what they keep in <strong>catalogues</strong>, which pin
-      objects whole and may follow them as they grow; selections are the other
-      kind of collection of section 10, which pins revision sets and changes
-      only by an act of its curator. Copies are of two kinds too: a
-      <strong>mirror</strong> copies a whole object (an archive keeping
-      another archive's objects), an <strong>accepted copy</strong> takes one
-      vetted revision into the selection's own archive. Collections and copies
-      only concern documents kept in OpenSheaf archives: a paper that exists
-      only on arXiv or on a publisher's site is first deposited in an archive
-      (for instance imported from arXiv into its author's archive) before it
-      can be pinned.
+      Archives list what they keep in <dfn>catalogues</dfn>, which pin objects
+      whole and may follow them as they grow; selections are the other kind of
+      collection of section 10, which pins revision sets and changes only by
+      an act of its curator. Copies are of two kinds too: a <dfn>mirror</dfn>
+      copies a whole object (an archive keeping another archive's objects), an
+      <dfn>accepted copy</dfn> takes one vetted revision into the selection's
+      own archive. Collections and copies only concern documents kept in
+      OpenSheaf archives: a paper that exists only on arXiv or on a
+      publisher's site is first deposited in an archive (for instance imported
+      from arXiv into its author's archive) before it can be pinned.
     </p>
     <h2 id="auto-2"><a id="authors"></a>Authors<span style="margin-left: 1em"></span></h2>
     <h3 id="auto-3"><a id="a-researchers-own-archive"></a>A researcher's own archive<span style="margin-left: 1em"></span></h3>
@@ -401,9 +399,9 @@ members:
     argument<span style="margin-left: 1em"></span></h3>
     <p>
       A mathematician proves a theorem and writes two documents, both in her
-      own archive: a <strong>short account</strong>, written to explain how
-      the argument works (the idea, the structure of the proof, where the
-      difficulty lies), and the <strong>detailed argument</strong>, every step
+      own archive: a <dfn>short account</dfn>, written to explain how the
+      argument works (the idea, the structure of the proof, where the
+      difficulty lies), and the <dfn>detailed argument</dfn>, every step
       written out, possibly largely produced with an AI system, possibly with
       a formal proof beside it. A journal reviews both, in particular
       versions, and publishes only the short account; the detailed argument
@@ -639,17 +637,17 @@ osheaf collection sync issue-7-details --from issue-7-details.yaml</pre>
       <li>
         <p>
           <strong>The referee as a commitment.</strong> In place of the
-          referee's name, the report's creator is a cryptographic commitment:
-          the SHA-512 digest of the referee's identifier (an ORCID iD, which
-          is unambiguous where a name is not) followed by a secret known to
-          the journal and the referee. The commitment is fixed in the report's
-          version, so it cannot be changed afterwards: neither the journal nor
-          anyone else can later attribute the report to someone else.
-          Revealing the identifier and the secret (the referee, to claim the
-          report; the journal, with the referee's agreement or as an
-          institution may require) lets anyone check the attribution by
-          recomputing the digest. A referee who agrees to sign the reports
-          after acceptance is added to their creators, by name, by
+          referee's name, the report's creator is a cryptographic
+          <dfn>commitment</dfn>: the SHA-512 digest of the referee's
+          identifier (an ORCID iD, which is unambiguous where a name is not)
+          followed by a secret known to the journal and the referee. The
+          commitment is fixed in the report's version, so it cannot be changed
+          afterwards: neither the journal nor anyone else can later attribute
+          the report to someone else. Revealing the identifier and the secret
+          (the referee, to claim the report; the journal, with the referee's
+          agreement or as an institution may require) lets anyone check the
+          attribution by recomputing the digest. A referee who agrees to sign
+          the reports after acceptance is added to their creators, by name, by
           description-only versions, with the identifier and the secret that
           open the commitment.
         </p>

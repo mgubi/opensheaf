@@ -9,19 +9,19 @@ given as illustrations; any tool following the specification will do.
 
 Three roles recur:
 
-- [**authors**](#authors) make documents and their versions;
-- [**archives**](#archives) keep documents, every version, impartially: an
+- [<dfn>authors</dfn>](#authors) make documents and their versions;
+- [<dfn>archives</dfn>](#archives) keep documents, every version, impartially: an
   author's own archive, an institution's repository, an independent storage
   site;
-- [**selections**](#selections) vet particular versions (revisions) of
+- [<dfn>selections</dfn>](#selections) vet particular versions (revisions) of
   documents: a journal, a digest, a review journal, a reading list,
   proceedings.
 
-Archives list what they keep in **catalogues**, which pin objects
+Archives list what they keep in <dfn>catalogues</dfn>, which pin objects
 whole and may follow them as they grow; selections are the other kind of
 collection of section 10, which pins revision sets and changes only by an act
-of its curator. Copies are of two kinds too: a **mirror** copies a whole
-object (an archive keeping another archive's objects), an **accepted copy**
+of its curator. Copies are of two kinds too: a <dfn>mirror</dfn> copies a whole
+object (an archive keeping another archive's objects), an <dfn>accepted copy</dfn>
 takes one vetted revision into the selection's own archive. Collections and
 copies only concern documents kept in OpenSheaf archives: a paper that exists
 only on arXiv or on a publisher's site is first deposited in an archive (for
@@ -265,9 +265,9 @@ publishes it under its licence, with the authors' agreement.
 ### A short account of a proof, with its detailed argument
 
 A mathematician proves a theorem and writes two documents, both in her own
-archive: a **short account**, written to explain how the argument works (the
+archive: a <dfn>short account</dfn>, written to explain how the argument works (the
 idea, the structure of the proof, where the difficulty lies), and the
-**detailed argument**, every step written out, possibly largely produced with
+<dfn>detailed argument</dfn>, every step written out, possibly largely produced with
 an AI system, possibly with a formal proof beside it. A journal reviews both,
 in particular versions, and publishes only the short account; the detailed
 argument stays online, in the version reviewed, open to scrutiny and to
@@ -432,7 +432,7 @@ together with as much of the review as the participants agree to make public
   `toolchain`) before deposit. If the archive is kept in git, commits that
   are sent or published name the journal, not the referee.
 - **The referee as a commitment.** In place of the referee's name, the
-  report's creator is a cryptographic commitment: the SHA-512 digest of the
+  report's creator is a cryptographic <dfn>commitment</dfn>: the SHA-512 digest of the
   referee's identifier (an ORCID iD, which is unambiguous where a name is
   not) followed by a secret known to the journal and the referee. The
   commitment is fixed in the report's version, so it cannot be changed

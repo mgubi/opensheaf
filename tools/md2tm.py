@@ -22,7 +22,8 @@ Handles the subset of Markdown used by spec.md:
   a paragraph after a nested list is indented by two spaces;
 - fenced code blocks (three backticks), with an optional language after
   them (```sh, ```json), used for syntax highlighting on the web;
-- inline `code`, **bold**, *italic* and [text](target) links.
+- inline `code`, **bold**, *italic* and [text](target) links, and
+  `<dfn>term</dfn>` for the defining occurrence of a technical term.
 
 The output uses the `notes` style of the author's website with the package
 `notes-meta.ts` of this repository. Strings are written for TeXmacs files:
@@ -52,8 +53,16 @@ LINK_MAP = {}   # Markdown target -> TeXmacs target (set by --map)
 def code_and_emphasis(t):
     out = []
     for i, part in enumerate(re.split(r'`([^`]*)`', t)):
-        out.append(f'<verbatim|{esc(part)}>' if i % 2 else emphasis(esc(part)))
+        out.append(f'<verbatim|{esc(part)}>' if i % 2 else terms(part))
     return ''.join(out)
+
+
+def terms(t):
+    # <dfn>term</dfn>, the defining occurrence of a technical term: TeXmacs'
+    # dfn tag, exported to HTML as <dfn>
+    pieces = re.split(r'<dfn>(.+?)</dfn>', t)
+    return ''.join(f'<dfn|{emphasis(esc(p))}>' if i % 2 else emphasis(esc(p))
+                   for i, p in enumerate(pieces))
 
 
 def slug(heading):

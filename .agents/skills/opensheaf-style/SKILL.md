@@ -19,6 +19,12 @@ description: The look and brand of the OpenSheaf site and documents. Use before 
 - Layout belongs to TeXmacs: the converter (hero, spacing) and `notes-meta.ts`
   (the style). `resources/opensheaf.css` only mirrors that look on the web,
   because the HTML export carries no fonts or colours.
+- Technical terms: `<dfn>term</dfn>` at their defining occurrence (the
+  terminology of the specification, terms introduced in the use cases),
+  **bold** for other key uses in running text, `code` for literal names and
+  values. The converter turns `<dfn>` into TeXmacs' `dfn` tag, shown bold in
+  the heading colour like the run-in labels and exported as HTML `<dfn>`
+  (GitHub shows it in italics).
 
 ## The look
 

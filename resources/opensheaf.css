@@ -216,6 +216,8 @@ h1, h2 { color: var(--os-heading); }
 h3, h4, h5, h6 { color: var(--os-heading-2); }
 strong, b { color: var(--os-heading); font-weight: 600; }
 a strong, a b { color: inherit; }
+dfn { font-style: normal; color: var(--os-heading); font-weight: 600; }
+a dfn { color: inherit; }
 li::marker { color: var(--os-marker); }
 .notes-abstract {
     border-left: 3px solid var(--os-rule);

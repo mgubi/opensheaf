@@ -415,11 +415,12 @@ together with as much of the review as the participants agree to make public
   report's creator is a cryptographic commitment: the SHA-512 digest of the
   referee's identifier (an ORCID iD, which is unambiguous where a name is
   not) followed by a secret. The secret is what makes it safe, since names
-  and ORCID iDs are few enough to be guessed one by one. The journal keeps
-  one secret per paper (which it can derive from a private seed of its own,
-  as an HMAC of the paper's identifier, so that it keeps a single seed), and
-  from it the secret of each referee of that paper, an HMAC of the referee's
-  identifier under the paper's secret. So the reports of one referee on one
+  and ORCID iDs are few enough to be guessed one by one. The journal draws
+  a random secret for each paper, kept with the private record of that
+  paper's review, and from it the secret of each referee of that paper, an
+  HMAC of the referee's identifier under the paper's secret. The papers'
+  secrets are independent of each other, not derived from one seed of the
+  journal: if one leaks, only the referees of that paper are exposed. So the reports of one referee on one
   paper, through every round of the review, carry the same digest and are
   seen to come from the same person; the reports of different referees, or of
   the same referee on different papers, cannot be linked; and revealing a

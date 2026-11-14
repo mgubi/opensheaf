@@ -104,6 +104,14 @@ on GitHub, and archives made with them.
   versions, writes the discovery document and a website with landing pages,
   deposits on Zenodo, imports from arXiv, and verifies an archive (also with
   the JSON Schemas and the `ocfl-py` validator).
+- **Explorer:** the [OpenSheaf Explorer](https://opensheaf.org/explorer/)
+  ([opensheaf/explorer](https://github.com/opensheaf/explorer), also a
+  [literate program](https://opensheaf.org/explorer/source/)) shows an
+  archive or a collection in the browser, its objects, versions, files and
+  members across archives, and verifies it as section 14 asks, from a static
+  page: open it with the address of an archive
+  ([example](https://opensheaf.org/explorer/?url=https://mgubi.org/papers/)),
+  link it from an archive's pages, or keep a copy in an archive.
 - **Templates:** [archive-template](https://github.com/opensheaf/archive-template),
   a ready repository for your own archive of papers, and
   [collection-template](https://github.com/opensheaf/collection-template), for

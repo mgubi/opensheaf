@@ -259,6 +259,111 @@ publishes it under its licence, with the authors' agreement.
   collections of them: the journal's own documents change only by its own
   acts in either case.
 
+### A short account of a proof, with its detailed argument
+
+A mathematician proves a theorem and writes two documents, both in her own
+archive: a **short account**, written to explain how the argument works (the
+idea, the structure of the proof, where the difficulty lies), and the
+**detailed argument**, every step written out, possibly largely produced with
+an AI system, possibly with a formal proof beside it. A journal reviews both,
+in particular versions, and publishes only the short account; the detailed
+argument stays online, in the version reviewed, open to scrutiny and to
+analysis by people and machines.
+
+- **Two documents, not one.** Each has its own versions, licence and history:
+  the detailed argument may change often (a gap closed, a step expanded after
+  a machine check) while the account stays as it is. Each is a document object
+  of her archive (say `kpz-account` and `kpz-details`). The detailed argument
+  says how it was made in its `datacite.json` (a description of type
+  `Methods`: the AI system and its version, what the authors checked and how),
+  and lists in its `toolchain` the tools needed to rebuild it and its formal
+  checks; its creators are the persons who answer for it.
+- **The account focuses on the detailed argument.** The core of the format
+  has no relation of this kind, and needs none: the link is made from inside.
+  The account cites, in its text, the exact object version of the detailed
+  argument (its URL, `.../ocfl/kpz-details/v3/`, and the digest of its
+  inventory), and its `datacite.json` links that URL with `IsSupplementedBy`;
+  the detailed argument may link back with `IsSupplementTo`, added by a
+  description-only version. Since the digest is in the account's own files,
+  a pin of the account fixes the detailed argument too: the hash tree goes on
+  through the link, though only readers, and tools that read the text, see
+  it.
+- **The journal vets the pair.** Its issue is a **selection** whose member is
+  the account: an accepted copy of the vetted revision, or the journal's own
+  version of record made from it. The detailed argument is not published by
+  the journal, but the version it reviewed is fixed by the account's pin. So
+  that plain verifiers check it as well, the journal may keep a second
+  selection beside the issue (say `issue-7-details`), pinning the revisions of
+  the detailed arguments it reviewed.
+- **The detailed argument stays available.** Her archive keeps it, with all
+  its versions. To make sure the version reviewed survives her server, the
+  journal, or a storage site, **mirrors** the detailed argument, if its
+  licences allow: a mirror is the authors' object, impartial, every version,
+  which is what the journal wants for a document it vetted but does not
+  publish (an accepted copy would make it a document of the journal). The
+  selection lists the mirror in the member's `mirrors`; a Software Heritage
+  snapshot of her archive is a further witness.
+- **Later versions.** When she improves the detailed argument after
+  publication, her archive collection follows it; the account published by
+  the journal keeps pointing to the version reviewed, and presentations may
+  say that later, unreviewed versions exist. If scrutiny finds an error, the
+  journal adds a notice to its accepted copy, or vets a corrected pair, as a
+  new version of the issue.
+
+```sh
+# the journal keeps an accepted copy of the account, mirrors the detailed
+# argument, and lists both in selections (issue-7.yaml, issue-7-details.yaml)
+osheaf accept https://authors.example.org/ kpz-account --version v2 --stage VoR \
+  --agreement "the journal's publication terms"
+osheaf mirror https://authors.example.org/ kpz-details
+osheaf collection sync issue-7 --from issue-7.yaml
+osheaf collection sync issue-7-details --from issue-7-details.yaml
+```
+
+**With an extension.** Linking from inside asks nothing of the format, but
+tools do not know that the two documents go together: mirroring or copying
+the account does not bring the detailed argument with it, and verifiers do
+not check its pin. A standard extension (section 4 of the specification) can
+record the relation for tools, in the account's `object.json`, reusing the
+fields of a collection member. For instance (an illustration, not a published
+extension):
+
+```json
+"extensions": {
+  "https://opensheaf.org/extensions/companions": {
+    "companions": [
+      {
+        "role": "detailed-argument",
+        "relationType": "IsSupplementedBy",
+        "kind": "document",
+        "archive": "tag:example.org,2026:authors",
+        "archiveUrl": "https://authors.example.org/",
+        "id": "kpz-details",
+        "documentVersion": 3,
+        "version": "v3",
+        "inventorySha512": "9f2c..."
+      }
+    ]
+  }
+}
+```
+
+Tools that know the extension follow it: verifying the account resolves and
+checks the companions' pins like the pins of members; mirroring the account,
+or keeping an accepted copy of it, mirrors its companions too (or reports
+that their licences forbid it); a selection that vets the account vets its
+companions in the pinned versions; presentations show "the full argument,
+version 3, as reviewed" beside the account. Tools that do not know it still
+read, copy and verify both documents by the core rules alone.
+
+The same pattern serves other relations in which one document focuses on
+another: slides and the paper they present, a survey and the papers it
+explains, a paper and its formalisation, an article and the data and code of
+its computations. The core defines none of them, on purpose: it stays small,
+so that such relations, and in time an infrastructure for scientific
+knowledge built from them, can be designed on top of it, while the pins keep
+everything that is built checkable.
+
 ### A digest, a reading list, a curated bibliography
 
 A researcher publishes a list of recommended papers on a topic, from any

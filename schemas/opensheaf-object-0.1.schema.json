@@ -256,6 +256,14 @@
           "$ref": "#/$defs/note"
         }
       }
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "format": "uri",
+        "minLength": 1
+      },
+      "additionalProperties": true
     }
   },
   "$defs": {

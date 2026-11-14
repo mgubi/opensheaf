@@ -1,6 +1,6 @@
 # OpenSheaf: an open format for document archives and collections
 
-*Specification, version 0.1 (draft), 13 November 2026. OpenSheaf is a common, open format for archives of scholarly documents and for collections of them, built on the Oxford Common File Layout (OCFL 1.1) and the DataCite Metadata Schema (4.7). This version is experimental and may change in incompatible ways before version 1.0. The text is licensed under CC BY-SA 4.0; the JSON Schemas are dedicated to the public domain under CC0 1.0.*
+*Specification, version 0.1 (draft), 14 November 2026. OpenSheaf is a common, open format for archives of scholarly documents and for collections of them, built on the Oxford Common File Layout (OCFL 1.1) and the DataCite Metadata Schema (4.7). This version is experimental and may change in incompatible ways before version 1.0. The text is licensed under CC BY-SA 4.0; the JSON Schemas are dedicated to the public domain under CC0 1.0.*
 
 > [!WARNING]
 > **Draft.** This version is a draft. Until version 1.0, any revision may change the format in incompatible ways, and archives and collections made now may have to be rebuilt or migrated. Do not rely on it yet for anything you cannot redo. Changes are listed in the changelog (section 17) and discussed in the [issues](https://github.com/opensheaf/opensheaf.github.io/issues).
@@ -61,6 +61,7 @@ This specification defines the following conformance classes. An archive, object
 - **OpenSheaf collection:** section 10, in addition to the requirements on objects in sections 7 to 9.
 - **OpenSheaf verifier:** sections 12 (as a reader), 14 and 15. Tools that build presentations follow the requirements on presentations in sections 11.1, 15 and appendix C.
 - **Profiles**, optional: an archive MAY additionally conform to the Zenodo binding (appendix A), the TeXmacs profile (appendix B) and the website profile (appendix C). A conforming archive MUST state in its discovery document which profiles it follows.
+- **Extensions**, optional: an extension is a specification published separately from this one, named by a URI (RECOMMENDED: the `https` URL at which it is published), that records in `object.json` what this specification leaves open, so that tools aware of it can act on it (for instance relations between documents that tools must follow when they copy or verify them). An object version records the data of an extension under `extensions` in its `object.json` (section 9), keyed by the name of the extension; the discovery document lists the extensions its objects use (section 6.1). Extensions MUST NOT change the meaning of what this specification defines, nor relax its requirements: an archive is conforming, and its objects and collections are read and verified, without knowing any of its extensions. Readers ignore extensions they do not know, as they ignore unknown properties (section 12). The data of an extension is part of the object version, covered by its inventory like the rest of `object.json`, so pins fix it too.
 
 The JSON files defined here (`opensheaf.json`, `object.json`, `members.json`) MUST validate against the JSON Schemas of appendix D for their declared format version.
 
@@ -93,7 +94,7 @@ The discovery document is the JSON file `opensheaf.json` at the base URL of the 
 - `storageLayout`: `"0002-flat-direct-storage-layout"`;
 - `objects`: the list of all objects in the storage root, each with `id`, `kind`, `head` (the head object version), `inventorySha512` (the SHA-512 digest of the head inventory, as written in its checksum file) and `status` (`active` or `withdrawn`, section 11); a mirror (section 10.4) also has `mirrorOf`, the archive identifier of the archive whose object it copies.
 
-It MUST also contain `profiles`, the list of profiles followed, from `zenodo`, `texmacs`, `website` (an empty list if none). It SHOULD contain `mainCollection` (the identifier of the collection that lists the archive's own documents) and `contact` (a URI). It MAY contain `mirrors` (base URLs of complete copies of the archive), `tombstones` (section 11.3), `keys` (section 13.2) and `feed` (the URL of an Atom feed of new object versions).
+It MUST also contain `profiles`, the list of profiles followed, from `zenodo`, `texmacs`, `website` (an empty list if none). It SHOULD contain `mainCollection` (the identifier of the collection that lists the archive's own documents) and `contact` (a URI). It MAY contain `mirrors` (base URLs of complete copies of the archive), `tombstones` (section 11.3), `keys` (section 13.2), `feed` (the URL of an Atom feed of new object versions) and `extensions` (the names of the extensions used by its objects, section 4).
 
 The discovery document is mutable: it is rewritten whenever an object is added or changed. It is a map, not a witness: what it states about objects (`objects`: kinds, head versions, digests, status) MUST be verifiable from the storage root. Digests are written in lowercase hexadecimal, here and in every file defined by this specification.
 
@@ -228,7 +229,8 @@ Any object MAY contain:
 - `licence`: a note with the full text or terms of the licence of the content, kept in the package (useful for licences without an SPDX identifier); `rightsList` in `datacite.json` remains the description for readers and services;
 - `agreement`: a minimal record that the authors agreed to the deposit and to the licence: `by` (the names of those who agreed, names only), `date`, and `method` (how, for instance "by e-mail"), all three required. It MUST NOT contain e-mail addresses, correspondence or signatures of persons;
 - `external`: the external records of this version, each with its `role` (required): `deposit` for a deposit of the version made by the archive (appendix A), `source` for the record it was imported from; the `service` (required, its name), the `record` (required, the URL of the record), the `doi`, the `label` the service gives the version (for instance `v3` on arXiv), and `files`: the files kept there that are not in the content (for a deposit, such as a source archive uploaded instead of the sources) or the files received from it (for a source, as they were received before being unpacked), each with `name` and `sha512` (required), `md5` and `bytes`;
-- `withdrawal` (section 11).
+- `withdrawal` (section 11);
+- `extensions`: the data of extensions (section 4), an object whose keys are the names of the extensions and whose values are defined by them.
 
 `object.json` is metadata and is placed under CC0 (section 16).
 
@@ -352,7 +354,7 @@ A verifier checking an archive MUST:
 - for the head of each collection, resolve each member (each revision, in a selection) as in section 6.4 and check its pin, and for earlier collection versions check the pins of members of the archive itself (resolving the members of other archives for every earlier collection version is OPTIONAL); for a revision, check that the pinned object version holds the stated document version; report each as verified, mismatch (a copy was found and does not match), unavailable (no copy found) or removed (tombstoned);
 - for each mirror (`mirrorOf`), check that its `object.json` files name that archive; for each accepted copy, check that its first document version holds exactly the files of the source version named in `external`, when the source is available.
 
-A verifier SHOULD check the witnesses it finds, and the requirements of the profiles the archive declares. It MUST NOT treat the presentation as authoritative. It SHOULD limit the depth and size of the collections it follows, and report when it stops.
+A verifier SHOULD check the witnesses it finds, the requirements of the profiles the archive declares, and those of the extensions it knows; it SHOULD report the extensions it does not know, which do not make an archive fail verification. It MUST NOT treat the presentation as authoritative. It SHOULD limit the depth and size of the collections it follows, and report when it stops.
 
 ## 15. Security considerations
 
@@ -373,6 +375,7 @@ A verifier SHOULD check the witnesses it finds, and the requirements of the prof
 
 - **0.1 (draft), 13 November 2026:** first version.
 - **0.1 (draft), 13 November 2026, revision:** collections are archive collections or selections (`type` in `members.json`): an archive collection pins objects whole and may follow them; a selection pins revision sets, the document versions it vetted, and changes only by an act of its curator. A member of an archive collection without `follow` may stay at an earlier version; a revision pins the last object version holding its document version when it was vetted; accepted copies are never listed as mirrors; verifiers resolve remote members for the head of a collection. Mirrors (whole objects, `mirrorOf` in the discovery document) and accepted copies (one vetted revision, as a document of the selection's archive) are defined. `follow` is for archive collections only, and follows the head.
+- **0.1 (draft), 14 November 2026, revision:** extensions (section 4): specifications published separately, whose data `object.json` records under `extensions`, keyed by their names; the discovery document lists them; they never change the core, and verifiers report those they do not know.
 
 ## Appendix A. Zenodo binding (normative for archives declaring the profile `zenodo`)
 
@@ -594,6 +597,7 @@ The `object.json` of the journal's accepted copy of the first member's version 2
 - **Why notices are not new document versions.** A notice about a version is a later statement about it, not a change of the work. The exact state a reader saw, with or without a notice, is identified by the object version and its pin.
 - **Where witnesses live.** A witness of an object version can only be made after the version is committed, so it cannot be part of it (a signature of an inventory cannot be listed in that inventory). Putting each signature or timestamp in a new version would mix evidence with changes of the work, and every upgrade of a timestamp proof would be a version. OCFL closes the object folder to anything it does not define, and its `logs/` folder is meant for unstructured records of actions and is not covered by digests. Object extension folders are the place OCFL provides for data that is not part of any version (the registered mutable-head extension keeps its data there), so witnesses go in `extensions/opensheaf-witnesses/` and travel with the object; `witnesses/` outside the storage root remains for archives that never touch object folders after commit.
 - **Why no HTML in deposits.** Presentations improve; deposits must not change.
+- **Why a minimal core, and extensions.** The core defines only what every archive and collection needs to be kept, cited, composed and verified. Richer structures among documents (a short account of a proof and its detailed argument, a talk and its paper, a dataset and the analyses built on it, a knowledge base linking results across papers) are built on top of it: by links inside the documents and DataCite relations, which need nothing more, or by extensions that record them with pins, so that tools follow them when they copy, verify or present documents. Keeping them out of the core leaves room for designs not yet imagined, while the pins, which fix extension data with the rest of each version, keep whatever is built checkable.
 - **Why DataCite.** It is the metadata of DOIs for repositories, with relations for versions, preprints and collections, and it maps directly to Zenodo.
 
 ## Appendix G. References

@@ -394,7 +394,149 @@ members:
         </p>
       </li>
     </ul>
-    <h3 id="auto-13">A digest, a reading list, a curated bibliography<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-13">A short account of a proof, with its detailed argument<span style="margin-left: 1em"></span></h3>
+    <p>
+      A mathematician proves a theorem and writes two documents, both in her
+      own archive: a <strong>short account</strong>, written to explain how
+      the argument works (the idea, the structure of the proof, where the
+      difficulty lies), and the <strong>detailed argument</strong>, every step
+      written out, possibly largely produced with an AI system, possibly with
+      a formal proof beside it. A journal reviews both, in particular
+      versions, and publishes only the short account; the detailed argument
+      stays online, in the version reviewed, open to scrutiny and to analysis
+      by people and machines.
+    </p>
+    <ul>
+      <li>
+        <p>
+          <strong>Two documents, not one.</strong> Each has its own versions,
+          licence and history: the detailed argument may change often (a gap
+          closed, a step expanded after a machine check) while the account
+          stays as it is. Each is a document object of her archive (say <tt
+          class="verbatim">kpz-account</tt> and <tt class="verbatim">kpz-details</tt>). The
+          detailed argument says how it was made in its <tt class="verbatim">datacite.json</tt>
+          (a description of type <tt class="verbatim">Methods</tt>: the AI system and
+          its version, what the authors checked and how), and lists in its <tt
+          class="verbatim">toolchain</tt> the tools needed to rebuild it and its formal
+          checks; its creators are the persons who answer for it.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>The account focuses on the detailed argument.</strong> The
+          core of the format has no relation of this kind, and needs none: the
+          link is made from inside. The account cites, in its text, the exact
+          object version of the detailed argument (its URL, <tt class="verbatim">&hellip;/ocfl/kpz-details/v3/</tt>,
+          and the digest of its inventory), and its <tt class="verbatim">datacite.json</tt>
+          links that URL with <tt class="verbatim">IsSupplementedBy</tt>; the detailed
+          argument may link back with <tt class="verbatim">IsSupplementTo</tt>, added by
+          a description-only version. Since the digest is in the account's own
+          files, a pin of the account fixes the detailed argument too: the
+          hash tree goes on through the link, though only readers, and tools
+          that read the text, see it.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>The journal vets the pair.</strong> Its issue is a
+          <strong>selection</strong> whose member is the account: an accepted
+          copy of the vetted revision, or the journal's own version of record
+          made from it. The detailed argument is not published by the journal,
+          but the version it reviewed is fixed by the account's pin. So that
+          plain verifiers check it as well, the journal may keep a second
+          selection beside the issue (say <tt class="verbatim">issue-7-details</tt>),
+          pinning the revisions of the detailed arguments it reviewed.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>The detailed argument stays available.</strong> Her archive
+          keeps it, with all its versions. To make sure the version reviewed
+          survives her server, the journal, or a storage site,
+          <strong>mirrors</strong> the detailed argument, if its licences
+          allow: a mirror is the authors' object, impartial, every version,
+          which is what the journal wants for a document it vetted but does
+          not publish (an accepted copy would make it a document of the
+          journal). The selection lists the mirror in the member's <tt class="verbatim">mirrors</tt>;
+          a Software Heritage snapshot of her archive is a further witness.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Later versions.</strong> When she improves the detailed
+          argument after publication, her archive collection follows it; the
+          account published by the journal keeps pointing to the version
+          reviewed, and presentations may say that later, unreviewed versions
+          exist. If scrutiny finds an error, the journal adds a notice to its
+          accepted copy, or vets a corrected pair, as a new version of the
+          issue.
+        </p>
+      </li>
+    </ul>
+    <div class="language-bash">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
+# the journal keeps an accepted copy of the account, mirrors the detailed
+# argument, and lists both in selections (issue-7.yaml, issue-7-details.yaml)
+osheaf accept https://authors.example.org/ kpz-account --version v2 --stage VoR \
+  --agreement &quot;the journal's publication terms&quot;
+osheaf mirror https://authors.example.org/ kpz-details
+osheaf collection sync issue-7 --from issue-7.yaml
+osheaf collection sync issue-7-details --from issue-7-details.yaml</pre>
+      </div>
+    </div>
+    <p>
+      <strong>With an extension.</strong> Linking from inside asks nothing of
+      the format, but tools do not know that the two documents go together:
+      mirroring or copying the account does not bring the detailed argument
+      with it, and verifiers do not check its pin. A standard extension
+      (section 4 of the specification) can record the relation for tools, in
+      the account's <tt class="verbatim">object.json</tt>, reusing the fields of a
+      collection member. For instance (an illustration, not a published
+      extension):
+    </p>
+    <div class="language-json">
+      <div class="tmweb-code">
+        <pre class="verbatim" xml:space="preserve">
+&quot;extensions&quot;: {
+  &quot;https://opensheaf.org/extensions/companions&quot;: {
+    &quot;companions&quot;: [
+      {
+        &quot;role&quot;: &quot;detailed-argument&quot;,
+        &quot;relationType&quot;: &quot;IsSupplementedBy&quot;,
+        &quot;kind&quot;: &quot;document&quot;,
+        &quot;archive&quot;: &quot;tag:example.org,2026:authors&quot;,
+        &quot;archiveUrl&quot;: &quot;https://authors.example.org/&quot;,
+        &quot;id&quot;: &quot;kpz-details&quot;,
+        &quot;documentVersion&quot;: 3,
+        &quot;version&quot;: &quot;v3&quot;,
+        &quot;inventorySha512&quot;: &quot;9f2c&hellip;&quot;
+      }
+    ]
+  }
+}</pre>
+      </div>
+    </div>
+    <p>
+      Tools that know the extension follow it: verifying the account resolves
+      and checks the companions' pins like the pins of members; mirroring the
+      account, or keeping an accepted copy of it, mirrors its companions too
+      (or reports that their licences forbid it); a selection that vets the
+      account vets its companions in the pinned versions; presentations show
+      &quot;the full argument, version 3, as reviewed&quot; beside the
+      account. Tools that do not know it still read, copy and verify both
+      documents by the core rules alone.
+    </p>
+    <p>
+      The same pattern serves other relations in which one document focuses on
+      another: slides and the paper they present, a survey and the papers it
+      explains, a paper and its formalisation, an article and the data and
+      code of its computations. The core defines none of them, on purpose: it
+      stays small, so that such relations, and in time an infrastructure for
+      scientific knowledge built from them, can be designed on top of it,
+      while the pins keep everything that is built checkable.
+    </p>
+    <h3 id="auto-14">A digest, a reading list, a curated bibliography<span style="margin-left: 1em"></span></h3>
     <p>
       A researcher publishes a list of recommended papers on a topic, from any
       OpenSheaf archives.
@@ -420,7 +562,7 @@ members:
         </p>
       </li>
     </ul>
-    <h3 id="auto-14">A review journal (like Mathematical Reviews or zbMATH Open)<span
+    <h3 id="auto-15">A review journal (like Mathematical Reviews or zbMATH Open)<span
     style="margin-left: 1em"></span></h3>
     <p>
       A review journal publishes short reviews of papers published elsewhere.
@@ -454,7 +596,7 @@ members:
         </p>
       </li>
     </ul>
-    <h3 id="auto-15">Proceedings, special issues, volumes<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-16">Proceedings, special issues, volumes<span style="margin-left: 1em"></span></h3>
     <p>
       Proceedings of a conference are a selection of the talks' papers, each
       vetted in the version presented; a volume is a selection whose members
@@ -462,7 +604,7 @@ members:
       special issue of a journal is a selection of the journal's own
       documents, or of accepted copies.
     </p>
-    <h2 id="auto-16">What happens when &hellip;<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-17">What happens when &hellip;<span style="margin-left: 1em"></span></h2>
     <p>
       <table style="display: inline-table; vertical-align: middle">
         <tbody><tr>

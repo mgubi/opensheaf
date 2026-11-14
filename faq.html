@@ -177,7 +177,22 @@
       are the curator's acts (for a journal). The licence of a collection (CC0
       for the list) never extends to its members.
     </p>
-    <h2 id="auto-16">Where do signatures and timestamps go, and why not in the version
+    <h2 id="auto-16">Can documents be linked in richer ways (a short account and its
+    full proof)?<span style="margin-left: 1em"></span></h2>
+    <p>
+      Yes, on top of the format rather than in it. The core keeps only what
+      every archive needs to keep, cite, compose and verify documents. Other
+      relations are built from it: by links inside the documents and DataCite
+      relations, which need nothing more, or by <strong>extensions</strong>
+      (section 4 of the specification), published separately, whose data an
+      object version records in its <tt class="verbatim">object.json</tt>, so that tools
+      that know them can follow the relation when they copy, verify or present
+      documents. Extensions never change the core: an archive is read and
+      verified without them. The <a href="use-cases.html">use cases</a> show a journal
+      publishing a short account of a proof whose detailed argument, possibly
+      written with AI, stays online in the version reviewed.
+    </p>
+    <h2 id="auto-17">Where do signatures and timestamps go, and why not in the version
     itself?<span style="margin-left: 1em"></span></h2>
     <p>
       A signature or timestamp of an object version can only be made after the
@@ -200,13 +215,13 @@
       their own: each one is checked directly against the checksum file it
       names, which the pins fix.
     </p>
-    <h2 id="auto-17">Why is the HTML version not part of the deposit?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-18">Why is the HTML version not part of the deposit?<span style="margin-left: 1em"></span></h2>
     <p>
       Because presentations improve (stylesheets, exporters, fixes) and
       deposits must not change. The deposit keeps the sources and the PDF; the
       HTML is regenerated from the sources whenever the presentation changes.
     </p>
-    <h2 id="auto-18">How do I withdraw or take down a document?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-19">How do I withdraw or take down a document?<span style="margin-left: 1em"></span></h2>
     <p>
       To withdraw a document (for instance a retraction), make a new version
       with a withdrawal notice: the content and its history stay, and
@@ -217,7 +232,7 @@
       mechanism for deleting single files; OpenSheaf will adopt it when it is
       published.
     </p>
-    <h2 id="auto-19">Can I use &quot;All rights reserved&quot;?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-20">Can I use &quot;All rights reserved&quot;?<span style="margin-left: 1em"></span></h2>
     <p>
       Yes. Each document carries the licence its authors choose; &quot;All
       rights reserved&quot; means readers may access the document but not
@@ -225,14 +240,14 @@
       inventories) is CC0, so that it can be harvested and mirrored freely. On
       Zenodo, &quot;All rights reserved&quot; is entered as a custom licence.
     </p>
-    <h2 id="auto-20">Will Google Scholar find the papers?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-21">Will Google Scholar find the papers?<span style="margin-left: 1em"></span></h2>
     <p>
       If the archive follows the website profile: each document then has a
       landing page with the <tt class="verbatim">citation_*</tt> meta tags Google
       Scholar reads, and a PDF on the same host. Appendix C also recommends a
       sitemap and FAIR Signposting links.
     </p>
-    <h2 id="auto-21">How do I check an archive?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-22">How do I check an archive?<span style="margin-left: 1em"></span></h2>
     <p>
       A verifier validates the JSON files against the schemas in <a href="schemas/">schemas/</a>,
       validates the storage root with a standard OCFL validator (such as <tt
@@ -240,14 +255,14 @@
       storage root, and resolves and checks every member of every collection.
       The specification (section 14) lists the checks.
     </p>
-    <h2 id="auto-22">Is the format stable?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-23">Is the format stable?<span style="margin-left: 1em"></span></h2>
     <p>
       Not yet: version 0.1 is a draft, and versions before 1.0 may change in
       incompatible ways. Every file declares the version of the format it
       follows, so that tools can tell. From version 1.0, minor versions will
       be backward compatible.
     </p>
-    <h2 id="auto-23">Why the name?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-24">Why the name?<span style="margin-left: 1em"></span></h2>
     <p>
       A sheaf is a bundle of papers. In mathematics, a sheaf is the structure
       in which local pieces glue into a whole: archives kept and verified

@@ -29,7 +29,7 @@
     <h1 id="auto-1">OpenSheaf: an open format for document archives and
     collections<span style="margin-left: 1em"></span></h1>
     <div class="notes-abstract">
-      Specification, version 0.1 (draft), 13 November 2026. OpenSheaf is a
+      Specification, version 0.1 (draft), 14 November 2026. OpenSheaf is a
       common, open format for archives of scholarly documents and for
       collections of them, built on the Oxford Common File Layout (OCFL 1.1)
       and the DataCite Metadata Schema (4.7). This version is experimental and
@@ -324,6 +324,27 @@
           follows.
         </p>
       </li>
+      <li>
+        <p>
+          <strong>Extensions</strong>, optional: an extension is a
+          specification published separately from this one, named by a URI
+          (RECOMMENDED: the <tt class="verbatim">https</tt> URL at which it is
+          published), that records in <tt class="verbatim">object.json</tt> what this
+          specification leaves open, so that tools aware of it can act on it
+          (for instance relations between documents that tools must follow
+          when they copy or verify them). An object version records the data
+          of an extension under <tt class="verbatim">extensions</tt> in its <tt class="verbatim">object.json</tt>
+          (section 9), keyed by the name of the extension; the discovery
+          document lists the extensions its objects use (section 6.1).
+          Extensions MUST NOT change the meaning of what this specification
+          defines, nor relax its requirements: an archive is conforming, and
+          its objects and collections are read and verified, without knowing
+          any of its extensions. Readers ignore extensions they do not know,
+          as they ignore unknown properties (section 12). The data of an
+          extension is part of the object version, covered by its inventory
+          like the rest of <tt class="verbatim">object.json</tt>, so pins fix it too.
+        </p>
+      </li>
     </ul>
     <p>
       The JSON files defined here (<tt class="verbatim">opensheaf.json</tt>, <tt class="verbatim">object.json</tt>,
@@ -449,8 +470,9 @@
       the archive's own documents) and <tt class="verbatim">contact</tt> (a URI). It MAY
       contain <tt class="verbatim">mirrors</tt> (base URLs of complete copies of the
       archive), <tt class="verbatim">tombstones</tt> (section 11.3), <tt class="verbatim">keys</tt>
-      (section 13.2) and <tt class="verbatim">feed</tt> (the URL of an Atom feed of new
-      object versions).
+      (section 13.2), <tt class="verbatim">feed</tt> (the URL of an Atom feed of new
+      object versions) and <tt class="verbatim">extensions</tt> (the names of the
+      extensions used by its objects, section 4).
     </p>
     <p>
       The discovery document is mutable: it is rewritten whenever an object is
@@ -1030,7 +1052,14 @@
       </li>
       <li>
         <p>
-          <tt class="verbatim">withdrawal</tt> (section 11).
+          <tt class="verbatim">withdrawal</tt> (section 11);
+        </p>
+      </li>
+      <li>
+        <p>
+          <tt class="verbatim">extensions</tt>: the data of extensions (section 4), an
+          object whose keys are the names of the extensions and whose values
+          are defined by them.
         </p>
       </li>
     </ul>
@@ -1499,8 +1528,10 @@
       </li>
     </ul>
     <p>
-      A verifier SHOULD check the witnesses it finds, and the requirements of
-      the profiles the archive declares. It MUST NOT treat the presentation as
+      A verifier SHOULD check the witnesses it finds, the requirements of the
+      profiles the archive declares, and those of the extensions it knows; it
+      SHOULD report the extensions it does not know, which do not make an
+      archive fail verification. It MUST NOT treat the presentation as
       authoritative. It SHOULD limit the depth and size of the collections it
       follows, and report when it stops.
     </p>
@@ -1603,6 +1634,15 @@
           in the discovery document) and accepted copies (one vetted revision,
           as a document of the selection's archive) are defined. <tt class="verbatim">follow</tt>
           is for archive collections only, and follows the head.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>0.1 (draft), 14 November 2026, revision:</strong> extensions
+          (section 4): specifications published separately, whose data <tt
+          class="verbatim">object.json</tt> records under <tt class="verbatim">extensions</tt>,
+          keyed by their names; the discovery document lists them; they never
+          change the core, and verifiers report those they do not know.
         </p>
       </li>
     </ul>
@@ -2163,6 +2203,22 @@
         <p>
           <strong>Why no HTML in deposits.</strong> Presentations improve;
           deposits must not change.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Why a minimal core, and extensions.</strong> The core
+          defines only what every archive and collection needs to be kept,
+          cited, composed and verified. Richer structures among documents (a
+          short account of a proof and its detailed argument, a talk and its
+          paper, a dataset and the analyses built on it, a knowledge base
+          linking results across papers) are built on top of it: by links
+          inside the documents and DataCite relations, which need nothing
+          more, or by extensions that record them with pins, so that tools
+          follow them when they copy, verify or present documents. Keeping
+          them out of the core leaves room for designs not yet imagined, while
+          the pins, which fix extension data with the rest of each version,
+          keep whatever is built checkable.
         </p>
       </li>
       <li>

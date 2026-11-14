@@ -124,7 +124,7 @@
           },
           "name": {
             "type": "string",
-            "pattern": "^[a-z2-7]{52}$",
+            "pattern": "^[a-z2-7]{51}[aq]$",
             "$comment": "proposal (section 6.5): 256 bits of the SHA-512 digest of genesis.json, lowercase base32"
           },
           "owner": {

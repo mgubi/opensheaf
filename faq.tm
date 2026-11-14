@@ -59,7 +59,7 @@
 
   <section*|Why both archives and collections?><label|why-both-archives-and-collections>
 
-  They answer different questions. An <strong|archive> is custody and naming: one owner's storage root and discovery document, under an archive identifier. It says who keeps an object, what it is called, and where its files are. An object is named by the pair (archive identifier, object identifier), and its versions are added only by its archive, which is its single writer: a copy kept elsewhere (a mirror) stays the object of its archive and can only receive its versions. Archives do not overlap and do not nest.
+  They answer different questions. An <strong|archive> is custody and naming: one owner's storage root and discovery document, under an archive identifier. It says who keeps an object, what it is called, and where its files are. An object is named by the pair (archive identifier, object identifier), and its versions are added only by its archive, which is its single writer: a copy kept elsewhere (a mirror) stays the object of its archive and can only receive its versions. Archives do not overlap and do not nest. (A proposal, below, adds an identity that does not depend on the archive: see "Who owns an object, and what is a branch?")
 
   A <strong|collection> is a statement: a versioned list of pins, made by a curator, over objects of any archives. It says which objects, in which versions, go together: an author's papers, an issue of a journal, a reading list. Collections are objects themselves, so they can be pinned, nested and included in other collections, across archives.
 
@@ -81,9 +81,9 @@
 
   The owner can be light or strong. A draft has none. A named owner is a URI the owner asserts (an archive identifier, an ORCID iD, a web address): enough for most authors. A keyed owner is a public key: every version is signed, so the line can be checked even when its archive has gone.
 
-  Anyone can copy a genesis record, so the name alone cannot say whose history is the right one. That is why the owner is part of the identity: a copy kept by another owner is a <dfn|branch>, which declares the version it starts from. A <strong|deep> branch copies all earlier versions and continues them (a co- author carrying the work on). A <strong|shallow> branch keeps only the version it starts from, with the parent's inventory as evidence, and adds its own versions (a journal keeping the version it vetted, then its corrections). An accepted copy is a shallow branch kept by a selection.
+  Anyone can copy a genesis record, so the name alone cannot say whose history is the right one. That is why the owner is part of the identity: a copy kept by another owner is a <dfn|branch>, which declares the version it starts from. A <strong|deep> branch copies all earlier versions and continues them (a co-author carrying the work on). A <strong|shallow> branch keeps only the version it starts from, with the parent's inventory and <verbatim|object.json> as evidence, and adds its own versions (a journal keeping the version it vetted, then its corrections). An accepted copy is a shallow branch kept by a selection.
 
-  A shallow branch can be checked without its parent: the genesis record gives the name, the copied inventory gives the parent pin, and the files match that inventory. Whether the parent's owner really made that version is confirmed by resolving the parent, by the parent owner's signature, by other witnesses, or, failing these, rests on the branch owner's word.
+  A shallow branch can be checked without its parent: the genesis record gives the name, the copied inventory gives the parent pin, the files match that inventory, and the copied <verbatim|object.json> says whose version it was. This shows only that the branch is consistent. Whether the parent's owner really made that version is confirmed by resolving the parent, by the parent owner's signature, or by other witnesses; failing these, it rests on the branch owner's word.
 
   <section*|Can documents be linked in richer ways (a short account and its full proof)?><label|can-documents-be-linked-in-richer-ways-a-short-account-and-its-full-proof>
 

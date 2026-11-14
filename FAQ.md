@@ -121,7 +121,9 @@ says who keeps an object, what it is called, and where its files are. An
 object is named by the pair (archive identifier, object identifier), and its
 versions are added only by its archive, which is its single writer: a copy
 kept elsewhere (a mirror) stays the object of its archive and can only
-receive its versions. Archives do not overlap and do not nest.
+receive its versions. Archives do not overlap and do not nest. (A proposal,
+below, adds an identity that does not depend on the archive: see "Who owns an
+object, and what is a branch?")
 
 A **collection** is a statement: a versioned list of pins, made by a curator,
 over objects of any archives. It says which objects, in which versions, go
@@ -184,17 +186,19 @@ line can be checked even when its archive has gone.
 Anyone can copy a genesis record, so the name alone cannot say whose history
 is the right one. That is why the owner is part of the identity: a copy kept
 by another owner is a <dfn>branch</dfn>, which declares the version it starts
-from. A **deep** branch copies all earlier versions and continues them (a co-
-author carrying the work on). A **shallow** branch keeps only the version it
-starts from, with the parent's inventory as evidence, and adds its own
-versions (a journal keeping the version it vetted, then its corrections). An
-accepted copy is a shallow branch kept by a selection.
+from. A **deep** branch copies all earlier versions and continues them (a
+co-author carrying the work on). A **shallow** branch keeps only the version
+it starts from, with the parent's inventory and `object.json` as evidence,
+and adds its own versions (a journal keeping the version it vetted, then its
+corrections). An accepted copy is a shallow branch kept by a selection.
 
 A shallow branch can be checked without its parent: the genesis record gives
-the name, the copied inventory gives the parent pin, and the files match that
-inventory. Whether the parent's owner really made that version is confirmed by
-resolving the parent, by the parent owner's signature, by other witnesses, or,
-failing these, rests on the branch owner's word.
+the name, the copied inventory gives the parent pin, the files match that
+inventory, and the copied `object.json` says whose version it was. This shows
+only that the branch is consistent. Whether the parent's owner really made
+that version is confirmed by resolving the parent, by the parent owner's
+signature, or by other witnesses; failing these, it rests on the branch
+owner's word.
 
 ## Can documents be linked in richer ways (a short account and its full proof)?
 

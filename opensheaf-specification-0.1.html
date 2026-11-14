@@ -45,7 +45,7 @@
       Changes are listed in the changelog (section 17) and discussed in the <a
       href="https://github.com/opensheaf/opensheaf.github.io/issues">issues</a>.
     </div>
-    <h2 id="auto-2">1. Introduction (non-normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-2"><a id="1-introduction-non-normative"></a>1. Introduction (non-normative)<span style="margin-left: 1em"></span></h2>
     <p>
       OpenSheaf is meant as a lean alternative to arXiv and to the usual
       publication infrastructure. Any author, group or institution can keep an
@@ -106,7 +106,7 @@
       <tt class="verbatim">https://mgubi.org/papers/</tt>; its values appear in the
       examples.
     </p>
-    <h2 id="auto-3">2. Conventions<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-3"><a id="2-conventions"></a>2. Conventions<span style="margin-left: 1em"></span></h2>
     <p>
       The key words MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD
       NOT, RECOMMENDED, NOT RECOMMENDED, MAY and OPTIONAL in this document are
@@ -119,7 +119,7 @@
       without a byte order mark. URLs are absolute unless stated otherwise; a
       relative URL in a JSON file is resolved against the URL of that file.
     </p>
-    <h2 id="auto-4">3. Terminology<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-4"><a id="3-terminology"></a>3. Terminology<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -289,7 +289,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-5">4. Conformance<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-5"><a id="4-conformance"></a>4. Conformance<span style="margin-left: 1em"></span></h2>
     <p>
       This specification defines the following conformance classes. An
       archive, object or program conforms to a class if it satisfies every
@@ -335,7 +335,7 @@
           when they copy or verify them). An object version records the data
           of an extension under <tt class="verbatim">extensions</tt> in its <tt class="verbatim">object.json</tt>
           (section 9), keyed by the name of the extension; the discovery
-          document lists the extensions its objects use (section 6.1).
+          document SHOULD list the extensions its objects use (section 6.1).
           Extensions MUST NOT change the meaning of what this specification
           defines, nor relax its requirements: an archive is conforming, and
           its objects and collections are read and verified, without knowing
@@ -351,7 +351,7 @@
       <tt class="verbatim">members.json</tt>) MUST validate against the JSON Schemas of
       appendix D for their declared format version.
     </p>
-    <h2 id="auto-6">5. Layout<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-6"><a id="5-layout"></a>5. Layout<span style="margin-left: 1em"></span></h2>
     <p>
       An archive consists of:
     </p>
@@ -410,8 +410,8 @@
       (GitHub Pages, object storage, a university server). A deployment guide,
       outside this specification, discusses hosting limits and practices.
     </p>
-    <h2 id="auto-7">6. Discovery and identity<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-8">6.1 The discovery document<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-7"><a id="6-discovery-and-identity"></a>6. Discovery and identity<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-8"><a id="61-the-discovery-document"></a>6.1 The discovery document<span style="margin-left: 1em"></span></h3>
     <p>
       The discovery document is the JSON file <tt class="verbatim">opensheaf.json</tt>
       at the base URL of the archive. It MUST contain:
@@ -467,12 +467,12 @@
       followed, from <tt class="verbatim">zenodo</tt>, <tt class="verbatim">texmacs</tt>, <tt
       class="verbatim">website</tt> (an empty list if none). It SHOULD contain <tt
       class="verbatim">mainCollection</tt> (the identifier of the collection that lists
-      the archive's own documents) and <tt class="verbatim">contact</tt> (a URI). It MAY
-      contain <tt class="verbatim">mirrors</tt> (base URLs of complete copies of the
-      archive), <tt class="verbatim">tombstones</tt> (section 11.3), <tt class="verbatim">keys</tt>
-      (section 13.2), <tt class="verbatim">feed</tt> (the URL of an Atom feed of new
-      object versions) and <tt class="verbatim">extensions</tt> (the names of the
-      extensions used by its objects, section 4).
+      the archive's own documents), <tt class="verbatim">contact</tt> (a URI) and, if
+      its objects use extensions, <tt class="verbatim">extensions</tt> (their names,
+      section 4). It MAY contain <tt class="verbatim">mirrors</tt> (base URLs of
+      complete copies of the archive), <tt class="verbatim">tombstones</tt> (section
+      11.3), <tt class="verbatim">keys</tt> (section 13.2) and <tt class="verbatim">feed</tt> (the
+      URL of an Atom feed of new object versions).
     </p>
     <p>
       The discovery document is mutable: it is rewritten whenever an object is
@@ -482,7 +482,7 @@
       lowercase hexadecimal, here and in every file defined by this
       specification.
     </p>
-    <h3 id="auto-9">6.2 Archive identifiers<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-9"><a id="62-archive-identifiers"></a>6.2 Archive identifiers<span style="margin-left: 1em"></span></h3>
     <p>
       An archive identifier is a URI that does not change when the archive
       moves. It SHOULD be a <tt class="verbatim">tag:</tt> URI (RFC 4151) built from a
@@ -491,7 +491,7 @@
       DOI or another persistent URI MAY be used instead. Two different
       archives MUST NOT use the same archive identifier.
     </p>
-    <h3 id="auto-10">6.3 Object identifiers<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-10"><a id="63-object-identifiers"></a>6.3 Object identifiers<span style="margin-left: 1em"></span></h3>
     <p>
       An object identifier MUST match <tt class="verbatim">^[a-z0-9]+(-[a-z0-9]+)*$</tt>
       and MUST be at most 64 characters long. It is the OCFL <tt class="verbatim">id</tt>
@@ -506,7 +506,7 @@
       Outside the archive, an object is named by the pair (archive identifier,
       object identifier).
     </p>
-    <h3 id="auto-11">6.4 Resolution<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-11"><a id="64-resolution"></a>6.4 Resolution<span style="margin-left: 1em"></span></h3>
     <p>
       To fetch an object version of a member, a client:
     </p>
@@ -535,8 +535,8 @@
       Any copy whose bytes match the pinned digest is acceptable: integrity
       comes from the pin, not from the place.
     </p>
-    <h2 id="auto-12">7. Objects<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-13">7.1 Common rules<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-12"><a id="7-objects"></a>7. Objects<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-13"><a id="71-common-rules"></a>7.1 Common rules<span style="margin-left: 1em"></span></h3>
     <p>
       Every object MUST be a valid OCFL 1.1 object. Its inventories MUST use
       <tt class="verbatim">sha512</tt> as digest algorithm. Every object version MUST
@@ -565,7 +565,7 @@
       MUST NOT begin with <tt class="verbatim">/</tt>, and MUST NOT contain <tt class="verbatim">.</tt>
       or <tt class="verbatim">..</tt> segments.
     </p>
-    <h3 id="auto-14">7.2 Documents<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-14"><a id="72-documents"></a>7.2 Documents<span style="margin-left: 1em"></span></h3>
     <p>
       A document version contains, at the top level of its content unless a
       profile says otherwise:
@@ -607,7 +607,7 @@
       since they depend on the presentation and are regenerated when it
       improves.
     </p>
-    <h3 id="auto-15">7.3 Document versions<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-15"><a id="73-document-versions"></a>7.3 Document versions<span style="margin-left: 1em"></span></h3>
     <p>
       <strong>Numbering.</strong> Document versions are numbered by the
       archive, from 1, without gaps, independently of any external numbering:
@@ -692,7 +692,7 @@
       Dates never order document versions and never decide the current version
       (section 8).
     </p>
-    <h3 id="auto-16">7.4 Collections<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-16"><a id="74-collections"></a>7.4 Collections<span style="margin-left: 1em"></span></h3>
     <p>
       A collection version contains <tt class="verbatim">datacite.json</tt>, <tt class="verbatim">object.json</tt>
       and <tt class="verbatim">members.json</tt> (section 10), which states whether the
@@ -704,7 +704,7 @@
       <tt class="verbatim">changes</tt>, <tt class="verbatim">stage</tt>, <tt class="verbatim">history</tt>,
       <tt class="verbatim">notices</tt>).
     </p>
-    <h2 id="auto-17">8. Description: datacite.json<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-17"><a id="8-description-datacitejson"></a>8. Description: datacite.json<span style="margin-left: 1em"></span></h2>
     <p>
       Every object version MUST contain <tt class="verbatim">datacite.json</tt>, a JSON
       object with the DataCite 4.7 properties in the form of the <tt class="verbatim">attributes</tt>
@@ -860,7 +860,7 @@
       explaining them (for instance &quot;from file timestamps&quot;); unknown
       dates are omitted.
     </p>
-    <h3 id="auto-18">8.1 Relations<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-18"><a id="81-relations"></a>8.1 Relations<span style="margin-left: 1em"></span></h3>
     <ul>
       <li>
         <p>
@@ -910,7 +910,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-19">9. The object: object.json<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-19"><a id="9-the-object-objectjson"></a>9. The object: object.json<span style="margin-left: 1em"></span></h2>
     <p>
       Every object version MUST contain <tt class="verbatim">object.json</tt>,
       OpenSheaf's record of the object as of that version: its identity, the
@@ -1067,8 +1067,8 @@
       <tt class="verbatim">object.json</tt> is metadata and is placed under CC0 (section
       16).
     </p>
-    <h2 id="auto-20">10. Collections: members.json<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-21">10.1 Archive collections and selections<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-20"><a id="10-collections-membersjson"></a>10. Collections: members.json<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-21"><a id="101-archive-collections-and-selections"></a>10.1 Archive collections and selections<span style="margin-left: 1em"></span></h3>
     <p>
       Collections are of two kinds, which differ in how they treat the
       versions of their members.
@@ -1102,7 +1102,7 @@
       Both kinds may contain collections as members (an archive of archives, a
       selection of issues). <tt class="verbatim">members.json</tt> states the kind.
     </p>
-    <h3 id="auto-22">10.2 The member list<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-22"><a id="102-the-member-list"></a>10.2 The member list<span style="margin-left: 1em"></span></h3>
     <p>
       A collection version MUST contain <tt class="verbatim">members.json</tt> with:
     </p>
@@ -1224,14 +1224,14 @@
       inventory, which fixes all its files, collections are hash trees. Pins
       cannot form cycles.
     </p>
-    <h3 id="auto-23">10.3 Members of other archives<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-23"><a id="103-members-of-other-archives"></a>10.3 Members of other archives<span style="margin-left: 1em"></span></h3>
     <p>
       A member may belong to another archive. Nothing is copied: the member is
       resolved as in section 6.4. A reference (a pin without a copy) needs no
       permission. Copies are of two kinds: mirrors (section 10.4) and accepted
       copies (section 10.5).
     </p>
-    <h3 id="auto-24">10.4 Mirrors<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-24"><a id="104-mirrors"></a>10.4 Mirrors<span style="margin-left: 1em"></span></h3>
     <p>
       An archive MAY mirror an object of another archive: copy the whole
       object, every version with its inventories and files, byte for byte,
@@ -1253,7 +1253,7 @@
       its members' archives, an independent storage site): they are impartial,
       like archive collections, and carry every version.
     </p>
-    <h3 id="auto-25">10.5 Accepted copies<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-25"><a id="105-accepted-copies"></a>10.5 Accepted copies<span style="margin-left: 1em"></span></h3>
     <p>
       A selection MAY keep its own copy of a revision it vetted, as a document
       of the selection's archive, called an accepted copy, so that what it
@@ -1289,14 +1289,14 @@
       agreement in <tt class="verbatim">object.json</tt> (section 9), and relations to
       the authors' versions (sections 7.3 and 8.1).
     </p>
-    <h3 id="auto-26">10.6 Rights<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-26"><a id="106-rights"></a>10.6 Rights<span style="margin-left: 1em"></span></h3>
     <p>
       The member list of a collection is placed under CC0. The licence of a
       collection never extends to its members. Mirrors and accepted copies
       keep the licences of what they copy.
     </p>
-    <h2 id="auto-27">11. Withdrawal and takedown<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-28">11.1 Withdrawal<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-27"><a id="11-withdrawal-and-takedown"></a>11. Withdrawal and takedown<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-28"><a id="111-withdrawal"></a>11.1 Withdrawal<span style="margin-left: 1em"></span></h3>
     <p>
       A document or collection is withdrawn (for instance retracted by its
       authors) by a description-only version whose <tt class="verbatim">object.json</tt>
@@ -1309,13 +1309,13 @@
       <tt class="verbatim">withdrawn</tt>. Presentations MUST show the withdrawal notice
       with the document.
     </p>
-    <h3 id="auto-29">11.2 Takedown<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-29"><a id="112-takedown"></a>11.2 Takedown<span style="margin-left: 1em"></span></h3>
     <p>
       When content must be removed (by law, or for a breach of rights), the
       object is deleted from the storage root and a tombstone MUST be added to
       the discovery document.
     </p>
-    <h3 id="auto-30">11.3 Tombstones<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-30"><a id="113-tombstones"></a>11.3 Tombstones<span style="margin-left: 1em"></span></h3>
     <p>
       A tombstone records <tt class="verbatim">id</tt>, <tt class="verbatim">kind</tt>, <tt class="verbatim">lastVersion</tt>,
       <tt class="verbatim">inventorySha512</tt> of that version, <tt class="verbatim">date</tt>
@@ -1333,7 +1333,7 @@
       mechanism is published, a later version of this specification will adopt
       it for takedowns of single files.
     </p>
-    <h2 id="auto-31">12. Versioning of this specification<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-31"><a id="12-versioning-of-this-specification"></a>12. Versioning of this specification<span style="margin-left: 1em"></span></h2>
     <p>
       This specification is versioned MAJOR.MINOR.PATCH, a form of semantic
       versioning adapted to a format:
@@ -1388,8 +1388,8 @@
       and is not changed after the version is final, except by patch versions,
       which are listed in its changelog.
     </p>
-    <h2 id="auto-32">13. Integrity and authenticity<span style="margin-left: 1em"></span></h2>
-    <h3 id="auto-33">13.1 Integrity<span style="margin-left: 1em"></span></h3>
+    <h2 id="auto-32"><a id="13-integrity-and-authenticity"></a>13. Integrity and authenticity<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-33"><a id="131-integrity"></a>13.1 Integrity<span style="margin-left: 1em"></span></h3>
     <p>
       Integrity rests on OCFL digests: every file is fixed by its SHA-512
       digest in the inventory, every inventory by its checksum file, and every
@@ -1398,7 +1398,7 @@
       block; archives following the Zenodo binding MUST record MD5 (appendix
       A).
     </p>
-    <h3 id="auto-34">13.2 Authenticity and dates<span style="margin-left: 1em"></span></h3>
+    <h3 id="auto-34"><a id="132-authenticity-and-dates"></a>13.2 Authenticity and dates<span style="margin-left: 1em"></span></h3>
     <p>
       Digests show that files were not changed; they do not show who made them
       or when. An archive MAY provide, for each object version:
@@ -1442,7 +1442,7 @@
       tags, but git hashes are not part of the integrity chain of this
       specification.
     </p>
-    <h2 id="auto-35">14. Verification<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-35"><a id="14-verification"></a>14. Verification<span style="margin-left: 1em"></span></h2>
     <p>
       A verifier checking an archive MUST:
     </p>
@@ -1535,7 +1535,7 @@
       authoritative. It SHOULD limit the depth and size of the collections it
       follows, and report when it stops.
     </p>
-    <h2 id="auto-36">15. Security considerations<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-36"><a id="15-security-considerations"></a>15. Security considerations<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1584,7 +1584,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-37">16. Privacy and rights<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-37"><a id="16-privacy-and-rights"></a>16. Privacy and rights<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1612,7 +1612,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-38">17. Changelog<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-38"><a id="17-changelog"></a>17. Changelog<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1641,13 +1641,13 @@
           <strong>0.1 (draft), 14 November 2026, revision:</strong> extensions
           (section 4): specifications published separately, whose data <tt
           class="verbatim">object.json</tt> records under <tt class="verbatim">extensions</tt>,
-          keyed by their names; the discovery document lists them; they never
-          change the core, and verifiers report those they do not know.
+          keyed by their names; the discovery document should list them; they
+          never change the core, and verifiers report those they do not know.
         </p>
       </li>
     </ul>
-    <h2 id="auto-39">Appendix A. Zenodo binding (normative for archives declaring the
-    profile <tt class="verbatim">zenodo</tt>)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-39"><a id="appendix-a-zenodo-binding-normative-for-archives-declaring-the-profile-zenodo"></a>Appendix A. Zenodo binding (normative for archives
+    declaring the profile <tt class="verbatim">zenodo</tt>)<span style="margin-left: 1em"></span></h2>
     <p>
       Zenodo issues DataCite DOIs (prefix <tt class="verbatim">10.5281</tt>) and keeps
       files permanently. Under this binding:
@@ -1735,8 +1735,8 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-40">Appendix B. TeXmacs profile (normative for archives declaring the
-    profile <tt class="verbatim">texmacs</tt>)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-40"><a id="appendix-b-texmacs-profile-normative-for-archives-declaring-the-profile-texmacs"></a>Appendix B. TeXmacs profile (normative for archives
+    declaring the profile <tt class="verbatim">texmacs</tt>)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1784,8 +1784,8 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-41">Appendix C. Website profile (normative for archives declaring the
-    profile <tt class="verbatim">website</tt>)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-41"><a id="appendix-c-website-profile-normative-for-archives-declaring-the-profile-website"></a>Appendix C. Website profile (normative for archives
+    declaring the profile <tt class="verbatim">website</tt>)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -1844,7 +1844,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-42">Appendix D. JSON Schemas (normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-42"><a id="appendix-d-json-schemas-normative"></a>Appendix D. JSON Schemas (normative)<span style="margin-left: 1em"></span></h2>
     <p>
       The schemas (JSON Schema draft 2020-12) are published with this
       specification and dedicated to the public domain under CC0 1.0, so that
@@ -1874,7 +1874,7 @@
       against the DataCite 4.7 XML Schema, together with the requirements of
       section 8.
     </p>
-    <h2 id="auto-43">Appendix E. Examples (non-normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-43"><a id="appendix-e-examples-non-normative"></a>Appendix E. Examples (non-normative)<span style="margin-left: 1em"></span></h2>
     <p>
       The values below come from the first archive. Digests are shortened, and
       the DOIs and ORCID iDs are placeholders.
@@ -2077,7 +2077,7 @@
 }</pre>
       </div>
     </div>
-    <h2 id="auto-44">Appendix F. Rationale (non-normative)<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-44"><a id="appendix-f-rationale-non-normative"></a>Appendix F. Rationale (non-normative)<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>
@@ -2229,7 +2229,7 @@
         </p>
       </li>
     </ul>
-    <h2 id="auto-45">Appendix G. References<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-45"><a id="appendix-g-references"></a>Appendix G. References<span style="margin-left: 1em"></span></h2>
     <ul>
       <li>
         <p>

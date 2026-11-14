@@ -32,7 +32,7 @@
       The specification (<a href="opensheaf-specification-0.1.html">opensheaf-specification-0.1.md</a>) is
       authoritative; this page explains its choices.
     </div>
-    <h2 id="auto-2">What is OpenSheaf for?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-2"><a id="what-is-opensheaf-for"></a>What is OpenSheaf for?<span style="margin-left: 1em"></span></h2>
     <p>
       It is an open format for archives of scholarly documents and for
       collections of them: a lean alternative to arXiv and to the usual
@@ -41,7 +41,7 @@
       fixed by hashes, standard metadata, and collections that combine
       documents from several archives.
     </p>
-    <h2 id="auto-3">Why not just use arXiv, or Zenodo?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-3"><a id="why-not-just-use-arxiv-or-zenodo"></a>Why not just use arXiv, or Zenodo?<span style="margin-left: 1em"></span></h2>
     <p>
       Both are excellent services, and OpenSheaf works with them: a document
       can also be on arXiv (linked with <tt class="verbatim">IsIdenticalTo</tt>), and
@@ -51,14 +51,14 @@
       file by file, and that can be combined with other archives into
       collections and selections without asking any central service.
     </p>
-    <h2 id="auto-4">Do I need Zenodo, TeXmacs, git or GitHub?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-4"><a id="do-i-need-zenodo-texmacs-git-or-github"></a>Do I need Zenodo, TeXmacs, git or GitHub?<span style="margin-left: 1em"></span></h2>
     <p>
       No. The core of the format is an OCFL storage root and a discovery
       document served over HTTPS. Zenodo, TeXmacs and the website are optional
       profiles (appendices A, B and C). Git and GitHub Pages are convenient
       ways to keep and serve an archive, but any static web server will do.
     </p>
-    <h2 id="auto-5">Why OCFL? Isn't git enough?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-5"><a id="why-ocfl-isnt-git-enough"></a>Why OCFL? Isn't git enough?<span style="margin-left: 1em"></span></h2>
     <p>
       Git records history, but its layout is internal to git and its hashes
       (SHA-1 in most repositories) are not meant for long-term preservation.
@@ -68,8 +68,8 @@
       with independent validators, used by research libraries. An OpenSheaf
       archive can still be kept in git; git just is not part of its integrity.
     </p>
-    <h2 id="auto-6">Why DataCite metadata, and not RO-Crate, Dublin Core or JATS?<span
-    style="margin-left: 1em"></span></h2>
+    <h2 id="auto-6"><a id="why-datacite-metadata-and-not-ro-crate-dublin-core-or-jats"></a>Why DataCite metadata, and not RO-Crate, Dublin Core or
+    JATS?<span style="margin-left: 1em"></span></h2>
     <p>
       DataCite is the metadata behind DOIs for repositories (Zenodo, arXiv's
       DOIs, university repositories). It has the relations needed here
@@ -78,7 +78,7 @@
       search services. RO-Crate is richer but heavier; Dublin Core is too
       thin; JATS is for the full text of journal articles.
     </p>
-    <h2 id="auto-7">Why JSON and not YAML?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-7"><a id="why-json-and-not-yaml"></a>Why JSON and not YAML?<span style="margin-left: 1em"></span></h2>
     <p>
       The metadata files are written by tools and checked by machines. JSON is
       strict, has one way of writing each value, and is read everywhere
@@ -86,7 +86,8 @@
       values silently (dates, version numbers like <tt class="verbatim">1.10</tt>,
       identifiers like <tt class="verbatim">2611.14296</tt>).
     </p>
-    <h2 id="auto-8">Why is there a discovery document (opensheaf.json)?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-8"><a id="why-is-there-a-discovery-document-opensheafjson"></a>Why is there a discovery document
+    (opensheaf.json)?<span style="margin-left: 1em"></span></h2>
     <p>
       Static web servers cannot list folders, so a program visiting an archive
       could not find its objects. <tt class="verbatim">opensheaf.json</tt>, at the
@@ -95,7 +96,8 @@
       of the specification the archive follows. It is only a map: everything
       it says is checked against the storage root.
     </p>
-    <h2 id="auto-9">Why are identifiers short names and not URIs?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-9"><a id="why-are-identifiers-short-names-and-not-uris"></a>Why are identifiers short names and not URIs?<span
+    style="margin-left: 1em"></span></h2>
     <p>
       The flat-direct storage layout puts each object in a folder named by its
       identifier, so paths stay readable and can be computed over plain HTTP;
@@ -104,8 +106,8 @@
       and an object is named globally by the pair (archive identifier, object
       identifier).
     </p>
-    <h2 id="auto-10">What is the difference between a document version and an object
-    version?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-10"><a id="what-is-the-difference-between-a-document-version-and-an-object-version"></a>What is the difference between a document version and
+    an object version?<span style="margin-left: 1em"></span></h2>
     <p>
       The document version is the version of the work, what readers see and
       what gets a DOI: it changes only when the document's own files change
@@ -115,7 +117,7 @@
       the journal version, fixing an affiliation) and notices about earlier
       versions.
     </p>
-    <h2 id="auto-11">How are versions numbered and ordered?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-11"><a id="how-are-versions-numbered-and-ordered"></a>How are versions numbered and ordered?<span style="margin-left: 1em"></span></h2>
     <p>
       The archive numbers document versions itself, from 1 and without gaps,
       even when an external service numbers them differently: if arXiv still
@@ -128,7 +130,7 @@
       Dates are only information: they may be approximate or unknown, so they
       never decide the order.
     </p>
-    <h2 id="auto-12">What if a version turns out to be wrong?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-12"><a id="what-if-a-version-turns-out-to-be-wrong"></a>What if a version turns out to be wrong?<span style="margin-left: 1em"></span></h2>
     <p>
       Deposit a corrected version, with a change note saying what changed. To
       warn readers of the earlier version, add a notice about it (for instance
@@ -136,8 +138,8 @@
       version, kept with the object and shown with that version, and they
       never change the version itself.
     </p>
-    <h2 id="auto-13">How do collections work across archives? What if another archive
-    disappears?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-13"><a id="how-do-collections-work-across-archives-what-if-another-archive-disappears"></a>How do collections work across archives? What if
+    another archive disappears?<span style="margin-left: 1em"></span></h2>
     <p>
       A collection lists its members by archive identifier, address, object
       identifier, version and the SHA-512 digest of that version's inventory
@@ -149,8 +151,8 @@
       one. A collection also keeps a cached citation of each member, so that
       it stays readable even if no copy is found.
     </p>
-    <h2 id="auto-14">What is the difference between an archive and a selection?<span
-    style="margin-left: 1em"></span></h2>
+    <h2 id="auto-14"><a id="what-is-the-difference-between-an-archive-and-a-selection"></a>What is the difference between an archive and a
+    selection?<span style="margin-left: 1em"></span></h2>
     <p>
       Keeping and vetting are different acts, and OpenSheaf has a kind of
       collection for each. An <strong>archive collection</strong> keeps
@@ -165,7 +167,8 @@
       an explicit act of the curator, recorded as a new version of the
       selection. The <a href="use-cases.html">use cases</a> show both at work.
     </p>
-    <h2 id="auto-15">Can I put someone else's paper in my collection?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-15"><a id="can-i-put-someone-elses-paper-in-my-collection"></a>Can I put someone else's paper in my collection?<span
+    style="margin-left: 1em"></span></h2>
     <p>
       Yes. A reference (a pin) copies nothing and needs no permission. There
       are two ways to keep a copy, both allowed only if the licence of what is
@@ -177,8 +180,8 @@
       are the curator's acts (for a journal). The licence of a collection (CC0
       for the list) never extends to its members.
     </p>
-    <h2 id="auto-16">Can documents be linked in richer ways (a short account and its
-    full proof)?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-16"><a id="can-documents-be-linked-in-richer-ways-a-short-account-and-its-full-proof"></a>Can documents be linked in richer ways (a short account
+    and its full proof)?<span style="margin-left: 1em"></span></h2>
     <p>
       Yes, on top of the format rather than in it. The core keeps only what
       every archive needs to keep, cite, compose and verify documents. Other
@@ -192,8 +195,8 @@
       publishing a short account of a proof whose detailed argument, possibly
       written with AI, stays online in the version reviewed.
     </p>
-    <h2 id="auto-17">Where do signatures and timestamps go, and why not in the version
-    itself?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-17"><a id="where-do-signatures-and-timestamps-go-and-why-not-in-the-version-itself"></a>Where do signatures and timestamps go, and why not in
+    the version itself?<span style="margin-left: 1em"></span></h2>
     <p>
       A signature or timestamp of an object version can only be made after the
       version is committed, so it cannot be part of that version: a signature
@@ -215,13 +218,14 @@
       their own: each one is checked directly against the checksum file it
       names, which the pins fix.
     </p>
-    <h2 id="auto-18">Why is the HTML version not part of the deposit?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-18"><a id="why-is-the-html-version-not-part-of-the-deposit"></a>Why is the HTML version not part of the deposit?<span
+    style="margin-left: 1em"></span></h2>
     <p>
       Because presentations improve (stylesheets, exporters, fixes) and
       deposits must not change. The deposit keeps the sources and the PDF; the
       HTML is regenerated from the sources whenever the presentation changes.
     </p>
-    <h2 id="auto-19">How do I withdraw or take down a document?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-19"><a id="how-do-i-withdraw-or-take-down-a-document"></a>How do I withdraw or take down a document?<span style="margin-left: 1em"></span></h2>
     <p>
       To withdraw a document (for instance a retraction), make a new version
       with a withdrawal notice: the content and its history stay, and
@@ -232,7 +236,7 @@
       mechanism for deleting single files; OpenSheaf will adopt it when it is
       published.
     </p>
-    <h2 id="auto-20">Can I use &quot;All rights reserved&quot;?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-20"><a id="can-i-use-all-rights-reserved"></a>Can I use &quot;All rights reserved&quot;?<span style="margin-left: 1em"></span></h2>
     <p>
       Yes. Each document carries the licence its authors choose; &quot;All
       rights reserved&quot; means readers may access the document but not
@@ -240,14 +244,14 @@
       inventories) is CC0, so that it can be harvested and mirrored freely. On
       Zenodo, &quot;All rights reserved&quot; is entered as a custom licence.
     </p>
-    <h2 id="auto-21">Will Google Scholar find the papers?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-21"><a id="will-google-scholar-find-the-papers"></a>Will Google Scholar find the papers?<span style="margin-left: 1em"></span></h2>
     <p>
       If the archive follows the website profile: each document then has a
       landing page with the <tt class="verbatim">citation_*</tt> meta tags Google
       Scholar reads, and a PDF on the same host. Appendix C also recommends a
       sitemap and FAIR Signposting links.
     </p>
-    <h2 id="auto-22">How do I check an archive?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-22"><a id="how-do-i-check-an-archive"></a>How do I check an archive?<span style="margin-left: 1em"></span></h2>
     <p>
       A verifier validates the JSON files against the schemas in <a href="schemas/">schemas/</a>,
       validates the storage root with a standard OCFL validator (such as <tt
@@ -255,14 +259,14 @@
       storage root, and resolves and checks every member of every collection.
       The specification (section 14) lists the checks.
     </p>
-    <h2 id="auto-23">Is the format stable?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-23"><a id="is-the-format-stable"></a>Is the format stable?<span style="margin-left: 1em"></span></h2>
     <p>
       Not yet: version 0.1 is a draft, and versions before 1.0 may change in
       incompatible ways. Every file declares the version of the format it
       follows, so that tools can tell. From version 1.0, minor versions will
       be backward compatible.
     </p>
-    <h2 id="auto-24">Why the name?<span style="margin-left: 1em"></span></h2>
+    <h2 id="auto-24"><a id="why-the-name"></a>Why the name?<span style="margin-left: 1em"></span></h2>
     <p>
       A sheaf is a bundle of papers. In mathematics, a sheaf is the structure
       in which local pieces glue into a whole: archives kept and verified

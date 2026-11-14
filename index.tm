@@ -17,7 +17,7 @@
 
   <strong|Source:> the specification and this site are kept in the GitHub repository <hlink|opensheaf/opensheaf.github.io|https://github.com/opensheaf/opensheaf.github.io>, which is also the place to discuss them (see below). The whole ecosystem (the specification, the tools, the templates and the test data) lives in the GitHub organisation <hlink|opensheaf|https://github.com/opensheaf>.
 
-  <section*|Why>
+  <section*|Why><label|why>
 
   Scholarly documents now live in a few central places: preprint servers such as arXiv, publishers' platforms, institutional repositories. Each package is centralised, opaque and non-composable with the others, and sometimes preserves only part of the life cycle of a scientific document, for example only the PDF or only a specific version.
 
@@ -37,11 +37,11 @@
     <item><strong|Compatible with existing infrastructure.> Documents can also be on arXiv, get DOIs and be archived on Zenodo, and be found by Google Scholar; none of these is required.
   </itemize>
 
-  <section*|The name>
+  <section*|The name><label|the-name>
 
   A <em|sheaf> is a bundle of papers, or of stalks of wheat tied together. In mathematics, a sheaf is the structure that attaches data to each part of a space so that local pieces, which agree where they overlap, glue into a whole. OpenSheaf works the same way: archives are kept and verified separately, each by its owner, and collections glue them together without copying, while every piece stays checkable on its own.
 
-  <section*|Taking part>
+  <section*|Taking part><label|taking-part>
 
   This repository is the place to discuss OpenSheaf and to propose changes:
 
@@ -55,7 +55,7 @@
     <item><strong|Implementations:> if you build an archive, a tool or a verifier for OpenSheaf, open an issue so that it can be added to the list below.
   </itemize>
 
-  <section*|Implementations>
+  <section*|Implementations><label|implementations>
 
   The repositories of the <hlink|opensheaf|https://github.com/opensheaf> organisation on GitHub, and archives made with them.
 
@@ -73,7 +73,7 @@
     <item><strong|Test data:> <hlink|example-papers|https://github.com/opensheaf/example-papers>, papers to deposit (invented ones, TeXmacs papers and slides, real openly licensed preprints from arXiv and slides from Zenodo) with their metadata.
   </itemize>
 
-  <section*|Files>
+  <section*|Files><label|files>
 
   <\itemize>
     <item><hlink|<verbatim|opensheaf-specification-0.1.md>|opensheaf-specification-0.1.tm>: the specification, in Markdown, its only source.
@@ -103,7 +103,7 @@
     <item><hlink|<verbatim|TRADEMARKS.md>|https://github.com/opensheaf/opensheaf.github.io/blob/main/TRADEMARKS.md>: the use of the name and the logo.
   </itemize>
 
-  <section*|Licence>
+  <section*|Licence><label|licence>
 
   The text of the specification, of the FAQ and of the use cases is licensed under the <hlink|Creative Commons Attribution-ShareAlike 4.0 International licence|https://creativecommons.org/licenses/by-sa/4.0/> (CC BY-SA 4.0): it may be copied and adapted with attribution, and adapted versions must be shared under the same licence. The JSON Schemas in <hlink|<verbatim|schemas/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/schemas> are dedicated to the public domain under <hlink|CC0 1.0|https://creativecommons.org/publicdomain/zero/1.0/>, so that they can be embedded in any software. The tools and style files are licensed under the GNU General Public License, version 3 or later. The fonts in <hlink|<verbatim|resources/fonts/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/fonts> keep their own licence (SIL Open Font License). The logo and the symbol in <hlink|<verbatim|resources/brand/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/resources/brand> are licensed under <hlink|CC BY 4.0|https://creativecommons.org/licenses/by/4.0/>; the use of the name OpenSheaf and of the logo as marks is governed by <hlink|<verbatim|TRADEMARKS.md>|https://github.com/opensheaf/opensheaf.github.io/blob/main/TRADEMARKS.md>: describing or pointing to OpenSheaf needs no permission, suggesting endorsement does. The file <hlink|<verbatim|LICENSE>|https://github.com/opensheaf/opensheaf.github.io/blob/main/LICENSE> says which licence covers what; the texts are in <hlink|<verbatim|LICENSES/>|https://github.com/opensheaf/opensheaf.github.io/tree/main/LICENSES>.
 

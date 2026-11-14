@@ -11,7 +11,7 @@
 
   <os-alert|warning|Warning.|<strong|Draft.> This version is a draft. Until version 1.0, any revision may change the format in incompatible ways, and archives and collections made now may have to be rebuilt or migrated. Do not rely on it yet for anything you cannot redo. Changes are listed in the changelog (section 17) and discussed in the <hlink|issues|https://github.com/opensheaf/opensheaf.github.io/issues>.>
 
-  <section*|1. Introduction (non-normative)>
+  <section*|1. Introduction (non-normative)><label|1-introduction-non-normative>
 
   OpenSheaf is meant as a lean alternative to arXiv and to the usual publication infrastructure. Any author, group or institution can keep an archive of its documents as plain files, served as a static website, checkable by anyone, and composable with other archives:
 
@@ -31,13 +31,13 @@
 
   The name: a sheaf is a bundle of papers and, in mathematics, the structure in which local pieces glue into a whole, as archives kept and verified separately compose into collections. The home of the format is <verbatim|https://opensheaf.org/>. The first OpenSheaf archive is <verbatim|https://mgubi.org/papers/>; its values appear in the examples.
 
-  <section*|2. Conventions>
+  <section*|2. Conventions><label|2-conventions>
 
   The key words MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, NOT RECOMMENDED, MAY and OPTIONAL in this document are to be interpreted as described in BCP 14 (RFC 2119 and RFC 8174) when, and only when, they appear in all capitals.
 
   Sections marked non-normative, examples, notes and the appendices marked as such are informative. JSON means RFC 8259 JSON encoded in UTF-8 without a byte order mark. URLs are absolute unless stated otherwise; a relative URL in a JSON file is resolved against the URL of that file.
 
-  <section*|3. Terminology>
+  <section*|3. Terminology><label|3-terminology>
 
   <\itemize>
     <item><strong|Archive:> a set of objects kept by one owner (a person, group or institution), with one storage root and one discovery document, identified by an archive identifier.
@@ -91,7 +91,7 @@
     <item><strong|Verifier:> a program that checks an archive or a collection against this specification.
   </itemize>
 
-  <section*|4. Conformance>
+  <section*|4. Conformance><label|4-conformance>
 
   This specification defines the following conformance classes. An archive, object or program conforms to a class if it satisfies every MUST and MUST NOT of the sections listed for it.
 
@@ -104,12 +104,12 @@
 
     <item><strong|Profiles>, optional: an archive MAY additionally conform to the Zenodo binding (appendix A), the TeXmacs profile (appendix B) and the website profile (appendix C). A conforming archive MUST state in its discovery document which profiles it follows.
 
-    <item><strong|Extensions>, optional: an extension is a specification published separately from this one, named by a URI (RECOMMENDED: the <verbatim|https> URL at which it is published), that records in <verbatim|object.json> what this specification leaves open, so that tools aware of it can act on it (for instance relations between documents that tools must follow when they copy or verify them). An object version records the data of an extension under <verbatim|extensions> in its <verbatim|object.json> (section 9), keyed by the name of the extension; the discovery document lists the extensions its objects use (section 6.1). Extensions MUST NOT change the meaning of what this specification defines, nor relax its requirements: an archive is conforming, and its objects and collections are read and verified, without knowing any of its extensions. Readers ignore extensions they do not know, as they ignore unknown properties (section 12). The data of an extension is part of the object version, covered by its inventory like the rest of <verbatim|object.json>, so pins fix it too.
+    <item><strong|Extensions>, optional: an extension is a specification published separately from this one, named by a URI (RECOMMENDED: the <verbatim|https> URL at which it is published), that records in <verbatim|object.json> what this specification leaves open, so that tools aware of it can act on it (for instance relations between documents that tools must follow when they copy or verify them). An object version records the data of an extension under <verbatim|extensions> in its <verbatim|object.json> (section 9), keyed by the name of the extension; the discovery document SHOULD list the extensions its objects use (section 6.1). Extensions MUST NOT change the meaning of what this specification defines, nor relax its requirements: an archive is conforming, and its objects and collections are read and verified, without knowing any of its extensions. Readers ignore extensions they do not know, as they ignore unknown properties (section 12). The data of an extension is part of the object version, covered by its inventory like the rest of <verbatim|object.json>, so pins fix it too.
   </itemize>
 
   The JSON files defined here (<verbatim|opensheaf.json>, <verbatim|object.json>, <verbatim|members.json>) MUST validate against the JSON Schemas of appendix D for their declared format version.
 
-  <section*|5. Layout>
+  <section*|5. Layout><label|5-layout>
 
   An archive consists of:
 
@@ -129,9 +129,9 @@
 
   An archive MAY be kept in git and served by any static web server (GitHub Pages, object storage, a university server). A deployment guide, outside this specification, discusses hosting limits and practices.
 
-  <section*|6. Discovery and identity>
+  <section*|6. Discovery and identity><label|6-discovery-and-identity>
 
-  <subsection*|6.1 The discovery document>
+  <subsection*|6.1 The discovery document><label|61-the-discovery-document>
 
   The discovery document is the JSON file <verbatim|opensheaf.json> at the base URL of the archive. It MUST contain:
 
@@ -151,19 +151,19 @@
     <item><verbatim|objects>: the list of all objects in the storage root, each with <verbatim|id>, <verbatim|kind>, <verbatim|head> (the head object version), <verbatim|inventorySha512> (the SHA-512 digest of the head inventory, as written in its checksum file) and <verbatim|status> (<verbatim|active> or <verbatim|withdrawn>, section 11); a mirror (section 10.4) also has <verbatim|mirrorOf>, the archive identifier of the archive whose object it copies.
   </itemize>
 
-  It MUST also contain <verbatim|profiles>, the list of profiles followed, from <verbatim|zenodo>, <verbatim|texmacs>, <verbatim|website> (an empty list if none). It SHOULD contain <verbatim|mainCollection> (the identifier of the collection that lists the archive's own documents) and <verbatim|contact> (a URI). It MAY contain <verbatim|mirrors> (base URLs of complete copies of the archive), <verbatim|tombstones> (section 11.3), <verbatim|keys> (section 13.2), <verbatim|feed> (the URL of an Atom feed of new object versions) and <verbatim|extensions> (the names of the extensions used by its objects, section 4).
+  It MUST also contain <verbatim|profiles>, the list of profiles followed, from <verbatim|zenodo>, <verbatim|texmacs>, <verbatim|website> (an empty list if none). It SHOULD contain <verbatim|mainCollection> (the identifier of the collection that lists the archive's own documents), <verbatim|contact> (a URI) and, if its objects use extensions, <verbatim|extensions> (their names, section 4). It MAY contain <verbatim|mirrors> (base URLs of complete copies of the archive), <verbatim|tombstones> (section 11.3), <verbatim|keys> (section 13.2) and <verbatim|feed> (the URL of an Atom feed of new object versions).
 
   The discovery document is mutable: it is rewritten whenever an object is added or changed. It is a map, not a witness: what it states about objects (<verbatim|objects>: kinds, head versions, digests, status) MUST be verifiable from the storage root. Digests are written in lowercase hexadecimal, here and in every file defined by this specification.
 
-  <subsection*|6.2 Archive identifiers>
+  <subsection*|6.2 Archive identifiers><label|62-archive-identifiers>
 
   An archive identifier is a URI that does not change when the archive moves. It SHOULD be a <verbatim|tag:> URI (RFC 4151) built from a domain or e-mail address controlled by the owner at the time of creation and a date, for instance <verbatim|tag:opensheaf.org,2026:mgubi>. A DOI or another persistent URI MAY be used instead. Two different archives MUST NOT use the same archive identifier.
 
-  <subsection*|6.3 Object identifiers>
+  <subsection*|6.3 Object identifiers><label|63-object-identifiers>
 
   An object identifier MUST match <verbatim|^[a-z0-9]+(-[a-z0-9]+)*$> and MUST be at most 64 characters long. It is the OCFL <verbatim|id> of the object and the name of its folder in the storage root. It MUST be unique in the archive and MUST NOT be reused, also after a takedown. Since it is permanent and appears in every URL of the object, it SHOULD be short (at most 32 characters), readable and chosen by the depositor, and SHOULD NOT be derived mechanically from the title, which may change between versions while the identifier cannot; tools importing documents propose identifiers and the depositor decides. The kind of an object is given by its <verbatim|object.json>, never by its identifier. Outside the archive, an object is named by the pair (archive identifier, object identifier).
 
-  <subsection*|6.4 Resolution>
+  <subsection*|6.4 Resolution><label|64-resolution>
 
   To fetch an object version of a member, a client:
 
@@ -177,9 +177,9 @@
 
   Any copy whose bytes match the pinned digest is acceptable: integrity comes from the pin, not from the place.
 
-  <section*|7. Objects>
+  <section*|7. Objects><label|7-objects>
 
-  <subsection*|7.1 Common rules>
+  <subsection*|7.1 Common rules><label|71-common-rules>
 
   Every object MUST be a valid OCFL 1.1 object. Its inventories MUST use <verbatim|sha512> as digest algorithm. Every object version MUST contain, in its content, the files <verbatim|object.json> and <verbatim|datacite.json> at the top level. Every version directory MUST contain a copy of the inventory as of that version, with its checksum file (OCFL makes this a recommendation; OpenSheaf requires it, so that each version can be pinned and fetched on its own). Version directories MUST NOT be zero-padded (<verbatim|v1>, <verbatim|v2>, ..., not <verbatim|v001>), which OCFL allows. OCFL recommends that object identifiers be URIs; OpenSheaf identifiers are short names (section 6.3), so OCFL validators may warn about them.
 
@@ -187,7 +187,7 @@
 
   Logical paths MUST be encoded in UTF-8 in Unicode normalisation form C, MUST NOT begin with <verbatim|/>, and MUST NOT contain <verbatim|.> or <verbatim|..> segments.
 
-  <subsection*|7.2 Documents>
+  <subsection*|7.2 Documents><label|72-documents>
 
   A document version contains, at the top level of its content unless a profile says otherwise:
 
@@ -203,7 +203,7 @@
 
   HTML versions and other presentation files SHOULD NOT be deposited, since they depend on the presentation and are regenerated when it improves.
 
-  <subsection*|7.3 Document versions>
+  <subsection*|7.3 Document versions><label|73-document-versions>
 
   <strong|Numbering.> Document versions are numbered by the archive, from 1, without gaps, independently of any external numbering: a work whose versions 1, 3 and 4 are available on arXiv has document versions 1, 2 and 3. External labels (arXiv's <verbatim|v3>) are recorded in <verbatim|external> (section 9), and presentations SHOULD show them with the document version.
 
@@ -223,11 +223,11 @@
 
   Dates never order document versions and never decide the current version (section 8).
 
-  <subsection*|7.4 Collections>
+  <subsection*|7.4 Collections><label|74-collections>
 
   A collection version contains <verbatim|datacite.json>, <verbatim|object.json> and <verbatim|members.json> (section 10), which states whether the collection is an archive collection or a selection. Its <verbatim|object.json> declares <verbatim|kind> <verbatim|collection>; its document version counts the changes of the member list, and it has none of the fields specific to documents (<verbatim|mainSource>, <verbatim|sourceFormat>, <verbatim|sourcesMissing>, <verbatim|renditions>, <verbatim|toolchain>, <verbatim|changes>, <verbatim|stage>, <verbatim|history>, <verbatim|notices>).
 
-  <section*|8. Description: datacite.json>
+  <section*|8. Description: datacite.json><label|8-description-datacitejson>
 
   Every object version MUST contain <verbatim|datacite.json>, a JSON object with the DataCite 4.7 properties in the form of the <verbatim|attributes> of a DOI in the DataCite REST API. It is the authoritative description of the object version. It MUST contain:
 
@@ -275,7 +275,7 @@
 
   Dates MAY be approximate, as DataCite allows (<verbatim|2019>, <verbatim|2019-03>, a range <verbatim|2018/2019>), with <verbatim|dateInformation> explaining them (for instance "from file timestamps"); unknown dates are omitted.
 
-  <subsection*|8.1 Relations>
+  <subsection*|8.1 Relations><label|81-relations>
 
   <\itemize>
     <item>A document version with a DOI SHOULD have <verbatim|IsVersionOf> the concept DOI of the document, and <verbatim|IsNewVersionOf> the DOI of the document version before it in the history (section 7.3), if that version has a DOI. Relations state what was known when a version was described; after a version is deposited out of order, the relation of the version that follows it MAY be corrected by a description-only version.
@@ -291,7 +291,7 @@
     <item>A document MUST NOT state the collections that include it: membership is stated only by collections, so that including a document in any collection never changes the document.
   </itemize>
 
-  <section*|9. The object: object.json>
+  <section*|9. The object: object.json><label|9-the-object-objectjson>
 
   Every object version MUST contain <verbatim|object.json>, OpenSheaf's record of the object as of that version: its identity, the structure of its content, its versions and its state. It MUST contain:
 
@@ -341,9 +341,9 @@
 
   <verbatim|object.json> is metadata and is placed under CC0 (section 16).
 
-  <section*|10. Collections: members.json>
+  <section*|10. Collections: members.json><label|10-collections-membersjson>
 
-  <subsection*|10.1 Archive collections and selections>
+  <subsection*|10.1 Archive collections and selections><label|101-archive-collections-and-selections>
 
   Collections are of two kinds, which differ in how they treat the versions of their members.
 
@@ -355,7 +355,7 @@
 
   Both kinds may contain collections as members (an archive of archives, a selection of issues). <verbatim|members.json> states the kind.
 
-  <subsection*|10.2 The member list>
+  <subsection*|10.2 The member list><label|102-the-member-list>
 
   A collection version MUST contain <verbatim|members.json> with:
 
@@ -389,17 +389,17 @@
 
   Every member is pinned: a collection version states exactly which object versions it contains, whole objects up to a version in an archive collection, revisions in a selection. A collection version therefore fixes everything it contains, also across archives; since a pin fixes an inventory, which fixes all its files, collections are hash trees. Pins cannot form cycles.
 
-  <subsection*|10.3 Members of other archives>
+  <subsection*|10.3 Members of other archives><label|103-members-of-other-archives>
 
   A member may belong to another archive. Nothing is copied: the member is resolved as in section 6.4. A reference (a pin without a copy) needs no permission. Copies are of two kinds: mirrors (section 10.4) and accepted copies (section 10.5).
 
-  <subsection*|10.4 Mirrors>
+  <subsection*|10.4 Mirrors><label|104-mirrors>
 
   An archive MAY mirror an object of another archive: copy the whole object, every version with its inventories and files, byte for byte, into its own storage root, under the same identifier (only if no object of its own has it). A mirror is the same object, not a new one: its <verbatim|object.json> files keep naming the original archive, and the discovery document lists it with <verbatim|mirrorOf>, the identifier of the original archive (section 6.1). A mirror is brought up to date only by copying the new versions of the original, which is possible because OCFL objects only grow; it MUST NOT be changed otherwise. Mirroring is allowed only if the licences of all the versions copied allow redistribution. An archive collection MAY list a mirror of a member in the member's <verbatim|mirrors>. An archive that mirrors another archive entirely SHOULD be listed in the <verbatim|mirrors> of that archive's discovery document, with the agreement of its owner.
 
   Mirrors serve preservation and access (an institution keeping copies of its members' archives, an independent storage site): they are impartial, like archive collections, and carry every version.
 
-  <subsection*|10.5 Accepted copies>
+  <subsection*|10.5 Accepted copies><label|105-accepted-copies>
 
   A selection MAY keep its own copy of a revision it vetted, as a document of the selection's archive, called an accepted copy, so that what it vetted stays available whatever happens to the original. Its first document version holds exactly the files of the vetted revision (every file except <verbatim|datacite.json> and <verbatim|object.json>), byte for byte; its <verbatim|object.json> records the source in <verbatim|external>, with <verbatim|role> <verbatim|source>, <verbatim|service> <verbatim|OpenSheaf>, <verbatim|record> the URL of the source object version, <verbatim|label> the source object identifier and object version (for instance <verbatim|"paper v2">), and <verbatim|files> with one entry, <verbatim|inventory.json>, whose <verbatim|sha512> is the pin of the source version; its <verbatim|datacite.json> describes it with the selection's archive as <verbatim|publisher>, keeps the relations of the source, and links the source version with <verbatim|IsIdenticalTo> (a <verbatim|URL>). Copying requires the right to redistribute only the revision copied.
 
@@ -407,27 +407,27 @@
 
   A version that the selection makes itself, such as a journal's typeset version of record, is a document of the selection's archive like any other, with the selection as <verbatim|publisher>, the authors' agreement in <verbatim|object.json> (section 9), and relations to the authors' versions (sections 7.3 and 8.1).
 
-  <subsection*|10.6 Rights>
+  <subsection*|10.6 Rights><label|106-rights>
 
   The member list of a collection is placed under CC0. The licence of a collection never extends to its members. Mirrors and accepted copies keep the licences of what they copy.
 
-  <section*|11. Withdrawal and takedown>
+  <section*|11. Withdrawal and takedown><label|11-withdrawal-and-takedown>
 
-  <subsection*|11.1 Withdrawal>
+  <subsection*|11.1 Withdrawal><label|111-withdrawal>
 
   A document or collection is withdrawn (for instance retracted by its authors) by a description-only version whose <verbatim|object.json> has <verbatim|status> <verbatim|withdrawn> and a <verbatim|withdrawal> object with a <verbatim|date> and a <verbatim|reason> (a note, section 9), and whose <verbatim|datacite.json> has the same date as <verbatim|Withdrawn>. The status belongs to the object, whatever document version its head holds. Its content is kept, its history remains verifiable, and the discovery document lists it with <verbatim|status> <verbatim|withdrawn>. Presentations MUST show the withdrawal notice with the document.
 
-  <subsection*|11.2 Takedown>
+  <subsection*|11.2 Takedown><label|112-takedown>
 
   When content must be removed (by law, or for a breach of rights), the object is deleted from the storage root and a tombstone MUST be added to the discovery document.
 
-  <subsection*|11.3 Tombstones>
+  <subsection*|11.3 Tombstones><label|113-tombstones>
 
   A tombstone records <verbatim|id>, <verbatim|kind>, <verbatim|lastVersion>, <verbatim|inventorySha512> of that version, <verbatim|date> and <verbatim|reason> (plain text, since the discovery document has no content files). Identifiers of tombstoned objects MUST NOT be reused. Verifiers report a pin to a tombstoned object as "removed", not as a corruption. External copies (DOI records, snapshots) follow the rules of their services.
 
   Note: OCFL 1.1 has no way to remove files from an object short of deleting and rebuilding it. Physical deletion of files, and the flagging of lost or corrupted files, are accepted as in scope for OCFL version 2, with a tombstone or status recorded in the inventory. When that mechanism is published, a later version of this specification will adopt it for takedowns of single files.
 
-  <section*|12. Versioning of this specification>
+  <section*|12. Versioning of this specification><label|12-versioning-of-this-specification>
 
   This specification is versioned MAJOR.MINOR.PATCH, a form of semantic versioning adapted to a format:
 
@@ -447,13 +447,13 @@
 
   While a version is a draft, successive drafts are identified by the date in the heading and by the changelog (section 17). The text of each version is published at <verbatim|https://opensheaf.org/opensheaf-specification-\<less\>MAJOR.MINOR\<gtr\>.md> and is not changed after the version is final, except by patch versions, which are listed in its changelog.
 
-  <section*|13. Integrity and authenticity>
+  <section*|13. Integrity and authenticity><label|13-integrity-and-authenticity>
 
-  <subsection*|13.1 Integrity>
+  <subsection*|13.1 Integrity><label|131-integrity>
 
   Integrity rests on OCFL digests: every file is fixed by its SHA-512 digest in the inventory, every inventory by its checksum file, and every collection version pins its members by inventory digest. Inventories MAY also record MD5 and SHA-256 digests in their <verbatim|fixity> block; archives following the Zenodo binding MUST record MD5 (appendix A).
 
-  <subsection*|13.2 Authenticity and dates>
+  <subsection*|13.2 Authenticity and dates><label|132-authenticity-and-dates>
 
   Digests show that files were not changed; they do not show who made them or when. An archive MAY provide, for each object version:
 
@@ -467,7 +467,7 @@
 
   External deposits (appendix A) and software archive snapshots are further witnesses. Archives kept in git MAY also sign their commits or tags, but git hashes are not part of the integrity chain of this specification.
 
-  <section*|14. Verification>
+  <section*|14. Verification><label|14-verification>
 
   A verifier checking an archive MUST:
 
@@ -491,7 +491,7 @@
 
   A verifier SHOULD check the witnesses it finds, the requirements of the profiles the archive declares, and those of the extensions it knows; it SHOULD report the extensions it does not know, which do not make an archive fail verification. It MUST NOT treat the presentation as authoritative. It SHOULD limit the depth and size of the collections it follows, and report when it stops.
 
-  <section*|15. Security considerations>
+  <section*|15. Security considerations><label|15-security-considerations>
 
   <\itemize>
     <item><strong|Untrusted inventories.> Inventories, logical paths and member lists from other archives are untrusted input. Verifiers MUST reject logical paths that break the rules of section 7.1 (absolute, with <verbatim|.> or <verbatim|..> segments, not in Unicode normalisation form C), and SHOULD limit the size of the files they fetch.
@@ -507,7 +507,7 @@
     <item><strong|Mutable maps.> The discovery document and presentation files can be changed by whoever controls the server; their statements are only trusted after checking them against the storage root and the pins.
   </itemize>
 
-  <section*|16. Privacy and rights>
+  <section*|16. Privacy and rights><label|16-privacy-and-rights>
 
   <\itemize>
     <item><strong|Documents.> Each document carries the licence chosen by its authors in <verbatim|rightsList>. "All rights reserved" is allowed: deposit grants readers access, not reuse.
@@ -517,17 +517,17 @@
     <item><strong|Personal data.> Archives record only the personal data needed to describe and cite the work (names, identifiers, affiliations) and the depositor of each version. The depositor is recorded in the inventory (section 7.1). Agreement records are minimal (section 9). A request to erase personal data from an immutable history is handled by a takedown (section 11.2).
   </itemize>
 
-  <section*|17. Changelog>
+  <section*|17. Changelog><label|17-changelog>
 
   <\itemize>
     <item><strong|0.1 (draft), 13 November 2026:> first version.
 
     <item><strong|0.1 (draft), 13 November 2026, revision:> collections are archive collections or selections (<verbatim|type> in <verbatim|members.json>): an archive collection pins objects whole and may follow them; a selection pins revision sets, the document versions it vetted, and changes only by an act of its curator. A member of an archive collection without <verbatim|follow> may stay at an earlier version; a revision pins the last object version holding its document version when it was vetted; accepted copies are never listed as mirrors; verifiers resolve remote members for the head of a collection. Mirrors (whole objects, <verbatim|mirrorOf> in the discovery document) and accepted copies (one vetted revision, as a document of the selection's archive) are defined. <verbatim|follow> is for archive collections only, and follows the head.
 
-    <item><strong|0.1 (draft), 14 November 2026, revision:> extensions (section 4): specifications published separately, whose data <verbatim|object.json> records under <verbatim|extensions>, keyed by their names; the discovery document lists them; they never change the core, and verifiers report those they do not know.
+    <item><strong|0.1 (draft), 14 November 2026, revision:> extensions (section 4): specifications published separately, whose data <verbatim|object.json> records under <verbatim|extensions>, keyed by their names; the discovery document should list them; they never change the core, and verifiers report those they do not know.
   </itemize>
 
-  <section*|Appendix A. Zenodo binding (normative for archives declaring the profile <verbatim|zenodo>)>
+  <section*|Appendix A. Zenodo binding (normative for archives declaring the profile <verbatim|zenodo>)><label|appendix-a-zenodo-binding-normative-for-archives-declaring-the-profile-zenodo>
 
   Zenodo issues DataCite DOIs (prefix <verbatim|10.5281>) and keeps files permanently. Under this binding:
 
@@ -547,7 +547,7 @@
     <item><strong|Collections.> A collection MAY be deposited when it is explicitly released (not at every change), as a record of type <verbatim|other>, with <verbatim|members.json> among its files. A Zenodo community MAY group an archive's records for browsing; it is not authoritative.
   </itemize>
 
-  <section*|Appendix B. TeXmacs profile (normative for archives declaring the profile <verbatim|texmacs>)>
+  <section*|Appendix B. TeXmacs profile (normative for archives declaring the profile <verbatim|texmacs>)><label|appendix-b-texmacs-profile-normative-for-archives-declaring-the-profile-texmacs>
 
   <\itemize>
     <item>The main source is a TeXmacs document; <verbatim|sourceFormat> is <verbatim|application/x-texmacs> (not a registered media type; it is the type TeXmacs uses).
@@ -563,7 +563,7 @@
     <item>An archive whose files are kept inside a website built with TeXmacs' website converter SHOULD place an empty file <verbatim|.texmacs-noconvert> at its top (honoured by the <verbatim|max-html> plugin), so that the converter never rewrites deposited files.
   </itemize>
 
-  <section*|Appendix C. Website profile (normative for archives declaring the profile <verbatim|website>)>
+  <section*|Appendix C. Website profile (normative for archives declaring the profile <verbatim|website>)><label|appendix-c-website-profile-normative-for-archives-declaring-the-profile-website>
 
   <\itemize>
     <item><strong|Index.> The website has an index page generated from the head version of the main collection. It MAY be split into several pages. A flattened, non-authoritative list for programs that do not read OCFL MAY be published as <verbatim|catalog.json>.
@@ -581,7 +581,7 @@
     <item><strong|Separation.> Presentation files are regenerated from the archive and never edited by hand; they do not embed other archives' HTML.
   </itemize>
 
-  <section*|Appendix D. JSON Schemas (normative)>
+  <section*|Appendix D. JSON Schemas (normative)><label|appendix-d-json-schemas-normative>
 
   The schemas (JSON Schema draft 2020-12) are published with this specification and dedicated to the public domain under CC0 1.0, so that they can be embedded in any software:
 
@@ -595,7 +595,7 @@
 
   DataCite publishes its schema as an XML Schema only. <verbatim|datacite.json> is validated by converting it to DataCite XML (following DataCite's mapping between the REST API's JSON and XML) and validating the result against the DataCite 4.7 XML Schema, together with the requirements of section 8.
 
-  <section*|Appendix E. Examples (non-normative)>
+  <section*|Appendix E. Examples (non-normative)><label|appendix-e-examples-non-normative>
 
   The values below come from the first archive. Digests are shortened, and the DOIs and ORCID iDs are placeholders.
 
@@ -889,7 +889,7 @@
   </verbatim-code>
   </html-div-class>
 
-  <section*|Appendix F. Rationale (non-normative)>
+  <section*|Appendix F. Rationale (non-normative)><label|appendix-f-rationale-non-normative>
 
   <\itemize>
     <item><strong|Why OCFL.> It is a published, versioned specification for exactly this problem (versioned objects as plain files with digests), with independent validators, used by research libraries. OpenSheaf adds only discovery and collections.
@@ -923,7 +923,7 @@
     <item><strong|Why DataCite.> It is the metadata of DOIs for repositories, with relations for versions, preprints and collections, and it maps directly to Zenodo.
   </itemize>
 
-  <section*|Appendix G. References>
+  <section*|Appendix G. References><label|appendix-g-references>
 
   <\itemize>
     <item><hlink|OCFL 1.1 specification|https://ocfl.io/1.1/spec/> and <hlink|OCFL extensions|https://ocfl.github.io/extensions/>

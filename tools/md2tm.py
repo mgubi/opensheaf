@@ -16,7 +16,8 @@ Handles the subset of Markdown used by spec.md:
   A first line `<!-- site hero: logo.svg -->`, hidden on GitHub, makes that
   logo the hero instead of the image on the next line;
 - images `![alt](path)` on a line of their own (centred);
-- `## Section`, `### Subsection`;
+- `## Section`, `### Subsection`, each with a label named as GitHub names
+  its anchor (`#what-happens-when-`), for links within and between pages;
 - paragraphs; lists with `- ` and nested lists indented by two spaces;
   a paragraph after a nested list is indented by two spaces;
 - fenced code blocks (three backticks), with an optional language after
@@ -53,6 +54,15 @@ def code_and_emphasis(t):
     for i, part in enumerate(re.split(r'`([^`]*)`', t)):
         out.append(f'<verbatim|{esc(part)}>' if i % 2 else emphasis(esc(part)))
     return ''.join(out)
+
+
+def slug(heading):
+    """The anchor GitHub gives a heading: lowercase, punctuation dropped,
+    spaces turned into hyphens, so that links to `#anchor` work both on
+    GitHub and on the site."""
+    t = re.sub(r'\[([^\]]+)\]\([^)]*\)', r'\1', heading).strip().lower()
+    t = re.sub(r'[^\w\- ]', '', t)
+    return t.replace(' ', '-')
 
 
 def inline(t):
@@ -199,11 +209,11 @@ def convert(md):
             blocks.append(f'  <os-alert|{kind}|{label}|{inline(" ".join(body))}>')
             continue
         if l.startswith('### '):
-            blocks.append(f'  <subsection*|{inline(l[4:])}>')
+            blocks.append(f'  <subsection*|{inline(l[4:])}><label|{slug(l[4:])}>')
             i += 1
             continue
         if l.startswith('## '):
-            blocks.append(f'  <section*|{inline(l[3:])}>')
+            blocks.append(f'  <section*|{inline(l[3:])}><label|{slug(l[3:])}>')
             i += 1
             continue
         if l.startswith('- '):

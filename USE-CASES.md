@@ -414,26 +414,28 @@ together with as much of the review as the participants agree to make public
 - **The referee as a commitment.** In place of the referee's name, the
   report's creator is a cryptographic commitment: the SHA-512 digest of the
   referee's identifier (an ORCID iD, which is unambiguous where a name is
-  not) followed by a secret. The secret is what makes it safe, since names
-  and ORCID iDs are few enough to be guessed one by one. The journal draws
-  a random secret for each paper, kept with the private record of that
-  paper's review, and from it the secret of each referee of that paper, an
-  HMAC of the referee's identifier under the paper's secret. The papers'
-  secrets are independent of each other, not derived from one seed of the
-  journal: if one leaks, only the referees of that paper are exposed. So the reports of one referee on one
-  paper, through every round of the review, carry the same digest and are
-  seen to come from the same person; the reports of different referees, or of
-  the same referee on different papers, cannot be linked; and revealing a
-  referee's secret discloses neither the paper's secret nor the other
-  referees (revealing the paper's secret itself would let anyone guess them).
-  The commitment is fixed in the report's version, so it cannot be changed
+  not) followed by a secret known to the journal and the referee. The
+  commitment is fixed in the report's version, so it cannot be changed
   afterwards: neither the journal nor anyone else can later attribute the
-  report to someone else, and revealing the identifier and the secret (the
+  report to someone else. Revealing the identifier and the secret (the
   referee, to claim the report; the journal, with the referee's agreement or
   as an institution may require) lets anyone check the attribution by
   recomputing the digest. A referee who agrees to sign the reports after
   acceptance is added to their creators, by name, by description-only
   versions, with the identifier and the secret that open the commitment.
+- **The secrets.** The secret is what keeps the referee anonymous until then: without it,
+  anyone could compute the digests of candidate identifiers until one
+  matches. The journal draws a random secret for each paper, kept with the
+  private record of that paper's review, and gives each referee of the paper
+  a secret derived from it (an HMAC of the referee's identifier under the
+  paper's secret). The reports of one referee on one paper, through every
+  round of the review, then carry the same digest and are seen to come from
+  the same person, while the reports of different referees, or of the same
+  referee on different papers, cannot be linked; revealing a referee's secret
+  discloses neither the paper's secret nor the other referees. The papers'
+  secrets are independent of each other, and not derived from a single seed
+  of the journal, so that a compromise does not spill over: a leaked secret
+  exposes the referees of one paper, not those of every paper.
 - **The record.** When the paper is accepted, the journal keeps the accepted
   version, with the reports, the replies and the decisions, in its archive:
   the complete record of the process, fixed by pins. It publishes only the
